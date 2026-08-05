@@ -388,31 +388,42 @@ function GuruProfile() {
 
 
           {/* SEJARAH PERKHIDMATAN */}
-          <Card className="border-none shadow-sm overflow-hidden">
-            <div className="bg-[#002B5B] px-6 py-3 flex justify-between items-center">
-              <h2 className="text-white font-semibold flex items-center gap-2"><Clock className="w-5 h-5" /> Sejarah Perkhidmatan</h2>
-              {isEditMode && <Button size="sm" variant="secondary" className="h-8"><Plus className="w-3 h-3 mr-1" /> Tambah</Button>}
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
+            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center">
+              <h2 className="text-white text-lg font-black flex items-center gap-3">
+                <div className="bg-white/20 p-1.5 rounded-lg"><Clock className="w-5 h-5" /></div>
+                Sejarah Perkhidmatan
+              </h2>
+              {isEditMode && <Button size="sm" variant="secondary" className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"><Plus className="w-4 h-4 mr-1" /> Tambah</Button>}
             </div>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader className="bg-slate-50">
-                    <TableRow>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Nama dan Alamat Sekolah</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Tahun</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Subjek yang Diajar</TableHead>
+                  <TableHeader className="bg-slate-50/50">
+                    <TableRow className="border-none">
+                      <TableHead className="px-8 h-12 font-black text-slate-400 uppercase text-[10px] tracking-widest">Nama dan Alamat Sekolah</TableHead>
+                      <TableHead className="h-12 font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Tahun</TableHead>
+                      <TableHead className="h-12 font-black text-slate-400 uppercase text-[10px] tracking-widest">Subjek yang Diajar</TableHead>
                       {isEditMode && <TableHead className="w-20 no-print"></TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sejarah.map((row) => (
-                      <TableRow key={row.id}>
-                        <TableCell className="font-medium text-slate-700">{row.sekolah}</TableCell>
-                        <TableCell>{row.tahun}</TableCell>
-                        <TableCell>{row.subjek}</TableCell>
+                    {sejarah.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={isEditMode ? 4 : 3} className="h-24 text-center text-slate-400 italic">Tiada rekod sejarah perkhidmatan</TableCell>
+                      </TableRow>
+                    ) : sejarah.map((row) => (
+                      <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
+                        <TableCell className="px-8 py-4">
+                          <p className="font-bold text-slate-700">{row.sekolah}</p>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className="px-3 py-1 bg-[#002B5B] text-white rounded-full text-[10px] font-black">{row.tahun}</span>
+                        </TableCell>
+                        <TableCell className="font-medium text-slate-600">{row.subjek}</TableCell>
                         {isEditMode && (
-                          <TableCell className="no-print">
-                            <Button variant="ghost" size="icon" className="text-rose-500 h-8 w-8"><Trash2 className="w-4 h-4" /></Button>
+                          <TableCell className="no-print pr-8 text-right">
+                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
                           </TableCell>
                         )}
                       </TableRow>
@@ -425,28 +436,30 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 mt-16 px-6">
-          <div className="space-y-8">
-            <div className="space-y-2">
-              <p className="font-semibold text-slate-800">Tandatangan Guru</p>
-              <div className="w-full border-b-2 border-slate-300 pt-16"></div>
-              <p className="text-sm text-slate-500 italic">Tarikh: ____________________________</p>
+        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B]">
+          <div className="space-y-12">
+            <div className="space-y-4">
+              <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Tandatangan Guru</p>
+              <div className="h-20 w-full border-b-2 border-slate-200 border-dashed"></div>
+              <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                <span>Nama: ________________________</span>
+                <span>Tarikh: ________________</span>
+              </div>
             </div>
           </div>
-          <div className="space-y-8">
-            <div className="space-y-2">
-              <p className="font-semibold text-slate-800">Disahkan Oleh</p>
-              <div className="w-full border-b-2 border-slate-300 pt-16"></div>
-              <p className="text-sm text-slate-500">Cap dan Tandatangan Pengetua / Guru Besar</p>
+          <div className="space-y-12">
+            <div className="space-y-4">
+              <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Disahkan Oleh</p>
+              <div className="h-20 w-full border-b-2 border-slate-200 border-dashed"></div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cap dan Tandatangan Pengetua / Guru Besar</p>
             </div>
           </div>
         </div>
 
         {/* FOOTER */}
-        <footer className="mt-20 border-t border-slate-200 py-8 text-center animate-in fade-in duration-1000 delay-500">
-          <p className="text-slate-800 font-bold">Profil Guru © 2026</p>
-          <p className="text-[#002B5B] font-semibold text-sm">Kementerian Pendidikan Malaysia</p>
-          <p className="text-slate-400 text-xs mt-4">Maklumat ini adalah untuk kegunaan rasmi sekolah.</p>
+        <footer className="text-center py-12 space-y-2 no-print">
+          <p className="text-[#002B5B] font-black text-sm">Profil Guru © 2026 | Kementerian Pendidikan Malaysia</p>
+          <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
       </div>
     </div>
