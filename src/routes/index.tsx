@@ -94,16 +94,21 @@ function GuruProfile() {
       toast.error("Gagal memuat profil guru.");
       console.error(error);
     } else if (data) {
-      setTeachers(data);
-      if (data.length > 0 && !activeTeacherId) {
-        setActiveTeacherId(data[0].id);
+      // Map database fields to the UI state structure
+      const mappedData = data.map((t: any) => ({
+        ...t,
+        profileImage: t.profile_image,
+      }));
+      setTeachers(mappedData);
+      if (mappedData.length > 0 && !activeTeacherId) {
+        setActiveTeacherId(mappedData[0].id);
       }
     }
     setIsLoading(false);
   };
 
   // Derived state for current active teacher
-  const currentTeacher = teachers.find(t => t.id === activeTeacherId) || null;
+  const currentTeacher = activeTeacherId ? teachers.find(t => t.id === activeTeacherId) : null;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -118,8 +123,7 @@ function GuruProfile() {
       return;
     }
 
-    const newTeacher = {
-      profileImage: null,
+    const newTeacherData = {
       profile: {
         nama: "Guru Baru",
         kp: "",
@@ -147,20 +151,25 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: session.user.id
+      owner_id: session.user.id,
+      profile_image: null
     };
 
     const { data, error } = await supabase
       .from('teachers')
-      .insert([newTeacher])
+      .insert([newTeacherData])
       .select();
 
     if (error) {
       toast.error("Gagal menambah profil guru.");
       console.error(error);
     } else if (data) {
-      setTeachers([...teachers, data[0]]);
-      setActiveTeacherId(data[0].id);
+      const newTeacher = {
+        ...data[0],
+        profileImage: data[0].profile_image
+      };
+      setTeachers([...teachers, newTeacher]);
+      setActiveTeacherId(newTeacher.id);
       setIsEditMode(true);
       toast.success("Profil guru baru telah dicipta.");
     }
@@ -398,7 +407,16 @@ function GuruProfile() {
   }
 
 
-  const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher;
+  const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher || {
+    profile: {
+      nama: "", kp: "", tel: "", email: "", pengalaman: "", tempohSemasa: "", tarikhMula: "", opsyen: "", gred: "", mengajarOpsyen: "", alamat: "",
+      sekolah: { nama: "", alamat: "", kod: "", tel: "", faks: "", jawatan: "", guruKhas: "", pemeriksaSPM: "", lain: "" }
+    },
+    profileImage: null,
+    kelulusan: [],
+    subjek: [],
+    sejarah: []
+  };
 
   return (
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
