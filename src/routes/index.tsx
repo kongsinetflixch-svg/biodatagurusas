@@ -735,25 +735,70 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B]">
-          <div className="space-y-12">
+        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden">
+          <div className="space-y-6">
             <div className="space-y-4">
-              <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Tandatangan Guru</p>
-              <div className="h-20 w-full border-b-2 border-slate-200 border-dashed"></div>
-              <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                <span>Nama: ________________________</span>
-                <span>Tarikh: ________________</span>
+              <div className="flex items-center justify-between">
+                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Tandatangan Guru</p>
+                <div className="no-print flex gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={clearSignature}
+                    className="h-8 px-3 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg text-[10px] font-bold"
+                  >
+                    <Eraser className="w-3 h-3 mr-1" /> Padam
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group">
+                <canvas 
+                  ref={canvasRef}
+                  width={500}
+                  height={150}
+                  onMouseDown={startDrawing}
+                  onMouseMove={draw}
+                  onMouseUp={stopDrawing}
+                  onMouseLeave={stopDrawing}
+                  onTouchStart={startDrawing}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDrawing}
+                  className="w-full h-[150px] cursor-crosshair touch-none"
+                />
+                {!hasSignature && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+                    <p className="text-slate-400 text-sm font-medium italic">Sila tandatangan di sini...</p>
+                  </div>
+                )}
+                <div className="absolute bottom-2 right-2 no-print opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="bg-[#002B5B] text-white text-[8px] font-bold px-2 py-1 rounded-md uppercase tracking-tighter">
+                    Digital Signature Active
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-between gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2">
+                <div className="flex-1 border-b border-slate-100 pb-1">
+                  Nama: <span className="text-[#002B5B] ml-2">{profile.nama || "________________________"}</span>
+                </div>
+                <div className="w-full sm:w-32 border-b border-slate-100 pb-1">
+                  Tarikh: <span className="text-[#002B5B] ml-2">{new Date().toLocaleDateString('ms-MY')}</span>
+                </div>
               </div>
             </div>
           </div>
           <div className="space-y-12">
             <div className="space-y-4">
               <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Disahkan Oleh</p>
-              <div className="h-20 w-full border-b-2 border-slate-200 border-dashed"></div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cap dan Tandatangan Pengetua / Guru Besar</p>
+              <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center">
+                 <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
+              </div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Cap dan Tandatangan Pengetua / Guru Besar</p>
             </div>
           </div>
         </div>
+
 
         {/* FOOTER */}
         <footer className="text-center py-12 space-y-2 no-print">
