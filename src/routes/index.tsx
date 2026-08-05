@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -23,11 +23,16 @@ import {
   FileText, 
   FileSpreadsheet,
   Image as ImageIcon,
-  Camera
+  Camera,
+  Eraser,
+  Settings,
+  User,
+  ShieldCheck
 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
+
   head: () => ({
     title: "Profil Guru Profesional 2026",
     meta: [
@@ -42,6 +47,7 @@ function GuruProfile() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTeacherId, setActiveTeacherId] = useState<string | null>(null);
+  const [isAdminMode, setIsAdminMode] = useState(false);
   
   // Teachers state for multi-profile support
   const [teachers, setTeachers] = useState<any[]>(() => {
@@ -53,6 +59,10 @@ function GuruProfile() {
   const currentTeacher = teachers.find(t => t.id === activeTeacherId) || null;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+
   
   // Handlers for switching and creating teachers
   const handleAddTeacher = () => {
@@ -140,28 +150,115 @@ function GuruProfile() {
     }
   };
 
-  if (teachers.length === 0) {
+  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const touch = 'touches' in e ? e.touches[0] : null;
+    const clientX = touch ? touch.clientX : (e as React.MouseEvent).clientX;
+    const clientY = touch ? touch.clientY : (e as React.MouseEvent).clientY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    setIsDrawing(true);
+  };
+
+  const draw = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const touch = 'touches' in e ? e.touches[0] : null;
+    const clientX = touch ? touch.clientX : (e as React.MouseEvent).clientX;
+    const clientY = touch ? touch.clientY : (e as React.MouseEvent).clientY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    ctx.lineTo(x, y);
+
+
+    ctx.stroke();
+    setHasSignature(true);
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearSignature = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasSignature(false);
+  };
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.strokeStyle = '#002B5B';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+      }
+    }
+  }, [currentTeacher?.id]);
+
+  if (teachers.length === 0 && !isAdminMode) {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
+          <div className="flex justify-end no-print">
+            <Button variant="ghost" size="icon" onClick={() => setIsAdminMode(true)} className="text-slate-200 hover:text-[#002B5B] transition-colors">
+              <Settings className="w-4 h-4" />
+            </Button>
+          </div>
           <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
              <span className="text-2xl font-black text-white">KPM</span>
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium">Tiada profil guru dijumpai. Sila tambah profil baru untuk bermula.</p>
+            <p className="text-slate-500 font-medium">Sila isi maklumat anda atau akses paparan admin panitia.</p>
           </div>
-          <Button onClick={handleAddTeacher} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
-            <Plus className="w-6 h-6 mr-2" /> Tambah Profil Guru
-          </Button>
+          <div className="space-y-4 pt-4">
+            <Button onClick={handleAddTeacher} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
+              <Plus className="w-6 h-6 mr-2" /> Guru Isi & Simpan
+            </Button>
+            
+            <div className="flex items-center gap-4 py-2">
+              <div className="h-[1px] flex-1 bg-slate-100"></div>
+              <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Atau</span>
+              <div className="h-[1px] flex-1 bg-slate-100"></div>
+            </div>
+
+            <Button variant="outline" onClick={() => setIsAdminMode(true)} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
+              <ShieldCheck className="w-6 h-6 mr-2" /> Paparan Admin Panitia
+            </Button>
+          </div>
         </Card>
       </div>
     );
   }
 
-  if (!currentTeacher) {
+  if (isAdminMode && !currentTeacher && teachers.length > 0) {
+    setActiveTeacherId(teachers[0].id);
+  }
+
+  if (!currentTeacher && !isAdminMode) {
     return null;
   }
+
 
   const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher;
 
@@ -170,41 +267,55 @@ function GuruProfile() {
       <div className="max-w-6xl mx-auto print-container space-y-6">
         
         {/* PANITIA SELECTOR / TABS */}
-        <div className="no-print flex flex-wrap gap-2 mb-4">
-          {teachers.map(t => (
-            <div key={t.id} className="relative group">
-              <Button 
-                variant={activeTeacherId === t.id ? "default" : "outline"}
-                onClick={() => handleSelectTeacher(t.id)}
-                className={`h-12 px-6 rounded-2xl font-bold transition-all ${activeTeacherId === t.id ? 'bg-[#002B5B] shadow-lg scale-105' : 'bg-white border-slate-200 hover:border-[#002B5B]'}`}
-              >
-                <div className="flex items-center gap-2">
-                  <Avatar className="w-6 h-6 border border-white/20">
-                    <AvatarImage src={t.profileImage || ""} />
-                    <AvatarFallback className="text-[8px]">{t.profile.nama.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  {t.profile.nama || "Tanpa Nama"}
-                </div>
-              </Button>
-              {teachers.length > 1 && (
-                <button 
-                  onClick={(e) => handleDeleteTeacher(t.id, e)}
-                  className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 z-10"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
+        {isAdminMode && (
+          <div className="no-print flex flex-wrap gap-2 mb-4 animate-in slide-in-from-left duration-500">
+            <div className="flex items-center gap-2 mr-4 bg-[#002B5B] text-white px-4 py-2 rounded-2xl shadow-lg">
+              <ShieldCheck className="w-5 h-5 text-[#D4AF37]" />
+              <span className="font-black text-xs uppercase tracking-widest">Admin Panitia</span>
             </div>
-          ))}
-          <Button 
-            variant="outline" 
-            onClick={handleAddTeacher}
-            className="h-12 w-12 rounded-2xl border-dashed border-2 border-slate-300 hover:border-[#002B5B] hover:bg-slate-50 flex items-center justify-center p-0"
-            title="Tambah Guru Baru"
-          >
-            <Plus className="w-6 h-6 text-slate-400" />
-          </Button>
-        </div>
+            {teachers.map(t => (
+              <div key={t.id} className="relative group">
+                <Button 
+                  variant={activeTeacherId === t.id ? "default" : "outline"}
+                  onClick={() => handleSelectTeacher(t.id)}
+                  className={`h-12 px-6 rounded-2xl font-bold transition-all ${activeTeacherId === t.id ? 'bg-[#002B5B] shadow-lg scale-105' : 'bg-white border-slate-200 hover:border-[#002B5B]'}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-6 h-6 border border-white/20">
+                      <AvatarImage src={t.profileImage || ""} />
+                      <AvatarFallback className="text-[8px]">{t.profile.nama.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    {t.profile.nama || "Tanpa Nama"}
+                  </div>
+                </Button>
+                {teachers.length > 1 && (
+                  <button 
+                    onClick={(e) => handleDeleteTeacher(t.id, e)}
+                    className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 z-10"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            ))}
+            <Button 
+              variant="outline" 
+              onClick={handleAddTeacher}
+              className="h-12 w-12 rounded-2xl border-dashed border-2 border-slate-300 hover:border-[#002B5B] hover:bg-slate-50 flex items-center justify-center p-0"
+              title="Tambah Guru Baru"
+            >
+              <Plus className="w-6 h-6 text-slate-400" />
+            </Button>
+            <Button 
+              variant="ghost"
+              onClick={() => setIsAdminMode(false)}
+              className="h-12 px-4 rounded-2xl text-slate-400 hover:text-rose-500"
+            >
+              Log Keluar Admin
+            </Button>
+          </div>
+        )}
+
 
         {/* HEADER */}
         <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
@@ -624,25 +735,70 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B]">
-          <div className="space-y-12">
+        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden">
+          <div className="space-y-6">
             <div className="space-y-4">
-              <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Tandatangan Guru</p>
-              <div className="h-20 w-full border-b-2 border-slate-200 border-dashed"></div>
-              <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                <span>Nama: ________________________</span>
-                <span>Tarikh: ________________</span>
+              <div className="flex items-center justify-between">
+                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Tandatangan Guru</p>
+                <div className="no-print flex gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={clearSignature}
+                    className="h-8 px-3 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg text-[10px] font-bold"
+                  >
+                    <Eraser className="w-3 h-3 mr-1" /> Padam
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group">
+                <canvas 
+                  ref={canvasRef}
+                  width={500}
+                  height={150}
+                  onMouseDown={startDrawing}
+                  onMouseMove={draw}
+                  onMouseUp={stopDrawing}
+                  onMouseLeave={stopDrawing}
+                  onTouchStart={startDrawing}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDrawing}
+                  className="w-full h-[150px] cursor-crosshair touch-none"
+                />
+                {!hasSignature && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+                    <p className="text-slate-400 text-sm font-medium italic">Sila tandatangan di sini...</p>
+                  </div>
+                )}
+                <div className="absolute bottom-2 right-2 no-print opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="bg-[#002B5B] text-white text-[8px] font-bold px-2 py-1 rounded-md uppercase tracking-tighter">
+                    Digital Signature Active
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-between gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2">
+                <div className="flex-1 border-b border-slate-100 pb-1">
+                  Nama: <span className="text-[#002B5B] ml-2">{profile.nama || "________________________"}</span>
+                </div>
+                <div className="w-full sm:w-32 border-b border-slate-100 pb-1">
+                  Tarikh: <span className="text-[#002B5B] ml-2">{new Date().toLocaleDateString('ms-MY')}</span>
+                </div>
               </div>
             </div>
           </div>
           <div className="space-y-12">
             <div className="space-y-4">
               <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Disahkan Oleh</p>
-              <div className="h-20 w-full border-b-2 border-slate-200 border-dashed"></div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cap dan Tandatangan Pengetua / Guru Besar</p>
+              <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center">
+                 <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
+              </div>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Cap dan Tandatangan Pengetua / Guru Besar</p>
             </div>
           </div>
         </div>
+
 
         {/* FOOTER */}
         <footer className="text-center py-12 space-y-2 no-print">
