@@ -30,7 +30,9 @@ import {
   ShieldCheck,
   LogOut,
   LogIn,
-  Loader2
+  Loader2,
+  LayoutDashboard,
+  Users
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,6 +56,7 @@ function GuruProfile() {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
   // Teachers state for multi-profile support
@@ -375,7 +378,7 @@ function GuruProfile() {
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-400 hover:text-rose-500">
               <LogOut className="w-4 h-4 mr-1" /> Log Keluar
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setIsAdminMode(true)} className="text-slate-200 hover:text-[#002B5B] transition-colors">
+            <Button variant="ghost" size="icon" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="text-slate-200 hover:text-[#002B5B] transition-colors">
               <Settings className="w-4 h-4" />
             </Button>
           </div>
@@ -414,7 +417,7 @@ function GuruProfile() {
             </div>
 
             <div className="space-y-2">
-              <Button variant="outline" onClick={() => setIsAdminMode(true)} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
+              <Button variant="outline" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
                 <ShieldCheck className="w-6 h-6 mr-2" /> Paparan Admin Panitia
               </Button>
               <p className="text-[10px] text-slate-400 font-medium">
@@ -427,14 +430,151 @@ function GuruProfile() {
     );
   }
 
-  if (isAdminMode && !currentTeacher && teachers.length > 0) {
-    setActiveTeacherId(teachers[0].id);
-  }
+  if (showAdminDashboard && isAdminMode) {
+    return (
+      <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans animate-in fade-in duration-700">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group">
+            <div className="flex items-center gap-6 relative z-10">
+              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center p-2 shadow-inner transform -rotate-3">
+                 <span className="text-lg font-black text-[#002B5B]">KPM</span>
+              </div>
+              <div>
+                <h1 className="text-3xl font-black text-white tracking-tight uppercase">Dashboard Admin</h1>
+                <p className="text-blue-100/80 font-medium">Pengurusan Panitia Guru 2026</p>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-4 md:mt-0 relative z-10">
+              <Button onClick={() => setShowAdminDashboard(false)} className="bg-white text-[#002B5B] hover:bg-blue-50 font-bold rounded-xl shadow-lg">
+                <LayoutDashboard className="w-4 h-4 mr-2" /> Lihat Profil
+              </Button>
+              <Button variant="outline" onClick={() => { setIsAdminMode(false); setShowAdminDashboard(false); }} className="bg-transparent border-white text-white hover:bg-white/10 font-bold rounded-xl">
+                <User className="w-4 h-4 mr-2" /> Paparan Guru
+              </Button>
+            </div>
+          </header>
 
-  if (!currentTeacher && !isAdminMode) {
-    return null;
-  }
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 hover:scale-[1.02] transition-transform cursor-pointer border-l-4 border-blue-500" onClick={handleAddTeacher}>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center">
+                  <Plus className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-800">Tambah Guru</h3>
+                  <p className="text-xs text-slate-500">Cipta profil baru dalam panitia</p>
+                </div>
+              </div>
+            </Card>
+            
+            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 border-l-4 border-amber-500">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center">
+                  <Users className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-800">{teachers.length} Ahli Panitia</h3>
+                  <p className="text-xs text-slate-500">Jumlah profil berdaftar</p>
+                </div>
+              </div>
+            </Card>
 
+            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 border-l-4 border-[#D4AF37]">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-50 text-[#002B5B] rounded-2xl flex items-center justify-center font-black">
+                  KPM
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-800">Status Portal</h3>
+                  <p className="text-xs text-slate-500">Online & Aktif</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <Card className="border-none shadow-xl rounded-3xl overflow-hidden bg-white">
+            <CardHeader className="border-b border-slate-50 flex flex-row items-center justify-between p-6">
+              <CardTitle className="text-xl font-black text-[#002B5B]">Senarai Guru Panitia</CardTitle>
+              <div className="relative w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input 
+                  placeholder="Cari guru..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-10 bg-slate-50 border-none rounded-xl text-sm"
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader className="bg-slate-50/50">
+                  <TableRow>
+                    <TableHead className="w-[100px]">Profil</TableHead>
+                    <TableHead>Nama Penuh</TableHead>
+                    <TableHead>No. KP</TableHead>
+                    <TableHead>Jawatan</TableHead>
+                    <TableHead className="text-right">Tindakan</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {teachers
+                    .filter(t => t.profile.nama.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .map((t) => (
+                    <TableRow key={t.id} className="hover:bg-slate-50/50 transition-colors">
+                      <TableCell>
+                        <Avatar className="w-10 h-10 border-2 border-slate-100">
+                          <AvatarImage src={t.profileImage || ""} />
+                          <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{t.profile.nama.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                      </TableCell>
+                      <TableCell className="font-bold text-slate-700">{t.profile.nama || "Tanpa Nama"}</TableCell>
+                      <TableCell className="text-slate-500 text-sm">{t.profile.kp || "-"}</TableCell>
+                      <TableCell className="text-slate-500 text-sm">{t.profile.sekolah.jawatan || "-"}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(false); }}
+                            className="h-8 rounded-lg border-slate-200 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          >
+                            <FileText className="w-3.5 h-3.5 mr-1" /> Lihat
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(true); }}
+                            className="h-8 rounded-lg border-slate-200 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                          >
+                            <Edit2 className="w-3.5 h-3.5 mr-1" /> Edit
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={(e) => handleDeleteTeacher(t.id, e)}
+                            className="h-8 rounded-lg border-slate-200 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {teachers.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-32 text-center text-slate-400 font-medium">
+                        Tiada rekod guru dijumpai.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher || {
     profile: {
@@ -454,9 +594,12 @@ function GuruProfile() {
         {/* PANITIA SELECTOR / TABS */}
         {isAdminMode && (
           <div className="no-print flex flex-wrap gap-2 mb-4 animate-in slide-in-from-left duration-500">
-            <div className="flex items-center gap-2 mr-4 bg-[#002B5B] text-white px-4 py-2 rounded-2xl shadow-lg">
-              <ShieldCheck className="w-5 h-5 text-[#D4AF37]" />
-              <span className="font-black text-xs uppercase tracking-widest">Admin Panitia</span>
+            <div 
+              className="flex items-center gap-2 mr-4 bg-[#002B5B] text-white px-4 py-2 rounded-2xl shadow-lg cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => setShowAdminDashboard(true)}
+            >
+              <LayoutDashboard className="w-5 h-5 text-[#D4AF37]" />
+              <span className="font-black text-xs uppercase tracking-widest">Admin Dashboard</span>
             </div>
             {teachers.map(t => (
               <div key={t.id} className="relative group">
@@ -500,7 +643,7 @@ function GuruProfile() {
             </Button>
             <Button 
               variant="outline"
-              onClick={() => setIsAdminMode(false)}
+              onClick={() => { setIsAdminMode(false); setShowAdminDashboard(false); }}
               className="h-12 px-6 rounded-2xl border-slate-200 text-slate-600 hover:bg-slate-50 font-bold"
             >
               <User className="w-4 h-4 mr-2" /> Paparan Guru
