@@ -56,6 +56,7 @@ function GuruProfile() {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
   // Teachers state for multi-profile support
