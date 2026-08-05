@@ -122,7 +122,7 @@ function GuruProfile() {
             <div className="relative group">
               <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
               <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
-                <AvatarImage src={profileImage || ""} alt="kemaskini design. nampak x tersusun" />
+                <AvatarImage src={profileImage || ""} alt="cemana nak isi sorang²?, dalam panitia aku ada 5 orang?" />
                 <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">?</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-2 right-2 no-print">
