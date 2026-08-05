@@ -41,40 +41,83 @@ export const Route = createFileRoute("/")({
 function GuruProfile() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [activeTeacherId, setActiveTeacherId] = useState<string | null>(null);
   
-  // Data State
-  const [profile, setProfile] = useState({
-    nama: "",
-    kp: "",
-    tel: "",
-    email: "",
-    pengalaman: "",
-    tempohSemasa: "",
-    tarikhMula: "",
-    opsyen: "",
-    gred: "",
-    mengajarOpsyen: "",
-    alamat: "",
-    sekolah: {
-      nama: "",
-      alamat: "",
-      kod: "",
-      tel: "",
-      faks: "",
-      jawatan: "",
-      guruKhas: "",
-      pemeriksaSPM: "",
-      lain: ""
-    }
+  // Teachers state for multi-profile support
+  const [teachers, setTeachers] = useState<any[]>(() => {
+    // Initial empty state if none
+    return [];
   });
 
-  const [kelulusan, setKelulusan] = useState<{id: number, kelayakan: string, institusi: string, bidang: string, tahun: string}[]>([]);
+  // Derived state for current active teacher
+  const currentTeacher = teachers.find(t => t.id === activeTeacherId) || null;
 
-  const [subjek, setSubjek] = useState<{id: number, nama: string, kelas: string, murid: string, tov: string, etr: string}[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Handlers for switching and creating teachers
+  const handleAddTeacher = () => {
+    const newId = Math.random().toString(36).substring(7);
+    const newTeacher = {
+      id: newId,
+      profileImage: null,
+      profile: {
+        nama: "Guru Baru",
+        kp: "",
+        tel: "",
+        email: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        gred: "",
+        mengajarOpsyen: "",
+        alamat: "",
+        sekolah: {
+          nama: "",
+          alamat: "",
+          kod: "",
+          tel: "",
+          faks: "",
+          jawatan: "",
+          guruKhas: "",
+          pemeriksaSPM: "",
+          lain: ""
+        }
+      },
+      kelulusan: [],
+      subjek: [],
+      sejarah: []
+    };
+    setTeachers([...teachers, newTeacher]);
+    setActiveTeacherId(newId);
+    setIsEditMode(true);
+    toast.success("Profil guru baru telah dicipta.");
+  };
 
-  const [sejarah, setSejarah] = useState<{id: number, sekolah: string, tahun: string, subjek: string}[]>([]);
+  const handleSelectTeacher = (id: string) => {
+    setActiveTeacherId(id);
+    setIsEditMode(false);
+  };
+
+  const handleDeleteTeacher = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm("Adakah anda pasti mahu memadam profil ini?")) {
+      const updated = teachers.filter(t => t.id !== id);
+      setTeachers(updated);
+      if (activeTeacherId === id) {
+        setActiveTeacherId(updated.length > 0 ? updated[0].id : null);
+      }
+      toast.error("Profil guru telah dipadam.");
+    }
+  };
+
+  // Helper to update current teacher's data
+  const updateCurrentTeacher = (updates: any) => {
+    if (!activeTeacherId) return;
+    setTeachers(teachers.map(t => 
+      t.id === activeTeacherId ? { ...t, ...updates } : t
+    ));
+  };
 
   const handlePrint = () => {
     window.print();
