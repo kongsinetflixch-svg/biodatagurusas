@@ -83,30 +83,36 @@ function GuruProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
-      <div className="max-w-6xl mx-auto print-container">
+    <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
+      <div className="max-w-6xl mx-auto print-container space-y-6">
         
         {/* HEADER */}
-        <header className="flex flex-col md:flex-row items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8 animate-in slide-in-from-top duration-500">
-          <div className="flex items-center gap-6">
-            <div className="w-16 h-16 bg-[#002B5B] rounded-lg flex items-center justify-center text-white font-bold p-2 overflow-hidden">
-               <span className="text-xs text-center">KPM</span>
+        <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-white/10 transition-colors duration-500"></div>
+          
+          <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-3 shadow-inner transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+               <span className="text-xl font-black text-[#002B5B]">KPM</span>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-[#002B5B]">PROFIL GURU</h1>
-              <p className="text-slate-500 font-medium">Borang Profil Guru 2026</p>
+            <div className="text-center md:text-left">
+              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">PROFIL GURU</h1>
+              <p className="text-blue-100/80 font-medium text-lg mt-1 flex items-center justify-center md:justify-start gap-2">
+                <FileText className="w-5 h-5 text-[#D4AF37]" />
+                Borang Profil Guru 2026
+              </p>
             </div>
           </div>
           
-          <div className="flex flex-col items-center md:items-end gap-4 mt-6 md:mt-0">
+          <div className="flex flex-col items-center md:items-end gap-4 mt-8 md:mt-0 relative z-10">
             <div className="relative group">
-              <Avatar className="w-28 h-28 border-4 border-[#002B5B] shadow-lg transition-transform duration-300 group-hover:scale-105">
+              <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
+              <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
                 <AvatarImage src="" alt="kemaskini design. nampak x tersusun" />
-                <AvatarFallback>?</AvatarFallback>
+                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">?</AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-2 right-0 no-print">
-                <Button size="icon" variant="secondary" className="rounded-full w-8 h-8 shadow-md">
-                   <ImageIcon className="w-4 h-4" />
+              <div className="absolute -bottom-2 right-2 no-print">
+                <Button size="icon" className="rounded-full w-10 h-10 shadow-lg bg-[#D4AF37] hover:bg-[#B8962E] text-white border-2 border-white">
+                   <ImageIcon className="w-5 h-5" />
                 </Button>
               </div>
             </div>
