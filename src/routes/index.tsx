@@ -527,7 +527,7 @@ function GuruProfile() {
                       <TableRow>
                         <TableCell colSpan={isEditMode ? 7 : 6} className="h-24 text-center text-slate-400 italic">Tiada rekod subjek</TableCell>
                       </TableRow>
-                    ) : subjek.map((row, idx) => (
+                    ) : (subjek as any[]).map((row, idx) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
                         <TableCell className="font-bold text-slate-700">{row.nama}</TableCell>
@@ -537,7 +537,14 @@ function GuruProfile() {
                         <TableCell className="text-center"><span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span></TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
-                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => updateCurrentTeacher({ subjek: subjek.filter((s: any) => s.id !== row.id) })}
+                              className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </TableCell>
                         )}
                       </TableRow>
