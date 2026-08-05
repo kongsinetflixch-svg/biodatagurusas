@@ -130,10 +130,10 @@ function GuruProfile() {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && activeTeacherId) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result as string);
+        updateCurrentTeacher({ profileImage: reader.result as string });
         toast.success("Gambar profil berjaya dikemaskini.");
       };
       reader.readAsDataURL(file);
