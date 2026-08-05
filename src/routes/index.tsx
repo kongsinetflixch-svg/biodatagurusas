@@ -122,12 +122,23 @@ function GuruProfile() {
             <div className="relative group">
               <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
               <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
-                <AvatarImage src="" alt="kemaskini design. nampak x tersusun" />
+                <AvatarImage src={profileImage || ""} alt="kemaskini design. nampak x tersusun" />
                 <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">?</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-2 right-2 no-print">
-                <Button size="icon" className="rounded-full w-10 h-10 shadow-lg bg-[#D4AF37] hover:bg-[#B8962E] text-white border-2 border-white">
-                   <ImageIcon className="w-5 h-5" />
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleImageUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
+                <Button 
+                  size="icon" 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-full w-10 h-10 shadow-lg bg-[#D4AF37] hover:bg-[#B8962E] text-white border-2 border-white transition-transform hover:scale-110 active:scale-95"
+                >
+                   <Camera className="w-5 h-5" />
                 </Button>
               </div>
             </div>
