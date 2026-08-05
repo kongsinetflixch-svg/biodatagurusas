@@ -380,6 +380,22 @@ function GuruProfile() {
             <p className="text-slate-500 font-medium">Sila isi maklumat anda atau akses paparan admin panitia.</p>
           </div>
           <div className="space-y-4 pt-4">
+            {localStorage.getItem('guru_profile_draft') && (
+              <Button 
+                onClick={() => {
+                  const draft = JSON.parse(localStorage.getItem('guru_profile_draft') || '{}');
+                  if (draft && draft.id) {
+                    setActiveTeacherId(draft.id);
+                    setIsEditMode(true);
+                    toast.success("Draft terakhir telah dimuatkan.");
+                  }
+                }}
+                className="w-full h-14 bg-amber-500 hover:bg-amber-600 rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95 text-white"
+              >
+                <Clock className="w-6 h-6 mr-2" /> Sambung Draft Terakhir
+              </Button>
+            )}
+
             <Button onClick={handleAddTeacher} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
               <Plus className="w-6 h-6 mr-2" /> Guru Isi & Simpan
             </Button>
