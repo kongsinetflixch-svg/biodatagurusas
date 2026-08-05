@@ -41,40 +41,83 @@ export const Route = createFileRoute("/")({
 function GuruProfile() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [activeTeacherId, setActiveTeacherId] = useState<string | null>(null);
   
-  // Data State
-  const [profile, setProfile] = useState({
-    nama: "",
-    kp: "",
-    tel: "",
-    email: "",
-    pengalaman: "",
-    tempohSemasa: "",
-    tarikhMula: "",
-    opsyen: "",
-    gred: "",
-    mengajarOpsyen: "",
-    alamat: "",
-    sekolah: {
-      nama: "",
-      alamat: "",
-      kod: "",
-      tel: "",
-      faks: "",
-      jawatan: "",
-      guruKhas: "",
-      pemeriksaSPM: "",
-      lain: ""
-    }
+  // Teachers state for multi-profile support
+  const [teachers, setTeachers] = useState<any[]>(() => {
+    // Initial empty state if none
+    return [];
   });
 
-  const [kelulusan, setKelulusan] = useState<{id: number, kelayakan: string, institusi: string, bidang: string, tahun: string}[]>([]);
+  // Derived state for current active teacher
+  const currentTeacher = teachers.find(t => t.id === activeTeacherId) || null;
 
-  const [subjek, setSubjek] = useState<{id: number, nama: string, kelas: string, murid: string, tov: string, etr: string}[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Handlers for switching and creating teachers
+  const handleAddTeacher = () => {
+    const newId = Math.random().toString(36).substring(7);
+    const newTeacher = {
+      id: newId,
+      profileImage: null,
+      profile: {
+        nama: "Guru Baru",
+        kp: "",
+        tel: "",
+        email: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        gred: "",
+        mengajarOpsyen: "",
+        alamat: "",
+        sekolah: {
+          nama: "",
+          alamat: "",
+          kod: "",
+          tel: "",
+          faks: "",
+          jawatan: "",
+          guruKhas: "",
+          pemeriksaSPM: "",
+          lain: ""
+        }
+      },
+      kelulusan: [],
+      subjek: [],
+      sejarah: []
+    };
+    setTeachers([...teachers, newTeacher]);
+    setActiveTeacherId(newId);
+    setIsEditMode(true);
+    toast.success("Profil guru baru telah dicipta.");
+  };
 
-  const [sejarah, setSejarah] = useState<{id: number, sekolah: string, tahun: string, subjek: string}[]>([]);
+  const handleSelectTeacher = (id: string) => {
+    setActiveTeacherId(id);
+    setIsEditMode(false);
+  };
+
+  const handleDeleteTeacher = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm("Adakah anda pasti mahu memadam profil ini?")) {
+      const updated = teachers.filter(t => t.id !== id);
+      setTeachers(updated);
+      if (activeTeacherId === id) {
+        setActiveTeacherId(updated.length > 0 ? updated[0].id : null);
+      }
+      toast.error("Profil guru telah dipadam.");
+    }
+  };
+
+  // Helper to update current teacher's data
+  const updateCurrentTeacher = (updates: any) => {
+    if (!activeTeacherId) return;
+    setTeachers(teachers.map(t => 
+      t.id === activeTeacherId ? { ...t, ...updates } : t
+    ));
+  };
 
   const handlePrint = () => {
     window.print();
@@ -87,20 +130,82 @@ function GuruProfile() {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && activeTeacherId) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result as string);
+        updateCurrentTeacher({ profileImage: reader.result as string });
         toast.success("Gambar profil berjaya dikemaskini.");
       };
       reader.readAsDataURL(file);
     }
   };
 
+  if (teachers.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
+        <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
+          <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
+             <span className="text-2xl font-black text-white">KPM</span>
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
+            <p className="text-slate-500 font-medium">Tiada profil guru dijumpai. Sila tambah profil baru untuk bermula.</p>
+          </div>
+          <Button onClick={handleAddTeacher} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
+            <Plus className="w-6 h-6 mr-2" /> Tambah Profil Guru
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!currentTeacher) {
+    return null;
+  }
+
+  const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher;
+
   return (
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
       <div className="max-w-6xl mx-auto print-container space-y-6">
         
+        {/* PANITIA SELECTOR / TABS */}
+        <div className="no-print flex flex-wrap gap-2 mb-4">
+          {teachers.map(t => (
+            <div key={t.id} className="relative group">
+              <Button 
+                variant={activeTeacherId === t.id ? "default" : "outline"}
+                onClick={() => handleSelectTeacher(t.id)}
+                className={`h-12 px-6 rounded-2xl font-bold transition-all ${activeTeacherId === t.id ? 'bg-[#002B5B] shadow-lg scale-105' : 'bg-white border-slate-200 hover:border-[#002B5B]'}`}
+              >
+                <div className="flex items-center gap-2">
+                  <Avatar className="w-6 h-6 border border-white/20">
+                    <AvatarImage src={t.profileImage || ""} />
+                    <AvatarFallback className="text-[8px]">{t.profile.nama.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  {t.profile.nama || "Tanpa Nama"}
+                </div>
+              </Button>
+              {teachers.length > 1 && (
+                <button 
+                  onClick={(e) => handleDeleteTeacher(t.id, e)}
+                  className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 z-10"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          ))}
+          <Button 
+            variant="outline" 
+            onClick={handleAddTeacher}
+            className="h-12 w-12 rounded-2xl border-dashed border-2 border-slate-300 hover:border-[#002B5B] hover:bg-slate-50 flex items-center justify-center p-0"
+            title="Tambah Guru Baru"
+          >
+            <Plus className="w-6 h-6 text-slate-400" />
+          </Button>
+        </div>
+
         {/* HEADER */}
         <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-white/10 transition-colors duration-500"></div>
@@ -110,7 +215,7 @@ function GuruProfile() {
                <span className="text-xl font-black text-[#002B5B]">KPM</span>
             </div>
             <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">PROFIL GURU</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">{profile.nama || "PROFIL GURU"}</h1>
               <p className="text-blue-100/80 font-medium text-lg mt-1 flex items-center justify-center md:justify-start gap-2">
                 <FileText className="w-5 h-5 text-[#D4AF37]" />
                 Borang Profil Guru 2026
@@ -122,8 +227,8 @@ function GuruProfile() {
             <div className="relative group">
               <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
               <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
-                <AvatarImage src={profileImage || ""} alt="cemana nak isi sorang²?, dalam panitia aku ada 5 orang?" />
-                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">?</AvatarFallback>
+                <AvatarImage src={profileImage || ""} alt={profile.nama} />
+                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">{profile.nama.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-2 right-2 no-print">
                 <input 
@@ -156,7 +261,7 @@ function GuruProfile() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex gap-2 p-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white">
+          <div className="flex flex-wrap gap-2 p-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white">
             {!isEditMode ? (
               <Button onClick={() => setIsEditMode(true)} className="h-10 bg-[#002B5B] hover:bg-[#003B7B] rounded-xl font-bold shadow-md hover:shadow-lg transition-all">
                 <Edit2 className="w-4 h-4 mr-2" /> Edit Maklumat
@@ -238,7 +343,7 @@ function GuruProfile() {
                     {isEditMode ? (
                       <Input 
                         value={profile[item.key as keyof typeof profile] as string} 
-                        onChange={(e) => setProfile({...profile, [item.key]: e.target.value})}
+                        onChange={(e) => updateCurrentTeacher({ profile: {...profile, [item.key]: e.target.value}})}
                         className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
                       />
                     ) : (
@@ -256,7 +361,7 @@ function GuruProfile() {
                   {isEditMode ? (
                     <Textarea 
                       value={profile.alamat} 
-                      onChange={(e) => setProfile({...profile, alamat: e.target.value})}
+                      onChange={(e) => updateCurrentTeacher({ profile: {...profile, alamat: e.target.value}})}
                       className="min-h-[100px] rounded-xl border-slate-100"
                     />
                   ) : (
@@ -290,7 +395,7 @@ function GuruProfile() {
                     {isEditMode ? (
                       <Input 
                         value={profile.sekolah[item.key as keyof typeof profile.sekolah] as string} 
-                        onChange={(e) => setProfile({...profile, sekolah: {...profile.sekolah, [item.key]: e.target.value}})}
+                        onChange={(e) => updateCurrentTeacher({ profile: {...profile, sekolah: {...profile.sekolah, [item.key]: e.target.value}} } )}
                         className="h-10 rounded-xl border-slate-100"
                       />
                     ) : (
@@ -303,7 +408,7 @@ function GuruProfile() {
                   {isEditMode ? (
                     <Textarea 
                       value={profile.sekolah.alamat} 
-                      onChange={(e) => setProfile({...profile, sekolah: {...profile.sekolah, alamat: e.target.value}})}
+                      onChange={(e) => updateCurrentTeacher({ profile: {...profile, sekolah: {...profile.sekolah, alamat: e.target.value}} } )}
                       className="min-h-[80px] rounded-xl border-slate-100"
                     />
                   ) : (
@@ -325,7 +430,19 @@ function GuruProfile() {
                 <div className="bg-white/20 p-1.5 rounded-lg"><GraduationCap className="w-5 h-5" /></div>
                 Kelulusan Akademik & Ikhtisas
               </h2>
-              {isEditMode && <Button size="sm" variant="secondary" className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"><Plus className="w-4 h-4 mr-1" /> Tambah</Button>}
+              {isEditMode && (
+                <Button 
+                  size="sm" 
+                  variant="secondary" 
+                  onClick={() => {
+                    const newId = Math.random();
+                    updateCurrentTeacher({ kelulusan: [...kelulusan, {id: newId, kelayakan: "", institusi: "", bidang: "", tahun: ""}] });
+                  }}
+                  className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"
+                >
+                  <Plus className="w-4 h-4 mr-1" /> Tambah
+                </Button>
+              )}
             </div>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -344,7 +461,7 @@ function GuruProfile() {
                       <TableRow>
                         <TableCell colSpan={isEditMode ? 5 : 4} className="h-24 text-center text-slate-400 italic">Tiada rekod kelulusan</TableCell>
                       </TableRow>
-                    ) : kelulusan.map((row) => (
+                    ) : (kelulusan as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="px-8 font-bold text-slate-700">{row.kelayakan}</TableCell>
                         <TableCell className="text-slate-600">{row.institusi}</TableCell>
@@ -352,7 +469,14 @@ function GuruProfile() {
                         <TableCell className="font-bold text-[#002B5B]">{row.tahun}</TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
-                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => updateCurrentTeacher({ kelulusan: kelulusan.filter((k: any) => k.id !== row.id) })}
+                              className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 h-9 w-9 rounded-xl"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </TableCell>
                         )}
                       </TableRow>
@@ -370,7 +494,19 @@ function GuruProfile() {
                 <div className="bg-white/20 p-1.5 rounded-lg"><BookOpen className="w-5 h-5" /></div>
                 Subjek Semasa Diajar
               </h2>
-              {isEditMode && <Button size="sm" variant="secondary" className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"><Plus className="w-4 h-4 mr-1" /> Tambah</Button>}
+              {isEditMode && (
+                <Button 
+                  size="sm" 
+                  variant="secondary" 
+                  onClick={() => {
+                    const newId = Math.random();
+                    updateCurrentTeacher({ subjek: [...subjek, {id: newId, nama: "", kelas: "", murid: "", tov: "", etr: ""}] });
+                  }}
+                  className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"
+                >
+                  <Plus className="w-4 h-4 mr-1" /> Tambah
+                </Button>
+              )}
             </div>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -391,7 +527,7 @@ function GuruProfile() {
                       <TableRow>
                         <TableCell colSpan={isEditMode ? 7 : 6} className="h-24 text-center text-slate-400 italic">Tiada rekod subjek</TableCell>
                       </TableRow>
-                    ) : subjek.map((row, idx) => (
+                    ) : (subjek as any[]).map((row, idx) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
                         <TableCell className="font-bold text-slate-700">{row.nama}</TableCell>
@@ -401,7 +537,14 @@ function GuruProfile() {
                         <TableCell className="text-center"><span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span></TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
-                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => updateCurrentTeacher({ subjek: subjek.filter((s: any) => s.id !== row.id) })}
+                              className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </TableCell>
                         )}
                       </TableRow>
@@ -420,7 +563,19 @@ function GuruProfile() {
                 <div className="bg-white/20 p-1.5 rounded-lg"><Clock className="w-5 h-5" /></div>
                 Sejarah Perkhidmatan
               </h2>
-              {isEditMode && <Button size="sm" variant="secondary" className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"><Plus className="w-4 h-4 mr-1" /> Tambah</Button>}
+              {isEditMode && (
+                <Button 
+                  size="sm" 
+                  variant="secondary" 
+                  onClick={() => {
+                    const newId = Math.random();
+                    updateCurrentTeacher({ sejarah: [...sejarah, {id: newId, sekolah: "", tahun: "", subjek: ""}] });
+                  }}
+                  className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"
+                >
+                  <Plus className="w-4 h-4 mr-1" /> Tambah
+                </Button>
+              )}
             </div>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -438,7 +593,7 @@ function GuruProfile() {
                       <TableRow>
                         <TableCell colSpan={isEditMode ? 4 : 3} className="h-24 text-center text-slate-400 italic">Tiada rekod sejarah perkhidmatan</TableCell>
                       </TableRow>
-                    ) : sejarah.map((row) => (
+                    ) : (sejarah as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="px-8 py-4">
                           <p className="font-bold text-slate-700">{row.sekolah}</p>
@@ -449,7 +604,14 @@ function GuruProfile() {
                         <TableCell className="font-medium text-slate-600">{row.subjek}</TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
-                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => updateCurrentTeacher({ sejarah: sejarah.filter((s: any) => s.id !== row.id) })}
+                              className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </TableCell>
                         )}
                       </TableRow>
