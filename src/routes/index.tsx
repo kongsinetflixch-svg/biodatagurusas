@@ -30,7 +30,9 @@ import {
   ShieldCheck,
   LogOut,
   LogIn,
-  Loader2
+  Loader2,
+  LayoutDashboard,
+  Users
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
