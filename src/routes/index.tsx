@@ -487,7 +487,19 @@ function GuruProfile() {
                 <div className="bg-white/20 p-1.5 rounded-lg"><BookOpen className="w-5 h-5" /></div>
                 Subjek Semasa Diajar
               </h2>
-              {isEditMode && <Button size="sm" variant="secondary" className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"><Plus className="w-4 h-4 mr-1" /> Tambah</Button>}
+              {isEditMode && (
+                <Button 
+                  size="sm" 
+                  variant="secondary" 
+                  onClick={() => {
+                    const newId = Math.random();
+                    updateCurrentTeacher({ subjek: [...subjek, {id: newId, nama: "", kelas: "", murid: "", tov: "", etr: ""}] });
+                  }}
+                  className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"
+                >
+                  <Plus className="w-4 h-4 mr-1" /> Tambah
+                </Button>
+              )}
             </div>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
