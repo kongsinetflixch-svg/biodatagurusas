@@ -164,14 +164,17 @@ function GuruProfile() {
             { title: "Kelayakan", value: "Ijazah & Diploma", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
 
           ].map((item, i) => (
-            <Card key={i} className="border-none shadow-sm hover:shadow-md transition-shadow duration-300 animate-in slide-up duration-500" style={{ animationDelay: `${i * 100}ms` }}>
-              <CardContent className="p-6 flex items-center gap-4">
-                <div className={`${item.bg} p-3 rounded-xl`}>
-                  <item.icon className={`w-6 h-6 ${item.color}`} />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{item.title}</p>
-                  <p className="text-lg font-bold text-slate-800">{item.value}</p>
+            <Card key={i} className="border-none shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 animate-in slide-up duration-500 rounded-2xl overflow-hidden" style={{ animationDelay: `${i * 100}ms` }}>
+              <CardContent className="p-0 flex items-stretch h-full">
+                <div className={`w-2 ${i % 2 === 0 ? 'bg-[#002B5B]' : 'bg-[#D4AF37]'}`}></div>
+                <div className="p-5 flex items-center gap-4 flex-1">
+                  <div className="bg-slate-50 p-3 rounded-xl group-hover:scale-110 transition-transform">
+                    <item.icon className={`w-6 h-6 ${item.color}`} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.title}</p>
+                    <p className="text-base font-bold text-[#002B5B] truncate">{item.value}</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -179,94 +182,111 @@ function GuruProfile() {
         </div>
 
         {/* TWO COLUMNS DATA */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-8">
-          <Card className="lg:col-span-2 border-none shadow-sm overflow-hidden animate-in slide-up duration-500 delay-200">
-            <CardHeader className="bg-[#002B5B] text-white py-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <FileText className="w-5 h-5" /> Maklumat Peribadi Guru
+        <div className="grid lg:grid-cols-3 gap-6">
+          <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white">
+            <div className="h-2 bg-[#002B5B]"></div>
+            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8">
+              <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3">
+                <div className="bg-[#002B5B] p-2 rounded-lg"><FileText className="w-5 h-5 text-white" /></div>
+                Maklumat Peribadi
               </CardTitle>
+              {!isEditMode && <div className="text-[10px] px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold uppercase tracking-wider">Lengkap</div>}
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-2 gap-x-10 gap-y-8">
                 {[
-                  { label: "Nama Penuh", key: "nama" },
-                  { label: "No. Kad Pengenalan", key: "kp" },
-                  { label: "No. Telefon", key: "tel" },
-                  { label: "E-mel", key: "email" },
-                  { label: "Pengalaman Mengajar", key: "pengalaman" },
-                  { label: "Tempoh di Sekolah Semasa", key: "tempohSemasa" },
-                  { label: "Tarikh Mula Berkhidmat", key: "tarikhMula" },
-                  { label: "Gred", key: "gred" },
+                  { label: "Nama Penuh", key: "nama", icon: "👤" },
+                  { label: "No. Kad Pengenalan", key: "kp", icon: "🆔" },
+                  { label: "No. Telefon", key: "tel", icon: "📞" },
+                  { label: "E-mel", key: "email", icon: "✉️" },
+                  { label: "Pengalaman Mengajar", key: "pengalaman", icon: "⏳" },
+                  { label: "Tempoh Sekolah Semasa", key: "tempohSemasa", icon: "🏫" },
+                  { label: "Tarikh Berkhidmat", key: "tarikhMula", icon: "📅" },
+                  { label: "Gred Jawatan", key: "gred", icon: "🎗️" },
                 ].map((item) => (
-                  <div key={item.key} className="space-y-1">
-                    <Label className="text-slate-400 text-xs font-medium uppercase">{item.label}</Label>
+                  <div key={item.key} className="space-y-2 group">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm opacity-50">{item.icon}</span>
+                      <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
+                    </div>
                     {isEditMode ? (
                       <Input 
                         value={profile[item.key as keyof typeof profile] as string} 
                         onChange={(e) => setProfile({...profile, [item.key]: e.target.value})}
-                        className="h-9"
+                        className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
                       />
                     ) : (
-                      <p className="font-semibold text-slate-700">{profile[item.key as keyof typeof profile] as string}</p>
+                      <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
+                        <p className="font-bold text-slate-700">{profile[item.key as keyof typeof profile] as string || "-"}</p>
+                      </div>
                     )}
                   </div>
                 ))}
-                <div className="md:col-span-2 space-y-1">
-                  <Label className="text-slate-400 text-xs font-medium uppercase">Alamat Rumah</Label>
+                <div className="md:col-span-2 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm opacity-50">🏠</span>
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Kediaman</Label>
+                  </div>
                   {isEditMode ? (
                     <Textarea 
                       value={profile.alamat} 
                       onChange={(e) => setProfile({...profile, alamat: e.target.value})}
-                      className="min-h-[80px]"
+                      className="min-h-[100px] rounded-xl border-slate-100"
                     />
                   ) : (
-                    <p className="font-semibold text-slate-700">{profile.alamat}</p>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
+                      <p className="font-bold text-slate-700 leading-relaxed">{profile.alamat || "-"}</p>
+                    </div>
                   )}
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-sm overflow-hidden animate-in slide-up duration-500 delay-300">
-            <CardHeader className="bg-[#002B5B] text-white py-4">
-              <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                <Briefcase className="w-5 h-5" /> Maklumat Sekolah
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 space-y-6">
-              {[
-                { label: "Nama Sekolah", key: "nama" },
-                { label: "Kod Sekolah", key: "kod" },
-                { label: "Jawatan", key: "jawatan" },
-                { label: "Pemeriksa Kertas SPM", key: "pemeriksaSPM" },
-              ].map((item) => (
-                <div key={item.key} className="space-y-1">
-                  <Label className="text-slate-400 text-xs font-medium uppercase">{item.label}</Label>
+          <div className="space-y-6">
+            <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white">
+              <div className="h-2 bg-[#D4AF37]"></div>
+              <CardHeader className="py-6 px-8 border-b border-slate-50">
+                <CardTitle className="text-lg font-black text-[#002B5B] flex items-center gap-3">
+                  <div className="bg-[#D4AF37] p-2 rounded-lg"><Briefcase className="w-5 h-5 text-white" /></div>
+                  Sekolah
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8 space-y-6">
+                {[
+                  { label: "Nama Sekolah", key: "nama" },
+                  { label: "Kod Sekolah", key: "kod" },
+                  { label: "Jawatan", key: "jawatan" },
+                  { label: "Pemeriksa SPM", key: "pemeriksaSPM" },
+                ].map((item) => (
+                  <div key={item.key} className="space-y-2">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
+                    {isEditMode ? (
+                      <Input 
+                        value={profile.sekolah[item.key as keyof typeof profile.sekolah] as string} 
+                        onChange={(e) => setProfile({...profile, sekolah: {...profile.sekolah, [item.key]: e.target.value}})}
+                        className="h-10 rounded-xl border-slate-100"
+                      />
+                    ) : (
+                      <p className="font-bold text-slate-700">{profile.sekolah[item.key as keyof typeof profile.sekolah] as string || "-"}</p>
+                    )}
+                  </div>
+                ))}
+                <div className="space-y-2">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Sekolah</Label>
                   {isEditMode ? (
-                    <Input 
-                      value={profile.sekolah[item.key as keyof typeof profile.sekolah] as string} 
-                      onChange={(e) => setProfile({...profile, sekolah: {...profile.sekolah, [item.key]: e.target.value}})}
-                      className="h-9"
+                    <Textarea 
+                      value={profile.sekolah.alamat} 
+                      onChange={(e) => setProfile({...profile, sekolah: {...profile.sekolah, alamat: e.target.value}})}
+                      className="min-h-[80px] rounded-xl border-slate-100"
                     />
                   ) : (
-                    <p className="font-semibold text-slate-700">{profile.sekolah[item.key as keyof typeof profile.sekolah] as string}</p>
+                    <p className="font-bold text-slate-700 text-sm leading-relaxed">{profile.sekolah.alamat || "-"}</p>
                   )}
                 </div>
-              ))}
-              <div className="space-y-1">
-                <Label className="text-slate-400 text-xs font-medium uppercase">Alamat Sekolah</Label>
-                {isEditMode ? (
-                  <Textarea 
-                    value={profile.sekolah.alamat} 
-                    onChange={(e) => setProfile({...profile, sekolah: {...profile.sekolah, alamat: e.target.value}})}
-                    className="min-h-[100px]"
-                  />
-                ) : (
-                  <p className="font-semibold text-slate-700 text-sm leading-relaxed">{profile.sekolah.alamat}</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* TABLES SECTION */}
