@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -23,11 +23,16 @@ import {
   FileText, 
   FileSpreadsheet,
   Image as ImageIcon,
-  Camera
+  Camera,
+  Eraser,
+  Settings,
+  User,
+  ShieldCheck
 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
+
   head: () => ({
     title: "Profil Guru Profesional 2026",
     meta: [
