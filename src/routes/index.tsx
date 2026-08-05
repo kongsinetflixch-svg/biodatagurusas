@@ -120,51 +120,49 @@ function GuruProfile() {
         </header>
 
         {/* SEARCH & ACTIONS */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 no-print">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+        <div className="flex flex-col md:flex-row gap-4 no-print sticky top-4 z-50">
+          <div className="relative flex-1 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#002B5B] transition-colors w-5 h-5" />
             <Input 
               placeholder="Cari nama, sekolah, subjek atau kelayakan..." 
-              className="pl-10 bg-white border-slate-200"
+              className="pl-12 h-14 bg-white/90 backdrop-blur-md border-white shadow-lg rounded-2xl focus:ring-2 focus:ring-[#002B5B] transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 p-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white">
             {!isEditMode ? (
-              <Button onClick={() => setIsEditMode(true)} className="bg-[#002B5B] hover:bg-[#003B7B]">
+              <Button onClick={() => setIsEditMode(true)} className="h-10 bg-[#002B5B] hover:bg-[#003B7B] rounded-xl font-bold shadow-md hover:shadow-lg transition-all">
                 <Edit2 className="w-4 h-4 mr-2" /> Edit Maklumat
               </Button>
             ) : (
-              <>
-                <Button onClick={handleSave} className="bg-emerald-600 hover:bg-emerald-700">
+              <div className="flex gap-2">
+                <Button onClick={handleSave} className="h-10 bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold shadow-md">
                   <Save className="w-4 h-4 mr-2" /> Simpan
                 </Button>
-                <Button variant="outline" onClick={() => setIsEditMode(false)} className="text-rose-600 border-rose-100 hover:bg-rose-50">
+                <Button variant="outline" onClick={() => setIsEditMode(false)} className="h-10 text-rose-600 border-rose-100 hover:bg-rose-50 rounded-xl font-bold">
                   <X className="w-4 h-4 mr-2" /> Batal
                 </Button>
-              </>
+              </div>
             )}
-            <Button variant="outline" onClick={handlePrint}>
+            <div className="w-[1px] bg-slate-200 mx-1"></div>
+            <Button variant="outline" onClick={handlePrint} className="h-10 rounded-xl border-slate-200 hover:bg-slate-50">
               <Printer className="w-4 h-4 mr-2" /> Cetak
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" className="h-10 rounded-xl border-slate-200 hover:bg-slate-50">
               <Download className="w-4 h-4 mr-2" /> PDF
             </Button>
-            <div className="hidden md:flex gap-2">
-               <Button variant="ghost" size="icon" title="Export Excel"><FileSpreadsheet className="w-4 h-4 text-emerald-600" /></Button>
-               <Button variant="ghost" size="icon" title="Export Word"><FileText className="w-4 h-4 text-blue-600" /></Button>
-            </div>
           </div>
         </div>
 
         {/* STATS CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { title: "Pengalaman Mengajar", value: profile.pengalaman, icon: Briefcase, color: "text-blue-600", bg: "bg-blue-50" },
-            { title: "Tempoh Sekolah Semasa", value: profile.tempohSemasa, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-            { title: "Bidang Opsyen", value: profile.opsyen, icon: BookOpen, color: "text-emerald-600", bg: "bg-emerald-50" },
-            { title: "Kelayakan Tertinggi", value: "Ijazah & Diploma", icon: GraduationCap, color: "text-indigo-600", bg: "bg-indigo-50" },
+            { title: "Pengalaman Mengajar", value: profile.pengalaman || "-", icon: Briefcase, color: "text-[#002B5B]", bg: "bg-white" },
+            { title: "Sekolah Semasa", value: profile.tempohSemasa || "-", icon: Clock, color: "text-[#002B5B]", bg: "bg-white" },
+            { title: "Bidang Opsyen", value: profile.opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
+            { title: "Kelayakan", value: "Ijazah & Diploma", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
+
           ].map((item, i) => (
             <Card key={i} className="border-none shadow-sm hover:shadow-md transition-shadow duration-300 animate-in slide-up duration-500" style={{ animationDelay: `${i * 100}ms` }}>
               <CardContent className="p-6 flex items-center gap-4">
