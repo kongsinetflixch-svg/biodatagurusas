@@ -338,37 +338,44 @@ function GuruProfile() {
           </Card>
 
           {/* SUBJEK DIAJAR */}
-          <Card className="border-none shadow-sm overflow-hidden">
-            <div className="bg-[#002B5B] px-6 py-3 flex justify-between items-center">
-              <h2 className="text-white font-semibold flex items-center gap-2"><BookOpen className="w-5 h-5" /> Subjek Semasa Yang Diajar</h2>
-              {isEditMode && <Button size="sm" variant="secondary" className="h-8"><Plus className="w-3 h-3 mr-1" /> Tambah</Button>}
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
+            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center">
+              <h2 className="text-white text-lg font-black flex items-center gap-3">
+                <div className="bg-white/20 p-1.5 rounded-lg"><BookOpen className="w-5 h-5" /></div>
+                Subjek Semasa Diajar
+              </h2>
+              {isEditMode && <Button size="sm" variant="secondary" className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"><Plus className="w-4 h-4 mr-1" /> Tambah</Button>}
             </div>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader className="bg-slate-50">
-                    <TableRow>
-                      <TableHead className="w-12 text-center font-bold text-[#002B5B] uppercase text-xs">Bil.</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Subjek</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Tahun / Tingkatan</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Bil. Murid</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">TOV</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">ETR</TableHead>
+                  <TableHeader className="bg-slate-50/50">
+                    <TableRow className="border-none">
+                      <TableHead className="w-16 text-center font-black text-slate-400 uppercase text-[10px] tracking-widest px-8">Bil.</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Subjek</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Tahun / Tingkatan</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Bil. Murid</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">TOV</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">ETR</TableHead>
                       {isEditMode && <TableHead className="w-20 no-print"></TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {subjek.map((row, idx) => (
-                      <TableRow key={row.id}>
-                        <TableCell className="text-center font-bold text-slate-400">{idx + 1}</TableCell>
-                        <TableCell className="font-medium text-slate-700">{row.nama}</TableCell>
-                        <TableCell>{row.kelas}</TableCell>
-                        <TableCell>{row.murid || "-"}</TableCell>
-                        <TableCell>{row.tov || "-"}</TableCell>
-                        <TableCell>{row.etr || "-"}</TableCell>
+                    {subjek.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={isEditMode ? 7 : 6} className="h-24 text-center text-slate-400 italic">Tiada rekod subjek</TableCell>
+                      </TableRow>
+                    ) : subjek.map((row, idx) => (
+                      <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
+                        <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
+                        <TableCell className="font-bold text-slate-700">{row.nama}</TableCell>
+                        <TableCell className="font-medium text-slate-500">{row.kelas}</TableCell>
+                        <TableCell className="font-bold text-slate-700">{row.murid || "-"}</TableCell>
+                        <TableCell className="text-center"><span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span></TableCell>
+                        <TableCell className="text-center"><span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span></TableCell>
                         {isEditMode && (
-                          <TableCell className="no-print">
-                            <Button variant="ghost" size="icon" className="text-rose-500 h-8 w-8"><Trash2 className="w-4 h-4" /></Button>
+                          <TableCell className="no-print pr-8 text-right">
+                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
                           </TableCell>
                         )}
                       </TableRow>
@@ -378,6 +385,7 @@ function GuruProfile() {
               </div>
             </CardContent>
           </Card>
+
 
           {/* SEJARAH PERKHIDMATAN */}
           <Card className="border-none shadow-sm overflow-hidden">
