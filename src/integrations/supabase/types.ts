@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      teachers: {
+        Row: {
+          created_at: string
+          id: string
+          kelulusan: Json
+          owner_id: string
+          profile: Json
+          profile_image: string | null
+          sejarah: Json
+          subjek: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kelulusan?: Json
+          owner_id: string
+          profile?: Json
+          profile_image?: string | null
+          sejarah?: Json
+          subjek?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kelulusan?: Json
+          owner_id?: string
+          profile?: Json
+          profile_image?: string | null
+          sejarah?: Json
+          subjek?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
