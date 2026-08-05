@@ -235,9 +235,16 @@ function GuruProfile() {
       console.error(error);
     } else {
       setIsEditMode(false);
+      localStorage.removeItem('guru_profile_draft');
       toast.success("Maklumat telah berjaya disimpan.");
     }
   };
+
+  useEffect(() => {
+    if (isEditMode && activeTeacherId) {
+      localStorage.setItem('guru_profile_draft', JSON.stringify({ id: activeTeacherId, timestamp: new Date().getTime() }));
+    }
+  }, [isEditMode, activeTeacherId]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
