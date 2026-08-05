@@ -267,41 +267,55 @@ function GuruProfile() {
       <div className="max-w-6xl mx-auto print-container space-y-6">
         
         {/* PANITIA SELECTOR / TABS */}
-        <div className="no-print flex flex-wrap gap-2 mb-4">
-          {teachers.map(t => (
-            <div key={t.id} className="relative group">
-              <Button 
-                variant={activeTeacherId === t.id ? "default" : "outline"}
-                onClick={() => handleSelectTeacher(t.id)}
-                className={`h-12 px-6 rounded-2xl font-bold transition-all ${activeTeacherId === t.id ? 'bg-[#002B5B] shadow-lg scale-105' : 'bg-white border-slate-200 hover:border-[#002B5B]'}`}
-              >
-                <div className="flex items-center gap-2">
-                  <Avatar className="w-6 h-6 border border-white/20">
-                    <AvatarImage src={t.profileImage || ""} />
-                    <AvatarFallback className="text-[8px]">{t.profile.nama.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  {t.profile.nama || "Tanpa Nama"}
-                </div>
-              </Button>
-              {teachers.length > 1 && (
-                <button 
-                  onClick={(e) => handleDeleteTeacher(t.id, e)}
-                  className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 z-10"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
+        {isAdminMode && (
+          <div className="no-print flex flex-wrap gap-2 mb-4 animate-in slide-in-from-left duration-500">
+            <div className="flex items-center gap-2 mr-4 bg-[#002B5B] text-white px-4 py-2 rounded-2xl shadow-lg">
+              <ShieldCheck className="w-5 h-5 text-[#D4AF37]" />
+              <span className="font-black text-xs uppercase tracking-widest">Admin Panitia</span>
             </div>
-          ))}
-          <Button 
-            variant="outline" 
-            onClick={handleAddTeacher}
-            className="h-12 w-12 rounded-2xl border-dashed border-2 border-slate-300 hover:border-[#002B5B] hover:bg-slate-50 flex items-center justify-center p-0"
-            title="Tambah Guru Baru"
-          >
-            <Plus className="w-6 h-6 text-slate-400" />
-          </Button>
-        </div>
+            {teachers.map(t => (
+              <div key={t.id} className="relative group">
+                <Button 
+                  variant={activeTeacherId === t.id ? "default" : "outline"}
+                  onClick={() => handleSelectTeacher(t.id)}
+                  className={`h-12 px-6 rounded-2xl font-bold transition-all ${activeTeacherId === t.id ? 'bg-[#002B5B] shadow-lg scale-105' : 'bg-white border-slate-200 hover:border-[#002B5B]'}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-6 h-6 border border-white/20">
+                      <AvatarImage src={t.profileImage || ""} />
+                      <AvatarFallback className="text-[8px]">{t.profile.nama.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    {t.profile.nama || "Tanpa Nama"}
+                  </div>
+                </Button>
+                {teachers.length > 1 && (
+                  <button 
+                    onClick={(e) => handleDeleteTeacher(t.id, e)}
+                    className="absolute -top-1 -right-1 bg-rose-500 text-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 z-10"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            ))}
+            <Button 
+              variant="outline" 
+              onClick={handleAddTeacher}
+              className="h-12 w-12 rounded-2xl border-dashed border-2 border-slate-300 hover:border-[#002B5B] hover:bg-slate-50 flex items-center justify-center p-0"
+              title="Tambah Guru Baru"
+            >
+              <Plus className="w-6 h-6 text-slate-400" />
+            </Button>
+            <Button 
+              variant="ghost"
+              onClick={() => setIsAdminMode(false)}
+              className="h-12 px-4 rounded-2xl text-slate-400 hover:text-rose-500"
+            >
+              Log Keluar Admin
+            </Button>
+          </div>
+        )}
+
 
         {/* HEADER */}
         <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
