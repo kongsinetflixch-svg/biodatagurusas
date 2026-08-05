@@ -43,46 +43,35 @@ function GuruProfile() {
   
   // Data State
   const [profile, setProfile] = useState({
-    nama: "Masnizam Binti Mohamed",
-    kp: "770613035750",
-    tel: "019-9894575",
-    email: "mamafive77@gmail.com",
-    pengalaman: "25 Tahun",
-    tempohSemasa: "21 Tahun",
-    tarikhMula: "18 Jun 2005",
-    opsyen: "Sejarah / Geografi",
-    gred: "DG13",
-    mengajarOpsyen: "Ya",
-    alamat: "A2-1 Carnation Park, 39000 Tanah Rata, Cameron Highlands",
+    nama: "",
+    kp: "",
+    tel: "",
+    email: "",
+    pengalaman: "",
+    tempohSemasa: "",
+    tarikhMula: "",
+    opsyen: "",
+    gred: "",
+    mengajarOpsyen: "",
+    alamat: "",
     sekolah: {
-      nama: "SMK Sultan Ahmad Shah",
-      alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
-      kod: "CEB1003",
-      tel: "05-4911018",
-      faks: "05-4914922",
-      jawatan: "Ketua Panitia Sejarah",
-      guruKhas: "Tiada",
-      pemeriksaSPM: "Ya",
+      nama: "",
+      alamat: "",
+      kod: "",
+      tel: "",
+      faks: "",
+      jawatan: "",
+      guruKhas: "",
+      pemeriksaSPM: "",
       lain: ""
     }
   });
 
-  const [kelulusan, setKelulusan] = useState([
-    { id: 1, kelayakan: "Ijazah Sarjana Muda Sains Sosial", institusi: "Universiti Malaya", bidang: "Sejarah / Geografi", tahun: "2000" },
-    { id: 2, kelayakan: "Diploma Pendidikan", institusi: "Universiti Malaya", bidang: "Sejarah", tahun: "2001" }
-  ]);
+  const [kelulusan, setKelulusan] = useState([]);
 
-  const [subjek, setSubjek] = useState([
-    { id: 1, nama: "Sejarah Tingkatan 2", kelas: "2 Kreatif, 2 Kovint, 2 Sains", murid: "", tov: "", etr: "" },
-    { id: 2, nama: "Sejarah Tingkatan 4", kelas: "4 Sains, 4 Geografi", murid: "", tov: "", etr: "" },
-    { id: 3, nama: "Sejarah Tingkatan 5", kelas: "5 Akaun, 5 MPV", murid: "", tov: "", etr: "" }
-  ]);
+  const [subjek, setSubjek] = useState([]);
 
-  const [sejarah, setSejarah] = useState([
-    { id: 1, sekolah: "SMK Subis, Miri, Sarawak", tahun: "2001–2003", subjek: "Sejarah" },
-    { id: 2, sekolah: "SMK Selirik, Kapit, Sarawak", tahun: "2004", subjek: "Sejarah" },
-    { id: 3, sekolah: "SMK Sultan Ahmad Shah", tahun: "2005–2026", subjek: "Sejarah" }
-  ]);
+  const [sejarah, setSejarah] = useState([]);
 
   const handlePrint = () => {
     window.print();
