@@ -261,7 +261,7 @@ function GuruProfile() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex gap-2 p-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white">
+          <div className="flex flex-wrap gap-2 p-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white">
             {!isEditMode ? (
               <Button onClick={() => setIsEditMode(true)} className="h-10 bg-[#002B5B] hover:bg-[#003B7B] rounded-xl font-bold shadow-md hover:shadow-lg transition-all">
                 <Edit2 className="w-4 h-4 mr-2" /> Edit Maklumat
