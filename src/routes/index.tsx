@@ -290,36 +290,43 @@ function GuruProfile() {
         </div>
 
         {/* TABLES SECTION */}
-        <div className="space-y-8 mb-8 animate-in slide-up duration-500 delay-400">
+        <div className="space-y-6 animate-in slide-up duration-500 delay-400">
           
           {/* KELULUSAN ACADEMIK */}
-          <Card className="border-none shadow-sm overflow-hidden">
-            <div className="bg-[#002B5B] px-6 py-3 flex justify-between items-center">
-              <h2 className="text-white font-semibold flex items-center gap-2"><GraduationCap className="w-5 h-5" /> Kelulusan Akademik & Ikhtisas</h2>
-              {isEditMode && <Button size="sm" variant="secondary" className="h-8"><Plus className="w-3 h-3 mr-1" /> Tambah</Button>}
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
+            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center">
+              <h2 className="text-white text-lg font-black flex items-center gap-3">
+                <div className="bg-white/20 p-1.5 rounded-lg"><GraduationCap className="w-5 h-5" /></div>
+                Kelulusan Akademik & Ikhtisas
+              </h2>
+              {isEditMode && <Button size="sm" variant="secondary" className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"><Plus className="w-4 h-4 mr-1" /> Tambah</Button>}
             </div>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader className="bg-slate-50">
-                    <TableRow>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Kelayakan</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Institusi / Universiti</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Bidang / Opsyen</TableHead>
-                      <TableHead className="font-bold text-[#002B5B] uppercase text-xs">Tahun</TableHead>
+                  <TableHeader className="bg-slate-50/50">
+                    <TableRow className="border-none">
+                      <TableHead className="px-8 h-12 font-black text-slate-400 uppercase text-[10px] tracking-widest">Kelayakan</TableHead>
+                      <TableHead className="h-12 font-black text-slate-400 uppercase text-[10px] tracking-widest">Institusi / Universiti</TableHead>
+                      <TableHead className="h-12 font-black text-slate-400 uppercase text-[10px] tracking-widest">Bidang / Opsyen</TableHead>
+                      <TableHead className="h-12 font-black text-slate-400 uppercase text-[10px] tracking-widest">Tahun</TableHead>
                       {isEditMode && <TableHead className="w-20 no-print"></TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {kelulusan.map((row) => (
-                      <TableRow key={row.id}>
-                        <TableCell className="font-medium text-slate-700">{row.kelayakan}</TableCell>
-                        <TableCell>{row.institusi}</TableCell>
-                        <TableCell>{row.bidang}</TableCell>
-                        <TableCell>{row.tahun}</TableCell>
+                    {kelulusan.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={isEditMode ? 5 : 4} className="h-24 text-center text-slate-400 italic">Tiada rekod kelulusan</TableCell>
+                      </TableRow>
+                    ) : kelulusan.map((row) => (
+                      <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
+                        <TableCell className="px-8 font-bold text-slate-700">{row.kelayakan}</TableCell>
+                        <TableCell className="text-slate-600">{row.institusi}</TableCell>
+                        <TableCell className="text-slate-600 font-medium">{row.bidang}</TableCell>
+                        <TableCell className="font-bold text-[#002B5B]">{row.tahun}</TableCell>
                         {isEditMode && (
-                          <TableCell className="no-print">
-                            <Button variant="ghost" size="icon" className="text-rose-500 h-8 w-8"><Trash2 className="w-4 h-4" /></Button>
+                          <TableCell className="no-print pr-8 text-right">
+                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
                           </TableCell>
                         )}
                       </TableRow>
