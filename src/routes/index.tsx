@@ -378,7 +378,7 @@ function GuruProfile() {
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-400 hover:text-rose-500">
               <LogOut className="w-4 h-4 mr-1" /> Log Keluar
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setIsAdminMode(true)} className="text-slate-200 hover:text-[#002B5B] transition-colors">
+            <Button variant="ghost" size="icon" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="text-slate-200 hover:text-[#002B5B] transition-colors">
               <Settings className="w-4 h-4" />
             </Button>
           </div>
