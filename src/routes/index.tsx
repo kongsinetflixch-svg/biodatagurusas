@@ -41,6 +41,8 @@ export const Route = createFileRoute("/")({
 function GuruProfile() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Data State
   const [profile, setProfile] = useState({
