@@ -395,7 +395,7 @@ function GuruProfile() {
                     {isEditMode ? (
                       <Input 
                         value={profile.sekolah[item.key as keyof typeof profile.sekolah] as string} 
-                        onChange={(e) => setProfile({...profile, sekolah: {...profile.sekolah, [item.key]: e.target.value}})}
+                        onChange={(e) => updateCurrentTeacher({ profile: {...profile, sekolah: {...profile.sekolah, [item.key]: e.target.value}} } )}
                         className="h-10 rounded-xl border-slate-100"
                       />
                     ) : (
