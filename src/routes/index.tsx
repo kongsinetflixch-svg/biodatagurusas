@@ -47,6 +47,7 @@ function GuruProfile() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTeacherId, setActiveTeacherId] = useState<string | null>(null);
+  const [isAdminMode, setIsAdminMode] = useState(false);
   
   // Teachers state for multi-profile support
   const [teachers, setTeachers] = useState<any[]>(() => {
@@ -58,6 +59,10 @@ function GuruProfile() {
   const currentTeacher = teachers.find(t => t.id === activeTeacherId) || null;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+
   
   // Handlers for switching and creating teachers
   const handleAddTeacher = () => {
