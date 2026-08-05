@@ -461,7 +461,7 @@ function GuruProfile() {
                       <TableRow>
                         <TableCell colSpan={isEditMode ? 5 : 4} className="h-24 text-center text-slate-400 italic">Tiada rekod kelulusan</TableCell>
                       </TableRow>
-                    ) : kelulusan.map((row) => (
+                    ) : (kelulusan as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="px-8 font-bold text-slate-700">{row.kelayakan}</TableCell>
                         <TableCell className="text-slate-600">{row.institusi}</TableCell>
@@ -469,7 +469,14 @@ function GuruProfile() {
                         <TableCell className="font-bold text-[#002B5B]">{row.tahun}</TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
-                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => updateCurrentTeacher({ kelulusan: kelulusan.filter((k: any) => k.id !== row.id) })}
+                              className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 h-9 w-9 rounded-xl"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </TableCell>
                         )}
                       </TableRow>
