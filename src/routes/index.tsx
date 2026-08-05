@@ -150,7 +150,64 @@ function GuruProfile() {
     }
   };
 
-  if (teachers.length === 0) {
+  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ('touches' in e) ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = ('touches' in e) ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    setIsDrawing(true);
+  };
+
+  const draw = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ('touches' in e) ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = ('touches' in e) ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    setHasSignature(true);
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearSignature = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasSignature(false);
+  };
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.strokeStyle = '#002B5B';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+      }
+    }
+  }, [currentTeacher?.id]);
+
+  if (teachers.length === 0 && !isAdminMode) {
+
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
