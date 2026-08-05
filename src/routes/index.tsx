@@ -417,7 +417,7 @@ function GuruProfile() {
             </div>
 
             <div className="space-y-2">
-              <Button variant="outline" onClick={() => setIsAdminMode(true)} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
+              <Button variant="outline" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
                 <ShieldCheck className="w-6 h-6 mr-2" /> Paparan Admin Panitia
               </Button>
               <p className="text-[10px] text-slate-400 font-medium">
