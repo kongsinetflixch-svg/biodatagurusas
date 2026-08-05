@@ -85,6 +85,18 @@ function GuruProfile() {
     toast.success("Maklumat telah berjaya disimpan.");
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+        toast.success("Gambar profil berjaya dikemaskini.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
       <div className="max-w-6xl mx-auto print-container space-y-6">
