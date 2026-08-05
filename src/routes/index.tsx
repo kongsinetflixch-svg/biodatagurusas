@@ -476,11 +476,11 @@ function GuruProfile() {
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
             <Button 
-              variant="ghost"
+              variant="outline"
               onClick={() => setIsAdminMode(false)}
-              className="h-12 px-4 rounded-2xl text-slate-400 hover:text-[#002B5B]"
+              className="h-12 px-6 rounded-2xl border-slate-200 text-slate-600 hover:bg-slate-50 font-bold"
             >
-              Tutup Admin
+              <User className="w-4 h-4 mr-2" /> Paparan Guru
             </Button>
           </div>
         )}
