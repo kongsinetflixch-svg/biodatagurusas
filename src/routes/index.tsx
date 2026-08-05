@@ -390,9 +390,14 @@ function GuruProfile() {
               <div className="h-[1px] flex-1 bg-slate-100"></div>
             </div>
 
-            <Button variant="outline" onClick={() => setIsAdminMode(true)} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
-              <ShieldCheck className="w-6 h-6 mr-2" /> Paparan Admin Panitia
-            </Button>
+            <div className="space-y-2">
+              <Button variant="outline" onClick={() => setIsAdminMode(true)} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
+                <ShieldCheck className="w-6 h-6 mr-2" /> Paparan Admin Panitia
+              </Button>
+              <p className="text-[10px] text-slate-400 font-medium">
+                Paparan Admin membolehkan anda menguruskan berbilang profil guru dalam satu panitia.
+              </p>
+            </div>
           </div>
         </Card>
       </div>
@@ -471,11 +476,11 @@ function GuruProfile() {
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
             <Button 
-              variant="ghost"
+              variant="outline"
               onClick={() => setIsAdminMode(false)}
-              className="h-12 px-4 rounded-2xl text-slate-400 hover:text-[#002B5B]"
+              className="h-12 px-6 rounded-2xl border-slate-200 text-slate-600 hover:bg-slate-50 font-bold"
             >
-              Tutup Admin
+              <User className="w-4 h-4 mr-2" /> Paparan Guru
             </Button>
           </div>
         )}
