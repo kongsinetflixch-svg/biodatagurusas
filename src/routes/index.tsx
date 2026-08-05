@@ -101,7 +101,7 @@ function GuruProfile() {
           <div className="flex flex-col items-center md:items-end gap-4 mt-6 md:mt-0">
             <div className="relative group">
               <Avatar className="w-28 h-28 border-4 border-[#002B5B] shadow-lg transition-transform duration-300 group-hover:scale-105">
-                <AvatarImage src="" alt="kosongkan semua detail.. every detail" />
+                <AvatarImage src="" alt="kemaskini design. nampak x tersusun" />
                 <AvatarFallback>?</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-2 right-0 no-print">
