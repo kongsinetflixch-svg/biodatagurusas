@@ -593,7 +593,7 @@ function GuruProfile() {
                       <TableRow>
                         <TableCell colSpan={isEditMode ? 4 : 3} className="h-24 text-center text-slate-400 italic">Tiada rekod sejarah perkhidmatan</TableCell>
                       </TableRow>
-                    ) : sejarah.map((row) => (
+                    ) : (sejarah as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="px-8 py-4">
                           <p className="font-bold text-slate-700">{row.sekolah}</p>
@@ -604,7 +604,14 @@ function GuruProfile() {
                         <TableCell className="font-medium text-slate-600">{row.subjek}</TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
-                            <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => updateCurrentTeacher({ sejarah: sejarah.filter((s: any) => s.id !== row.id) })}
+                              className="text-rose-500 hover:bg-rose-50 h-9 w-9 rounded-xl"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </TableCell>
                         )}
                       </TableRow>
