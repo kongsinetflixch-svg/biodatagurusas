@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,9 +27,13 @@ import {
   Eraser,
   Settings,
   User,
-  ShieldCheck
+  ShieldCheck,
+  LogOut,
+  LogIn,
+  Loader2
 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
 
@@ -48,15 +52,63 @@ function GuruProfile() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTeacherId, setActiveTeacherId] = useState<string | null>(null);
   const [isAdminMode, setIsAdminMode] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Teachers state for multi-profile support
-  const [teachers, setTeachers] = useState<any[]>(() => {
-    // Initial empty state if none
-    return [];
-  });
+  const [teachers, setTeachers] = useState<any[]>([]);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        fetchTeachers(session.user.id);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        fetchTeachers(session.user.id);
+      } else {
+        setTeachers([]);
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchTeachers = async (userId: string) => {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from('teachers')
+      .select('*')
+      .eq('owner_id', userId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      toast.error("Gagal memuat profil guru.");
+      console.error(error);
+    } else if (data) {
+      // Map database fields to the UI state structure
+      const mappedData = data.map((t: any) => ({
+        ...t,
+        profileImage: t.profile_image,
+      }));
+      setTeachers(mappedData);
+      if (mappedData.length > 0 && !activeTeacherId) {
+        setActiveTeacherId(mappedData[0].id);
+      }
+    }
+    setIsLoading(false);
+  };
 
   // Derived state for current active teacher
-  const currentTeacher = teachers.find(t => t.id === activeTeacherId) || null;
+  const currentTeacher = activeTeacherId ? teachers.find(t => t.id === activeTeacherId) : null;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -65,11 +117,13 @@ function GuruProfile() {
 
   
   // Handlers for switching and creating teachers
-  const handleAddTeacher = () => {
-    const newId = Math.random().toString(36).substring(7);
-    const newTeacher = {
-      id: newId,
-      profileImage: null,
+  const handleAddTeacher = async () => {
+    if (!session) {
+      toast.error("Sila log masuk untuk menambah profil.");
+      return;
+    }
+
+    const newTeacherData = {
       profile: {
         nama: "Guru Baru",
         kp: "",
@@ -96,12 +150,30 @@ function GuruProfile() {
       },
       kelulusan: [],
       subjek: [],
-      sejarah: []
+      sejarah: [],
+      owner_id: session.user.id,
+      profile_image: null
     };
-    setTeachers([...teachers, newTeacher]);
-    setActiveTeacherId(newId);
-    setIsEditMode(true);
-    toast.success("Profil guru baru telah dicipta.");
+
+    const { data, error } = await supabase
+      .from('teachers')
+      .insert([newTeacherData])
+      .select();
+
+    if (error) {
+      toast.error("Gagal menambah profil guru.");
+      console.error(error);
+    } else if (data && data[0]) {
+      const teacher = data[0];
+      const newTeacher = {
+        ...teacher,
+        profileImage: teacher.profile_image
+      };
+      setTeachers([...teachers, newTeacher]);
+      setActiveTeacherId(teacher.id as string);
+      setIsEditMode(true);
+      toast.success("Profil guru baru telah dicipta.");
+    }
   };
 
   const handleSelectTeacher = (id: string) => {
@@ -109,15 +181,24 @@ function GuruProfile() {
     setIsEditMode(false);
   };
 
-  const handleDeleteTeacher = (id: string, e: React.MouseEvent) => {
+  const handleDeleteTeacher = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (confirm("Adakah anda pasti mahu memadam profil ini?")) {
-      const updated = teachers.filter(t => t.id !== id);
-      setTeachers(updated);
-      if (activeTeacherId === id) {
-        setActiveTeacherId(updated.length > 0 ? updated[0].id : null);
+      const { error } = await supabase
+        .from('teachers')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        toast.error("Gagal memadam profil.");
+      } else {
+        const updated = teachers.filter(t => t.id !== id);
+        setTeachers(updated);
+        if (activeTeacherId === id) {
+          setActiveTeacherId(updated.length > 0 ? updated[0].id : null);
+        }
+        toast.error("Profil guru telah dipadam.");
       }
-      toast.error("Profil guru telah dipadam.");
     }
   };
 
@@ -133,9 +214,29 @@ function GuruProfile() {
     window.print();
   };
 
-  const handleSave = () => {
-    setIsEditMode(false);
-    toast.success("Maklumat telah berjaya disimpan.");
+  const handleSave = async () => {
+    if (!activeTeacherId || !currentTeacher) return;
+    
+    setIsSaving(true);
+    const { error } = await supabase
+      .from('teachers')
+      .update({
+        profile: currentTeacher.profile,
+        kelulusan: currentTeacher.kelulusan,
+        subjek: currentTeacher.subjek,
+        sejarah: currentTeacher.sejarah,
+        profile_image: currentTeacher.profileImage
+      })
+      .eq('id', activeTeacherId);
+
+    setIsSaving(false);
+    if (error) {
+      toast.error("Gagal menyimpan maklumat.");
+      console.error(error);
+    } else {
+      setIsEditMode(false);
+      toast.success("Maklumat telah berjaya disimpan.");
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,10 +245,25 @@ function GuruProfile() {
       const reader = new FileReader();
       reader.onloadend = () => {
         updateCurrentTeacher({ profileImage: reader.result as string });
-        toast.success("Gambar profil berjaya dikemaskini.");
+        toast.success("Gambar profil berjaya dikemaskini. Sila simpan untuk mengekalkan perubahan.");
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+    if (error) toast.error("Gagal log masuk.");
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.info("Anda telah log keluar.");
   };
 
   const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
@@ -215,11 +331,43 @@ function GuruProfile() {
     }
   }, [currentTeacher?.id]);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
+        <Loader2 className="w-10 h-10 text-[#002B5B] animate-spin" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
+        <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
+          <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
+             <span className="text-2xl font-black text-white">KPM</span>
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
+            <p className="text-slate-500 font-medium">Log masuk untuk mula menguruskan profil guru anda.</p>
+          </div>
+          <div className="pt-4">
+            <Button onClick={handleLogin} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
+              <LogIn className="w-6 h-6 mr-2" /> Log Masuk dengan Google
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   if (teachers.length === 0 && !isAdminMode) {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
-          <div className="flex justify-end no-print">
+          <div className="flex justify-between items-center no-print">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-400 hover:text-rose-500">
+              <LogOut className="w-4 h-4 mr-1" /> Log Keluar
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => setIsAdminMode(true)} className="text-slate-200 hover:text-[#002B5B] transition-colors">
               <Settings className="w-4 h-4" />
             </Button>
@@ -260,7 +408,16 @@ function GuruProfile() {
   }
 
 
-  const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher;
+  const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher || {
+    profile: {
+      nama: "", kp: "", tel: "", email: "", pengalaman: "", tempohSemasa: "", tarikhMula: "", opsyen: "", gred: "", mengajarOpsyen: "", alamat: "",
+      sekolah: { nama: "", alamat: "", kod: "", tel: "", faks: "", jawatan: "", guruKhas: "", pemeriksaSPM: "", lain: "" }
+    },
+    profileImage: null,
+    kelulusan: [],
+    subjek: [],
+    sejarah: []
+  };
 
   return (
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
@@ -308,10 +465,17 @@ function GuruProfile() {
             </Button>
             <Button 
               variant="ghost"
-              onClick={() => setIsAdminMode(false)}
+              onClick={handleLogout}
               className="h-12 px-4 rounded-2xl text-slate-400 hover:text-rose-500"
             >
-              Log Keluar Admin
+              <LogOut className="w-4 h-4 mr-2" /> Log Keluar
+            </Button>
+            <Button 
+              variant="ghost"
+              onClick={() => setIsAdminMode(false)}
+              className="h-12 px-4 rounded-2xl text-slate-400 hover:text-[#002B5B]"
+            >
+              Tutup Admin
             </Button>
           </div>
         )}
@@ -379,8 +543,9 @@ function GuruProfile() {
               </Button>
             ) : (
               <div className="flex gap-2">
-                <Button onClick={handleSave} className="h-10 bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold shadow-md">
-                  <Save className="w-4 h-4 mr-2" /> Simpan
+                <Button onClick={handleSave} disabled={isSaving} className="h-10 bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold shadow-md disabled:opacity-50">
+                  {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />} 
+                  {isSaving ? "Menyimpan..." : "Simpan"}
                 </Button>
                 <Button variant="outline" onClick={() => setIsEditMode(false)} className="h-10 text-rose-600 border-rose-100 hover:bg-rose-50 rounded-xl font-bold">
                   <X className="w-4 h-4 mr-2" /> Batal
