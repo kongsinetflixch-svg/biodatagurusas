@@ -67,11 +67,11 @@ function GuruProfile() {
     }
   });
 
-  const [kelulusan, setKelulusan] = useState([]);
+  const [kelulusan, setKelulusan] = useState<{id: number, kelayakan: string, institusi: string, bidang: string, tahun: string}[]>([]);
 
-  const [subjek, setSubjek] = useState([]);
+  const [subjek, setSubjek] = useState<{id: number, nama: string, kelas: string, murid: string, tov: string, etr: string}[]>([]);
 
-  const [sejarah, setSejarah] = useState([]);
+  const [sejarah, setSejarah] = useState<{id: number, sekolah: string, tahun: string, subjek: string}[]>([]);
 
   const handlePrint = () => {
     window.print();
