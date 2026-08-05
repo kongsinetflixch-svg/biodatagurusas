@@ -216,28 +216,49 @@ function GuruProfile() {
   }, [currentTeacher?.id]);
 
   if (teachers.length === 0 && !isAdminMode) {
-
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
+          <div className="flex justify-end no-print">
+            <Button variant="ghost" size="icon" onClick={() => setIsAdminMode(true)} className="text-slate-200 hover:text-[#002B5B] transition-colors">
+              <Settings className="w-4 h-4" />
+            </Button>
+          </div>
           <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
              <span className="text-2xl font-black text-white">KPM</span>
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium">Tiada profil guru dijumpai. Sila tambah profil baru untuk bermula.</p>
+            <p className="text-slate-500 font-medium">Sila isi maklumat anda atau akses paparan admin panitia.</p>
           </div>
-          <Button onClick={handleAddTeacher} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
-            <Plus className="w-6 h-6 mr-2" /> Tambah Profil Guru
-          </Button>
+          <div className="space-y-4 pt-4">
+            <Button onClick={handleAddTeacher} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
+              <Plus className="w-6 h-6 mr-2" /> Guru Isi & Simpan
+            </Button>
+            
+            <div className="flex items-center gap-4 py-2">
+              <div className="h-[1px] flex-1 bg-slate-100"></div>
+              <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Atau</span>
+              <div className="h-[1px] flex-1 bg-slate-100"></div>
+            </div>
+
+            <Button variant="outline" onClick={() => setIsAdminMode(true)} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
+              <ShieldCheck className="w-6 h-6 mr-2" /> Paparan Admin Panitia
+            </Button>
+          </div>
         </Card>
       </div>
     );
   }
 
-  if (!currentTeacher) {
+  if (isAdminMode && !currentTeacher && teachers.length > 0) {
+    setActiveTeacherId(teachers[0].id);
+  }
+
+  if (!currentTeacher && !isAdminMode) {
     return null;
   }
+
 
   const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher;
 
