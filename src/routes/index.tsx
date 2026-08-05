@@ -163,13 +163,14 @@ function GuruProfile() {
     if (error) {
       toast.error("Gagal menambah profil guru.");
       console.error(error);
-    } else if (data && data.length > 0) {
+    } else if (data && data[0]) {
+      const teacher = data[0];
       const newTeacher = {
-        ...data[0],
-        profileImage: data[0].profile_image
+        ...teacher,
+        profileImage: teacher.profile_image
       };
       setTeachers([...teachers, newTeacher]);
-      setActiveTeacherId(newTeacher.id as string);
+      setActiveTeacherId(teacher.id as string);
       setIsEditMode(true);
       toast.success("Profil guru baru telah dicipta.");
     }
