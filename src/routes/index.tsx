@@ -1261,14 +1261,30 @@ function GuruProfile() {
                       <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
                     </div>
                     {isEditMode ? (
-                      <Input 
-                        value={(profile as any)[item.key as keyof typeof profile] as string} 
-                        onChange={(e) => {
-                          const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
-                          updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
-                        }}
-                        className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
-                      />
+                      item.key === 'gred' ? (
+                        <Select
+                          value={(profile as any)[item.key] || ""}
+                          onValueChange={(val) => updateCurrentTeacher({ profile: { ...(profile as any), [item.key]: val } })}
+                        >
+                          <SelectTrigger className="h-11 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                            <SelectValue placeholder="Pilih Gred" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white border-slate-200">
+                            {SSPA_GRADES.map(grade => (
+                              <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input 
+                          value={(profile as any)[item.key as keyof typeof profile] as string} 
+                          onChange={(e) => {
+                            const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
+                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
+                          }}
+                          className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
+                        />
+                      )
                     ) : (
                       <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
                         <p className="font-bold text-slate-700">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
