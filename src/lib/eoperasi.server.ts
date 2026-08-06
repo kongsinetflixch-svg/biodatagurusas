@@ -6,32 +6,33 @@ export async function parseEOperasiPDF(base64: string) {
   try {
     const buffer = Buffer.from(base64, 'base64');
     
+    // Check if it's password protected using pdf-lib FIRST
+    // pdf-parse can hang or crash on encrypted files without clear errors
+    try {
+      const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: false });
+      if (pdfDoc.isEncrypted) {
+        throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
+      }
+    } catch (pdfLibError) {
+      const errMsg = pdfLibError.message.toLowerCase();
+      if (errMsg.includes('password') || errMsg.includes('encrypted') || errMsg.includes('decrypt')) {
+        throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
+      }
+      console.warn('pdf-lib pre-check failed:', pdfLibError);
+      // If it's not a password error, we let pdf-parse try anyway
+    }
+
     let text = "";
     try {
       const data = await pdf(buffer);
       text = data.text;
       console.log('PDF text extracted length:', text?.length);
     } catch (e) {
-      console.warn('pdf-parse failed:', e);
-      // Check if it's password protected using pdf-lib
-      try {
-        await PDFDocument.load(buffer);
-      } catch (pdfLibError) {
-        if (pdfLibError.message.toLowerCase().includes('password') || pdfLibError.message.toLowerCase().includes('encrypted')) {
-          throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
-        }
-      }
-      throw new Error(`Ralat memproses PDF: ${e.message}`);
+      console.error('pdf-parse failed:', e);
+      throw new Error(`Ralat memproses PDF: ${e.message}. Sila pastikan fail PDF tidak dilindungi kata laluan.`);
     }
 
     if (!text || text.trim().length < 10) {
-      // One more try with pdf-lib to see if it's actually encrypted but didn't throw yet
-      try {
-        const doc = await PDFDocument.load(buffer);
-        if (doc.isEncrypted) {
-          throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
-        }
-      } catch (innerE) {}
       throw new Error('Gagal mengekstrak teks daripada PDF. Pastikan ia adalah fail "Paparan Semakan Data" asli dari eOperasi dan bukan hasil imbasan (scan).');
     }
 
