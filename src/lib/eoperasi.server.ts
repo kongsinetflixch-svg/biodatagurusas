@@ -1,5 +1,6 @@
-// @ts-ignore
+// @ts-nocheck
 import pdf from 'pdf-parse';
+
 
 
 export async function parseEOperasiPDF(base64: string) {
