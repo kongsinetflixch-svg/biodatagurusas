@@ -1358,6 +1358,9 @@ function GuruProfile() {
             <Button variant="outline" className="h-10 rounded-xl border-slate-200 hover:bg-slate-50">
               <Download className="w-4 h-4 mr-2" /> PDF
             </Button>
+            <Button variant="outline" onClick={handleExportDocx} className="h-10 rounded-xl border-slate-200 hover:bg-slate-50 text-blue-700 font-bold">
+              <FileDown className="w-4 h-4 mr-2" /> Templat Word
+            </Button>
             <div className="w-[1px] bg-slate-200 mx-1"></div>
             <Button variant="ghost" onClick={handleLogout} className="h-10 px-4 rounded-xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold">
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
