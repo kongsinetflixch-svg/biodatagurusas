@@ -59,34 +59,84 @@ function GuruProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [icInput, setIcInput] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   
   // Teachers state for multi-profile support
   const [teachers, setTeachers] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) {
-        fetchTeachers(session.user.id);
-      } else {
-        setIsLoading(false);
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        fetchTeachers(session.user.id);
-      } else {
-        setTeachers([]);
-        setIsLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // We check for a "pseudo-session" in localStorage for IC login
+    const savedIc = localStorage.getItem('guru_ic_session');
+    if (savedIc) {
+      setSession({ user: { ic: savedIc, id: 'pseudo-user' } });
+      fetchTeachersByIc(savedIc);
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
+  const fetchTeachersByIc = async (ic: string) => {
+    setIsLoading(true);
+    // In "IC Mode", if it's admin, we might want to see all, but for now we follow user's request
+    // which implies personal access by IC.
+    const { data, error } = await supabase
+      .from('teachers')
+      .select('*')
+      .eq('ic_number', ic)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      toast.error("Gagal memuat profil guru.");
+      console.error(error);
+    } else if (data) {
+      const mappedData = data.map((t: any) => ({
+        ...t,
+        profileImage: t.profile_image,
+      }));
+      setTeachers(mappedData);
+      if (mappedData.length > 0 && !activeTeacherId) {
+        setActiveTeacherId(mappedData[0].id);
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const handleIcLogin = async () => {
+    if (!icInput.trim()) {
+      toast.error("Sila masukkan No. IC.");
+      return;
+    }
+    setIsLoggingIn(true);
+    
+    // Check if teacher exists with this IC
+    const { data, error } = await supabase
+      .from('teachers')
+      .select('*')
+      .eq('ic_number', icInput)
+      .maybeSingle();
+
+    if (error) {
+      toast.error("Ralat semasa log masuk.");
+    } else if (data) {
+      localStorage.setItem('guru_ic_session', icInput);
+      setSession({ user: { ic: icInput, id: 'pseudo-user' } });
+      await fetchTeachersByIc(icInput);
+      toast.success(`Selamat kembali, ${data.profile.nama || 'Cikgu'}`);
+    } else {
+      // If doesn't exist, we'll allow creating one for this IC if they want
+      toast.info("No. IC tidak dijumpai. Anda boleh mula mengisi profil baru.");
+      localStorage.setItem('guru_ic_session', icInput);
+      setSession({ user: { ic: icInput, id: 'pseudo-user' } });
+      setTeachers([]);
+      setIsLoading(false);
+    }
+    setIsLoggingIn(false);
+  };
+
   const fetchTeachers = async (userId: string) => {
+    // This function is kept for backward compatibility if needed, 
+    // but we use fetchTeachersByIc now.
     setIsLoading(true);
     const { data, error } = await supabase
       .from('teachers')
@@ -98,7 +148,6 @@ function GuruProfile() {
       toast.error("Gagal memuat profil guru.");
       console.error(error);
     } else if (data) {
-      // Map database fields to the UI state structure
       const mappedData = data.map((t: any) => ({
         ...t,
         profileImage: t.profile_image,
@@ -127,10 +176,12 @@ function GuruProfile() {
       return;
     }
 
+    const ic = session.user.ic;
+
     const newTeacherData = {
       profile: {
         nama: "Guru Baru",
-        kp: "",
+        kp: ic || "",
         tel: "",
         email: "",
         pengalaman: "",
@@ -155,7 +206,8 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: session.user.id,
+      owner_id: session.user.id || 'anonymous',
+      ic_number: ic,
       profile_image: null
     };
 
@@ -229,7 +281,8 @@ function GuruProfile() {
         kelulusan: currentTeacher.kelulusan,
         subjek: currentTeacher.subjek,
         sejarah: currentTeacher.sejarah,
-        profile_image: currentTeacher.profileImage
+        profile_image: currentTeacher.profileImage,
+        ic_number: currentTeacher.profile.kp // Ensure IC number is synced
       })
       .eq('id', activeTeacherId);
 
@@ -276,7 +329,9 @@ function GuruProfile() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('guru_ic_session');
+    setSession(null);
+    setTeachers([]);
     toast.info("Anda telah log keluar.");
   };
 
@@ -362,12 +417,36 @@ function GuruProfile() {
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium">Log masuk untuk mula menguruskan profil guru anda.</p>
+            <p className="text-slate-500 font-medium">Sila masukkan No. Kad Pengenalan untuk mula.</p>
           </div>
-          <div className="pt-4">
-            <Button onClick={handleLogin} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
-              <LogIn className="w-6 h-6 mr-2" /> Log Masuk dengan Google
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2 text-left">
+              <Label htmlFor="ic-login" className="text-slate-600 font-bold ml-1 text-xs uppercase tracking-wider">No. Kad Pengenalan</Label>
+              <Input 
+                id="ic-login"
+                placeholder="Contoh: 770613035750" 
+                className="h-14 rounded-2xl border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg font-bold transition-all"
+                value={icInput}
+                onChange={(e) => setIcInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
+              />
+            </div>
+            <Button 
+              onClick={handleIcLogin} 
+              disabled={isLoggingIn}
+              className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+            >
+              {isLoggingIn ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                <>
+                  <LogIn className="w-6 h-6 mr-2" /> Masuk Profil
+                </>
+              )}
             </Button>
+            <p className="text-[10px] text-slate-400 font-medium italic">
+              *Masukkan No. IC tanpa tanda sempang (-)
+            </p>
           </div>
         </Card>
       </div>
