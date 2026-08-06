@@ -1,12 +1,29 @@
 // @ts-nocheck
+import { PDFDocument } from 'pdf-lib';
 
 export async function parseEOperasiPDF(base64: string) {
   try {
-    const pdf = await import('pdf-parse');
     const buffer = Buffer.from(base64, 'base64');
-    const pdfParser = pdf.default || pdf;
-    const data = await pdfParser(buffer);
-    const text = data.text;
+    
+    // Attempt parsing with pdf-parse first as it has better text extraction
+    let text = "";
+    try {
+      const pdf = await import('pdf-parse');
+      const pdfParser = pdf.default || pdf;
+      const data = await pdfParser(buffer);
+      text = data.text;
+    } catch (e) {
+      console.warn('pdf-parse failed, falling back to pdf-lib (text extraction limited):', e);
+      // Fallback to pdf-lib just to see if we can at least open it
+      const pdfDoc = await PDFDocument.load(buffer);
+      // pdf-lib doesn't have a built-in text extractor, it's for manipulation.
+      // If we are here, we might be in trouble for full extraction, but we'll try to report a specific error.
+      throw new Error('Format fail PDF tidak disokong oleh parser utama.');
+    }
+
+    if (!text || text.trim().length < 10) {
+      throw new Error('Gagal mengekstrak teks daripada PDF. Pastikan ia bukan fail imbasan (OCR diperlukan).');
+    }
 
     // Mapping patterns for eOperasi PDF
     const profile: any = {};
@@ -77,6 +94,6 @@ export async function parseEOperasiPDF(base64: string) {
     };
   } catch (error) {
     console.error('Error parsing PDF:', error);
-    throw new Error('Gagal memproses fail PDF eOperasi.');
+    throw new Error(error.message || 'Gagal memproses fail PDF eOperasi.');
   }
 }
