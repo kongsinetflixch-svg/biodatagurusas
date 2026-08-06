@@ -358,10 +358,9 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: null,
       ic_number: ic,
       profile_image: null
-    };
+    } as any;
 
     console.log("Payload to insert:", newTeacherData);
 
