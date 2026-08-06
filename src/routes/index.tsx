@@ -1598,8 +1598,9 @@ function GuruProfile() {
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Jalan Sekolah</Label>
+                <div className="space-y-2 info-item">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Jalan Sekolah</Label>
+
                   {isEditMode ? (
                     <Input 
                       value={(profile as any).sekolah?.alamat || ""} 
