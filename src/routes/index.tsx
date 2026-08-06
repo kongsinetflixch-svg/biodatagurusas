@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -45,7 +45,151 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+
+// SSPA Grade Constants
+const SSPA_GRADES = [
+  "DG54", "DG52", "DG48", "DG44", "DG41", "DG38", "DG34", "DG32", "DG29"
+];
+
+// Malaysian States
+const MALAYSIAN_STATES = [
+  "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", 
+  "Perak", "Perlis", "Pulau Pinang", "Sabah", "Sarawak", "Selangor", 
+  "Terengganu", "Wilayah Persekutuan Kuala Lumpur", 
+  "Wilayah Persekutuan Labuan", "Wilayah Persekutuan Putrajaya"
+];
+
+const PRINT_STYLES = `
+  @page {
+    size: A4;
+    margin: 10mm 15mm;
+  }
+
+  @media print {
+    body {
+      background: white !important;
+      color: black !important;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
+      font-size: 10pt !important;
+      line-height: 1.3 !important;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+
+    #profile-container {
+      padding: 0 !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      background: white !important;
+    }
+
+    .print-header {
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      border-bottom: 2px solid #002B5B !important;
+      padding-bottom: 5mm !important;
+      margin-bottom: 5mm !important;
+    }
+
+    .print-photo {
+      width: 32mm !important;
+      height: 40mm !important;
+      border: 1px solid #ddd !important;
+      object-fit: cover !important;
+    }
+
+    .section-title {
+      font-size: 11pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      color: #002B5B !important;
+      border-bottom: 1px solid #eee !important;
+      padding-bottom: 2px !important;
+      margin: 4mm 0 2mm 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+    }
+
+    .info-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 2mm 10mm !important;
+    }
+
+    .info-item {
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .info-label {
+      font-size: 8pt !important;
+      color: #666 !important;
+      text-transform: uppercase !important;
+      font-weight: bold !important;
+    }
+
+    .info-value {
+      font-size: 10pt !important;
+      font-weight: bold !important;
+    }
+
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-top: 2mm !important;
+    }
+
+    th {
+      background: #f8fafc !important;
+      font-size: 8pt !important;
+      text-transform: uppercase !important;
+      padding: 2mm !important;
+      border: 1px solid #e2e8f0 !important;
+      text-align: left !important;
+    }
+
+    td {
+      padding: 2mm !important;
+      border: 1px solid #e2e8f0 !important;
+      font-size: 9pt !important;
+    }
+
+    .signature-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 20mm !important;
+      margin-top: 10mm !important;
+      page-break-inside: avoid !important;
+    }
+
+    .sig-box {
+      border-top: 1px solid #000 !important;
+      margin-top: 20mm !important;
+      padding-top: 2mm !important;
+      text-align: center !important;
+      font-size: 9pt !important;
+      font-weight: bold !important;
+    }
+
+    .kpm-logo-text {
+      font-size: 18pt !important;
+      font-weight: 900 !important;
+      color: #002B5B !important;
+    }
+
+    /* Force compact layout */
+    .card-print {
+      border: none !important;
+      padding: 0 !important;
+      margin-bottom: 4mm !important;
+    }
+  }
+`;
+
 
 // Hardcoded teachers data from SAS 2026 List
 // Filtering for Guru, Pentadbir, and Pengetua only
