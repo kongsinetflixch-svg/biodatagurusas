@@ -87,7 +87,6 @@ function GuruProfilePage() {
     const { data, error } = await supabase
       .from('teachers')
       .select('*')
-      .eq('ic_number', cleanIc)
       .order('created_at', { ascending: true });
 
     if (error || !data) {
@@ -96,15 +95,21 @@ function GuruProfilePage() {
     }
 
     const mapped = data.map(t => ({ ...t, profileImage: t.profile_image }));
-    setTeachers(mapped);
-    
-    if (mapped.length > 0 && !activeTeacherId) {
-      setActiveTeacherId(mapped[0]?.id || null);
-    }
     
     if (cleanIc === SUPERADMIN_IC) {
+      setTeachers(mapped);
       setIsAdminMode(true);
+      if (mapped.length > 0 && !activeTeacherId) {
+        setActiveTeacherId(mapped[0]?.id || null);
+      }
+    } else {
+      const filtered = mapped.filter(t => t.ic_number === cleanIc);
+      setTeachers(filtered);
+      if (filtered.length > 0 && !activeTeacherId) {
+        setActiveTeacherId(filtered[0]?.id || null);
+      }
     }
+
     setIsLoading(false);
   };
 
