@@ -1511,7 +1511,7 @@ function GuruProfile() {
                         } 
                       })}
                     >
-                      <SelectTrigger className="h-10 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                      <SelectTrigger className="h-12 sm:h-10 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
                         <SelectValue placeholder="Pilih Negeri" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-slate-200">
