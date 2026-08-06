@@ -209,7 +209,7 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: session.user.id || 'anonymous',
+      owner_id: ic,
       ic_number: ic,
       profile_image: null
     };
