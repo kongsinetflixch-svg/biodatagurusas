@@ -35,6 +35,7 @@ import {
   Users
 } from "lucide-react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 
@@ -220,47 +221,56 @@ function GuruProfile() {
       toast.error("Sila masukkan No. IC.");
       return;
     }
+    const cleanIc = icInput.trim().replace(/-/g, "");
     setIsLoggingIn(true);
+    console.log("Memulakan proses log masuk untuk IC:", cleanIc);
 
     // Validate if the IC exists in SAS_TEACHERS softcoded list
-    const sasTeacher = SAS_TEACHERS.find(t => t.kp === icInput.trim());
+    const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
     
-    if (!sasTeacher && icInput.trim() !== SUPERADMIN_IC) {
+    if (!sasTeacher && cleanIc !== SUPERADMIN_IC) {
       toast.error("Maaf, No. IC anda tiada dalam senarai Guru/Pentadbir SAS 2026.");
       setIsLoggingIn(false);
       return;
     }
 
-    if (icInput.trim() === SUPERADMIN_IC) {
-      setIsAdminMode(true);
-      toast.success("Selamat datang, Superadmin!");
-    }
-    
-    // Check if teacher profile already exists in DB
-    const { data, error } = await supabase
-      .from('teachers')
-      .select('*')
-      .or(`ic_number.eq.${icInput},owner_id.eq.${icInput}`)
-      .maybeSingle();
-
-    if (error) {
-      toast.error("Ralat semasa log masuk.");
-    } else {
-      localStorage.setItem('guru_ic_session', icInput);
-      setSession({ user: { ic: icInput, id: 'pseudo-user' } });
-      
-      if (data) {
-        await fetchTeachersByIc(icInput);
-        const teacherName = (data.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
-        toast.success(`Selamat kembali, ${teacherName}`);
-      } else {
-        // If profile doesn't exist in DB, start fresh for this user from the list
-        toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
-        setTeachers([]);
-        setIsLoading(false);
+    try {
+      if (cleanIc === SUPERADMIN_IC) {
+        setIsAdminMode(true);
+        toast.success("Selamat datang, Superadmin!");
       }
+      
+      // Check if teacher profile already exists in DB
+      const { data, error } = await supabase
+        .from('teachers')
+        .select('*')
+        .or(`ic_number.eq.${cleanIc},owner_id.eq.${cleanIc}`)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Ralat Supabase:", error);
+        toast.error(`Ralat semasa log masuk: ${error.message}`);
+      } else {
+        localStorage.setItem('guru_ic_session', cleanIc);
+        setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
+        
+        if (data) {
+          await fetchTeachersByIc(cleanIc);
+          const teacherName = (data.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
+          toast.success(`Selamat kembali, ${teacherName}`);
+        } else {
+          // If profile doesn't exist in DB, start fresh for this user from the list
+          toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
+          setTeachers([]);
+          setIsLoading(false);
+        }
+      }
+    } catch (err) {
+      console.error("Ralat tidak dijangka:", err);
+      toast.error("Berlaku ralat sistem yang tidak dijangka.");
+    } finally {
+      setIsLoggingIn(false);
     }
-    setIsLoggingIn(false);
   };
 
   const fetchTeachers = async (userId: string) => {
@@ -305,7 +315,7 @@ function GuruProfile() {
       return;
     }
 
-    const ic = session.user.ic;
+    const ic = session.user.ic.replace(/-/g, "");
 
     const sasTeacher = SAS_TEACHERS.find(t => t.kp === ic);
 
