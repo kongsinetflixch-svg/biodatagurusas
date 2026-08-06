@@ -695,7 +695,7 @@ function GuruProfile() {
                   <div className="flex items-center gap-2">
                     <Avatar className="w-6 h-6 border border-white/20">
                       <AvatarImage src={t.profileImage || ""} />
-                      <AvatarFallback className="text-[8px]">{t.profile.nama.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="text-[8px]">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
                     </Avatar>
                     {t.profile.nama || "Tanpa Nama"}
                   </div>
