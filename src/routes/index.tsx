@@ -48,7 +48,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 // SSPA Grade Constants
 const SSPA_GRADES = [
-  "DG54", "DG52", "DG48", "DG44", "DG41", "DG38", "DG34", "DG32", "DG29"
+  "DG54", "DG52", "DG48", "DG44", "DG41", "DG38", "DG34", "DG32", "DG29",
+  "DG14", "DG12", "DG11", "DG10", "DG9"
 ];
 
 // Malaysian States
