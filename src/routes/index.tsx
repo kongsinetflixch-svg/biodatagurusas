@@ -63,7 +63,7 @@ const MALAYSIAN_STATES = [
 const PRINT_STYLES = `
   @page {
     size: A4;
-    margin: 10mm 15mm;
+    margin: 10mm;
   }
 
   @media print {
@@ -72,7 +72,9 @@ const PRINT_STYLES = `
       color: black !important;
       font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
       font-size: 10pt !important;
-      line-height: 1.3 !important;
+      line-height: 1.2 !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
 
     .no-print {
@@ -84,109 +86,120 @@ const PRINT_STYLES = `
       margin: 0 !important;
       box-shadow: none !important;
       background: white !important;
+      border: none !important;
     }
 
     .print-header {
       display: flex !important;
-      align-items: flex-start !important;
-      justify-content: space-between !important;
-      border-bottom: 2px solid #002B5B !important;
-      padding-bottom: 5mm !important;
-      margin-bottom: 5mm !important;
-    }
-
-    .print-photo {
-      width: 32mm !important;
-      height: 40mm !important;
-      border: 1px solid #ddd !important;
-      object-fit: cover !important;
-    }
-
-    .section-title {
-      font-size: 11pt !important;
-      font-weight: bold !important;
-      text-transform: uppercase !important;
-      color: #002B5B !important;
-      border-bottom: 1px solid #eee !important;
-      padding-bottom: 2px !important;
-      margin: 4mm 0 2mm 0 !important;
-      display: flex !important;
       align-items: center !important;
-      gap: 5px !important;
-    }
-
-    .info-grid {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-      gap: 2mm 10mm !important;
-    }
-
-    .info-item {
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    .info-label {
-      font-size: 8pt !important;
-      color: #666 !important;
-      text-transform: uppercase !important;
-      font-weight: bold !important;
-    }
-
-    .info-value {
-      font-size: 10pt !important;
-      font-weight: bold !important;
-    }
-
-    table {
-      width: 100% !important;
-      border-collapse: collapse !important;
-      margin-top: 2mm !important;
-    }
-
-    th {
-      background: #f8fafc !important;
-      font-size: 8pt !important;
-      text-transform: uppercase !important;
-      padding: 2mm !important;
-      border: 1px solid #e2e8f0 !important;
-      text-align: left !important;
-    }
-
-    td {
-      padding: 2mm !important;
-      border: 1px solid #e2e8f0 !important;
-      font-size: 9pt !important;
-    }
-
-    .signature-grid {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-      gap: 20mm !important;
-      margin-top: 10mm !important;
-      page-break-inside: avoid !important;
-    }
-
-    .sig-box {
-      border-top: 1px solid #000 !important;
-      margin-top: 20mm !important;
-      padding-top: 2mm !important;
-      text-align: center !important;
-      font-size: 9pt !important;
-      font-weight: bold !important;
+      justify-content: space-between !important;
+      border-bottom: 1.5pt solid #002B5B !important;
+      padding-bottom: 3mm !important;
+      margin-bottom: 4mm !important;
     }
 
     .kpm-logo-text {
       font-size: 18pt !important;
       font-weight: 900 !important;
       color: #002B5B !important;
+      letter-spacing: -1pt !important;
     }
 
-    /* Force compact layout */
+    .print-photo {
+      width: 30mm !important;
+      height: 38mm !important;
+      border: 0.5pt solid #000 !important;
+      object-fit: cover !important;
+    }
+
+    .section-title {
+      font-size: 10pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      color: #002B5B !important;
+      border-bottom: 0.5pt solid #002B5B !important;
+      padding-bottom: 1pt !important;
+      margin: 3mm 0 2mm 0 !important;
+      display: block !important;
+    }
+
+    .info-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 1.5mm 6mm !important;
+    }
+
+    .info-item {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: baseline !important;
+      gap: 2mm !important;
+    }
+
+    .info-label {
+      font-size: 8pt !important;
+      color: #333 !important;
+      text-transform: uppercase !important;
+      font-weight: bold !important;
+      min-width: 35mm !important;
+      flex-shrink: 0 !important;
+    }
+
+    .info-label::after {
+      content: ":" !important;
+    }
+
+    .info-value {
+      font-size: 9.5pt !important;
+      font-weight: normal !important;
+      color: black !important;
+    }
+
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-top: 2mm !important;
+      table-layout: auto !important;
+    }
+
+    th {
+      background: #eee !important;
+      font-size: 8pt !important;
+      text-transform: uppercase !important;
+      padding: 1mm 2mm !important;
+      border: 0.5pt solid #000 !important;
+      text-align: left !important;
+    }
+
+    td {
+      padding: 1mm 2mm !important;
+      border: 0.5pt solid #000 !important;
+      font-size: 9pt !important;
+      vertical-align: top !important;
+    }
+
+    .signature-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 15mm !important;
+      margin-top: 8mm !important;
+      page-break-inside: avoid !important;
+    }
+
+    .sig-box {
+      border-top: 0.5pt solid #000 !important;
+      margin-top: 15mm !important;
+      padding-top: 1mm !important;
+      text-align: center !important;
+      font-size: 8pt !important;
+    }
+
     .card-print {
       border: none !important;
       padding: 0 !important;
-      margin-bottom: 4mm !important;
+      margin-bottom: 3mm !important;
+      background: transparent !important;
+      box-shadow: none !important;
     }
   }
 `;
