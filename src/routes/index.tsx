@@ -1088,7 +1088,10 @@ function GuruProfile() {
                     {isEditMode ? (
                       <Input 
                         value={(profile as any)[item.key as keyof typeof profile] as string} 
-                        onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), [item.key]: e.target.value}})}
+                        onChange={(e) => {
+                          const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
+                          updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
+                        }}
                         className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
                       />
                     ) : (
