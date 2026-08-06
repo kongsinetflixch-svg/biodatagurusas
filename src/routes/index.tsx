@@ -81,6 +81,8 @@ const PRINT_STYLES = `
       line-height: 1.2 !important;
       padding: 0 !important;
       margin: 0 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
 
     /* Hide everything by default during print */
@@ -268,9 +270,10 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
         </div>
         <div className="print-photo-container">
-          {currentTeacher.profile_image ? (
+          {currentTeacher.profileImage ? (
             <img 
-              src={currentTeacher.profile_image} 
+              src={currentTeacher.profileImage} 
+
               alt="Profil" 
               className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
             />
