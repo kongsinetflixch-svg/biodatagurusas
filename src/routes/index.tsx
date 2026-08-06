@@ -602,7 +602,7 @@ function GuruProfile() {
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
           <div className="flex justify-between items-center no-print">
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-400 hover:text-rose-500">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold">
               <LogOut className="w-4 h-4 mr-1" /> Log Keluar
             </Button>
             <Button variant="ghost" size="icon" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="text-slate-200 hover:text-[#002B5B] transition-colors">
@@ -935,7 +935,7 @@ function GuruProfile() {
             <Button 
               variant="ghost"
               onClick={handleLogout}
-              className="h-12 px-4 rounded-2xl text-slate-400 hover:text-rose-500"
+              className="h-12 px-4 rounded-2xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold"
             >
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
@@ -1027,6 +1027,10 @@ function GuruProfile() {
             </Button>
             <Button variant="outline" className="h-10 rounded-xl border-slate-200 hover:bg-slate-50">
               <Download className="w-4 h-4 mr-2" /> PDF
+            </Button>
+            <div className="w-[1px] bg-slate-200 mx-1"></div>
+            <Button variant="ghost" onClick={handleLogout} className="h-10 px-4 rounded-xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold">
+              <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
           </div>
         </div>
