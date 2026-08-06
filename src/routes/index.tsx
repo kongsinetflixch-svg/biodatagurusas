@@ -879,7 +879,7 @@ function GuruProfile() {
                       />
                     ) : (
                       <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
-                        <p className="font-bold text-slate-700">{profile[item.key as keyof typeof profile] as string || "-"}</p>
+                        <p className="font-bold text-slate-700">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
                       </div>
                     )}
                   </div>
