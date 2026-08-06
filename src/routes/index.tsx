@@ -1836,7 +1836,7 @@ function GuruProfile() {
                                 const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, tahun: e.target.value} : s);
                                 updateCurrentTeacher({ sejarah: newSejarah });
                               }}
-                              className="h-8 rounded-lg w-24 mx-auto"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-24 mx-auto text-base"
                             />
                           ) : (
                             <span className="px-3 py-1 bg-[#002B5B] text-white rounded-full text-[10px] font-black">{row.tahun}</span>
