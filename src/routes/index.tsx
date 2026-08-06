@@ -778,7 +778,7 @@ function GuruProfile() {
     );
   }
 
-  if (teachers.length === 0 && !isAdminMode) {
+  if (teachers.length === 0 && !isAdminMode && session) {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
@@ -802,6 +802,13 @@ function GuruProfile() {
           <div className="flex justify-center py-4">
             <Loader2 className="w-8 h-8 text-[#002B5B] animate-spin" />
           </div>
+          <Button 
+            variant="outline" 
+            onClick={() => handleIcLogin()} 
+            className="w-full mt-4 text-[#002B5B] font-bold border-slate-200"
+          >
+            Cuba Muat Semula
+          </Button>
         </Card>
       </div>
     );
