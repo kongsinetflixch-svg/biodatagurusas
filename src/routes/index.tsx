@@ -1173,48 +1173,79 @@ function GuruProfile() {
 
 
         {/* HEADER */}
-        <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-white/10 transition-colors duration-500"></div>
+        <header className="flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-2xl border-b-8 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-110 duration-1000" />
           
-          <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-3 shadow-inner transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-               <span className="text-xl font-black text-[#002B5B]">KPM</span>
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 relative z-10">
+            <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8">
+              <div className="relative group/avatar">
+                <div className="absolute inset-0 bg-[#D4AF37] rounded-[2rem] blur-xl opacity-20 group-hover/avatar:opacity-40 transition-opacity"></div>
+                <Avatar className="w-24 h-24 sm:w-36 sm:h-36 border-4 border-white shadow-2xl rounded-[2rem] overflow-hidden transition-all group-hover/avatar:scale-105 group-hover/avatar:rotate-2 duration-500">
+                  <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} className="object-cover" />
+                  <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-black">
+                    {(profile as any)?.nama?.charAt(0) || "G"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-2 -right-2 no-print">
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleImageUpload} 
+                    accept="image/*" 
+                    className="hidden" 
+                  />
+                  <Button 
+                    size="icon" 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-10 h-10 sm:w-12 sm:h-12 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl flex items-center justify-center cursor-pointer shadow-xl transition-all hover:scale-110 active:scale-95 border-4 border-white"
+                  >
+                    <Camera className="w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="text-center md:text-left space-y-3">
+                <div className="flex flex-col md:flex-row items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 hidden sm:flex">
+                     <span className="text-xs font-black text-[#002B5B]">KPM</span>
+                  </div>
+                  <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight drop-shadow-lg">
+                    {(profile as any)?.nama || "SILA ISI NAMA GURU"}
+                  </h1>
+                </div>
+                
+                <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 mt-2">
+                  <div className="text-[#D4AF37] font-black text-[10px] sm:text-xs flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10 uppercase tracking-[0.1em]">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    Profil Guru Profesional
+                  </div>
+                  <div className="text-blue-100/70 font-bold text-xs sm:text-sm flex items-center gap-2 px-1">
+                    <MapPin className="w-4 h-4 text-[#D4AF37]" />
+                    SMK Sultan Ahmad Shah
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">{(profile as any)?.nama || "PROFIL GURU"}</h1>
-              <p className="text-blue-100/80 font-medium text-lg mt-1 flex items-center justify-center md:justify-start gap-2">
-                  <MapPin className="w-5 h-5 text-[#D4AF37]" />
-                  SMK Sultan Ahmad Shah
-                </p>
-                <p className="text-blue-100/60 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">
-                  <FileText className="w-4 h-4 text-[#D4AF37]" />
-                  Borang Profil Guru 2026
-                </p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col items-center md:items-end gap-4 mt-8 md:mt-0 relative z-10">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
-              <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
-                <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} />
-                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">{(profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
-              </Avatar>
-              <div className="absolute -bottom-2 right-2 no-print">
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleImageUpload} 
-                  accept="image/*" 
-                  className="hidden" 
-                />
+
+            <div className="w-full md:w-auto mt-4 md:mt-2">
+              <div className="flex flex-col sm:flex-row items-center gap-3 no-print">
                 <Button 
-                  size="icon" 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="rounded-full w-10 h-10 shadow-lg bg-[#D4AF37] hover:bg-[#B8962E] text-white border-2 border-white transition-transform hover:scale-110 active:scale-95"
+                  onClick={() => setIsEditMode(!isEditMode)} 
+                  variant={isEditMode ? "destructive" : "secondary"}
+                  className={`w-full sm:w-auto h-12 px-8 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${!isEditMode && 'bg-white text-[#002B5B] hover:bg-blue-50'}`}
                 >
-                   <Camera className="w-5 h-5" />
+                  {isEditMode ? <><X className="w-5 h-5 mr-3" /> Batal</> : <><Edit2 className="w-5 h-5 mr-3" /> Edit Maklumat</>}
                 </Button>
+                {isEditMode && (
+                  <Button 
+                    onClick={handleSaveTeacher} 
+                    disabled={isSaving}
+                    className="w-full sm:w-auto h-12 px-10 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-[#D4AF37]/20 transition-all animate-in zoom-in"
+                  >
+                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Save className="w-5 h-5 mr-3" /> Simpan Profil</>}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
