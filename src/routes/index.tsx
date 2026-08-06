@@ -222,7 +222,6 @@ function GuruProfile() {
     }
     const cleanIc = icInput.trim().replace(/-/g, "");
     setIsLoggingIn(true);
-    alert("Proses log masuk bermula untuk IC: " + cleanIc);
     console.log("Memulakan proses log masuk untuk IC:", cleanIc);
 
     // Validate if the IC exists in SAS_TEACHERS softcoded list
