@@ -283,7 +283,7 @@ function GuruProfile() {
         subjek: currentTeacher.subjek,
         sejarah: currentTeacher.sejarah,
         profile_image: currentTeacher.profileImage,
-        ic_number: currentTeacher.profile.kp // Ensure IC number is synced
+        ic_number: (currentTeacher.profile as any)?.kp // Ensure IC number is synced
       })
       .eq('id', activeTeacherId);
 
