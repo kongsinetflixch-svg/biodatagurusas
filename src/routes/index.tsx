@@ -358,10 +358,11 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: ic,
       ic_number: ic,
       profile_image: null
-    };
+    } as any;
+
+    console.log("Payload to insert:", newTeacherData);
 
     const { data, error } = await supabase
       .from('teachers')
@@ -369,10 +370,9 @@ function GuruProfile() {
       .select();
 
     if (error) {
-      toast.error("Gagal menjana profil guru secara automatik.");
-      console.error(error);
+      toast.error(`Gagal menjana profil: ${error.message}`);
+      console.error("Auto-creation error:", error);
       setIsLoading(false);
-      console.log("Auto-creation failed for IC:", ic);
     } else if (data && data[0]) {
       const teacher = data[0];
       const newTeacher = {
@@ -381,10 +381,74 @@ function GuruProfile() {
       };
       setTeachers([newTeacher]);
       setActiveTeacherId(teacher.id as string);
+      
+      // Update teachers state
+      const mappedTeacher = {
+        ...teacher,
+        profileImage: teacher.profile_image
+      };
+      setTeachers([mappedTeacher]);
+      
       setIsEditMode(false);
       setIsLoading(false);
       console.log("Auto-creation complete for IC:", ic);
       toast.success("Profil digital anda telah dijanakan secara automatik.");
+    }
+  };
+
+  const handleManualCreateTeacher = async (ic: string, name: string, jabatan: string) => {
+    setIsLoading(true);
+    const newTeacherData = {
+      profile: {
+        nama: name,
+        kp: ic,
+        tel: "",
+        email: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        gred: "",
+        mengajarOpsyen: "",
+        alamat: "",
+        sekolah: {
+          nama: "SMK Sultan Ahmad Shah",
+          alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
+          kod: "CEB1003",
+          tel: "05-4911018",
+          faks: "05-4914922",
+          jawatan: jabatan,
+          guruKhas: "",
+          pemeriksaSPM: "",
+          lain: ""
+        }
+      },
+      kelulusan: [],
+      subjek: [],
+      sejarah: [],
+      ic_number: ic,
+      profile_image: null
+    } as any;
+
+    const { data, error } = await supabase
+      .from('teachers')
+      .insert([newTeacherData])
+      .select();
+
+    if (error) {
+      toast.error(`Gagal menjana profil: ${error.message}`);
+      setIsLoading(false);
+    } else if (data && data[0]) {
+      const teacher = data[0];
+      const newTeacher = {
+        ...teacher,
+        profileImage: teacher.profile_image
+      };
+      setTeachers(prev => [...prev, newTeacher]);
+      setActiveTeacherId(teacher.id as string);
+      setIsEditMode(true);
+      setIsLoading(false);
+      toast.success(`Profil untuk ${name} telah dijanakan.`);
     }
   };
 
@@ -714,7 +778,7 @@ function GuruProfile() {
     );
   }
 
-  if (teachers.length === 0 && !isAdminMode) {
+  if (teachers.length === 0 && !isAdminMode && session) {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
@@ -738,6 +802,13 @@ function GuruProfile() {
           <div className="flex justify-center py-4">
             <Loader2 className="w-8 h-8 text-[#002B5B] animate-spin" />
           </div>
+          <Button 
+            variant="outline" 
+            onClick={() => handleIcLogin()} 
+            className="w-full mt-4 text-[#002B5B] font-bold border-slate-200"
+          >
+            Cuba Muat Semula
+          </Button>
         </Card>
       </div>
     );
@@ -861,15 +932,34 @@ function GuruProfile() {
                                   key={role}
                                   variant={t.jabatan === role ? "default" : "outline"}
                                   size="sm"
-                                  onClick={() => {
+                                  onClick={async () => {
                                     const teacherIdx = SAS_TEACHERS.findIndex(st => st.kp === t.kp);
                                     if (teacherIdx !== -1) {
-                                      const teacher = SAS_TEACHERS[teacherIdx];
-                                      if (teacher) {
-                                        teacher.jabatan = role;
-                                        setRoleSearchTerm(prev => prev + " "); // Force re-render
-                                        setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
-                                        toast.success(`Peranan ${t.nama} dikemaskini ke ${role}`);
+                                      const currentSAS = SAS_TEACHERS[teacherIdx];
+                                      if (currentSAS) currentSAS.jabatan = role;
+                                      setRoleSearchTerm(prev => prev + " ");
+                                      setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
+                                      
+                                      const { data: existing } = await supabase
+                                        .from('teachers')
+                                        .select('*')
+                                        .eq('ic_number', t.kp)
+                                        .maybeSingle();
+                                        
+                                      if (existing) {
+                                        const typedExisting = existing as any;
+                                        await supabase
+                                          .from('teachers')
+                                          .update({ 
+                                            profile: { 
+                                              ...typedExisting.profile, 
+                                              sekolah: { ...(typedExisting.profile?.sekolah || {}), jawatan: role } 
+                                            } 
+                                          } as any)
+                                          .eq('id', typedExisting.id);
+                                        toast.success(`Peranan ${t.nama} dikemaskini.`);
+                                      } else {
+                                        handleManualCreateTeacher(t.kp, t.nama, role);
                                       }
                                     }
                                   }}
