@@ -1204,12 +1204,13 @@ function GuruProfile() {
         </div>
 
         {/* STATS CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 no-print">
           {[
             { title: "Pengalaman Mengajar", value: (profile as any).pengalaman || "-", icon: Briefcase, color: "text-[#002B5B]", bg: "bg-white" },
             { title: "Sekolah Semasa", value: (profile as any).tempohSemasa || "-", icon: Clock, color: "text-[#002B5B]", bg: "bg-white" },
             { title: "Bidang Opsyen", value: (profile as any).opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
-            { title: "Kelayakan", value: "Ijazah & Diploma", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
+            { title: "Kelayakan", value: (kelulusan && (kelulusan as any[]).length > 0) ? (kelulusan as any[])[0].kelayakan : "-", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
+          ].map((item, i) => (
 
           ].map((item, i) => (
             <Card key={i} className="border-none shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 animate-in slide-up duration-500 rounded-2xl overflow-hidden" style={{ animationDelay: `${i * 100}ms` }}>
