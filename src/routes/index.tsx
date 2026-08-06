@@ -1684,9 +1684,6 @@ function GuruProfile() {
 
         {/* Removed print buttons from profile header as requested */}
 
-          </div>
-        )}
-
 
 
         {/* PRINT ONLY HEADER */}
