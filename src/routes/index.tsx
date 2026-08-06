@@ -240,87 +240,8 @@ const PRINT_STYLES = `
   .print-preview-content .no-print {
     display: none !important;
   }
-
-  .print-preview-content .section-title {
-    font-size: 10pt !important;
-    font-weight: bold !important;
-    text-transform: uppercase !important;
-    color: #002B5B !important;
-    border-bottom: 0.5pt solid #002B5B !important;
-    padding-bottom: 1pt !important;
-    margin: 3mm 0 2mm 0 !important;
-    display: block !important;
-  }
-
-  .print-preview-content .info-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 1.5mm 6mm !important;
-  }
-
-  .print-preview-content .info-item {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: baseline !important;
-    gap: 2mm !important;
-  }
-
-  .print-preview-content .info-label {
-    font-size: 8pt !important;
-    color: #333 !important;
-    text-transform: uppercase !important;
-    font-weight: bold !important;
-    min-width: 35mm !important;
-    flex-shrink: 0 !important;
-  }
-
-  .print-preview-content .info-label::after {
-    content: ":" !important;
-  }
-
-  .print-preview-content .info-value {
-    font-size: 9.5pt !important;
-    font-weight: normal !important;
-    color: black !important;
-  }
-
-  .print-preview-content table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    margin-top: 2mm !important;
-  }
-
-  .print-preview-content th {
-    background: #eee !important;
-    font-size: 8pt !important;
-    text-transform: uppercase !important;
-    padding: 1mm 2mm !important;
-    border: 0.5pt solid #000 !important;
-    text-align: left !important;
-  }
-
-  .print-preview-content td {
-    padding: 1mm 2mm !important;
-    border: 0.5pt solid #000 !important;
-    font-size: 9pt !important;
-    vertical-align: top !important;
-  }
-  
-  .print-preview-content .signature-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 15mm !important;
-    margin-top: 8mm !important;
-  }
-  
-  .print-preview-content .sig-box {
-    border-top: 0.5pt solid #000 !important;
-    margin-top: 15mm !important;
-    padding-top: 1mm !important;
-    text-align: center !important;
-    font-size: 8pt !important;
-  }
 `;
+
 
 // Reusable Print Layout Component to ensure "pratonton" and "cetak" match perfectly
 const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isAdminMode: boolean }) => {
