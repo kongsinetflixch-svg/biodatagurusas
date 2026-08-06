@@ -72,7 +72,7 @@ const SAS_TEACHERS: { nama: string, kp: string, jabatan: string }[] = [
   { nama: "MANGAIYARKARASI A/P RAJAREM", kp: "710707085594", jabatan: "Guru" },
   { nama: "MASLINAWATI BINTI MUJIIB", kp: "761001145006", jabatan: "Guru" },
   { nama: "MASNIZAM BINTI MOHAMED", kp: "770613035750", jabatan: "Guru" },
-  { nama: "MIATI BINTI MOHD LELA", kp: "760202115212", Pentadbir: "Pentadbir" },
+  { nama: "MIATI BINTI MOHD LELA", kp: "760202115212", jabatan: "Pentadbir" },
   { nama: "MOHAMAD NURSALAM BIN MOHD FOUZI", kp: "960803115425", jabatan: "Guru" },
   { nama: "MOHAMMAD FAIRUS KHAZALI BIN ISMAIL", kp: "840517115233", jabatan: "Guru" },
   { nama: "MOHD ERMAN BIN MAHMAT", kp: "800309035793", jabatan: "Pentadbir" },
