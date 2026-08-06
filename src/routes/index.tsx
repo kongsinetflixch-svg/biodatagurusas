@@ -1682,21 +1682,7 @@ function GuruProfile() {
           </div>
         )}
 
-        {/* PRINT BUTTONS (Visible in Web UI) */}
-        {!isEditMode && currentTeacher && (
-          <div className="no-print flex justify-end gap-3 mb-4">
-            <Button 
-              onClick={() => setShowPrintPreview(true)}
-              className="bg-white text-[#002B5B] hover:bg-slate-50 border border-slate-200 font-bold rounded-2xl px-6 h-12 shadow-sm"
-            >
-              <FileText className="w-4 h-4 mr-2 text-[#D4AF37]" /> Pratonton Cetak
-            </Button>
-            <Button 
-              onClick={handlePrint}
-              className="bg-[#002B5B] hover:bg-[#003B7B] text-white font-bold rounded-2xl px-6 h-12 shadow-lg"
-            >
-              <Printer className="w-4 h-4 mr-2 text-[#D4AF37]" /> Simpan PDF / Cetak
-            </Button>
+        {/* Removed print buttons from profile header as requested */}
 
           </div>
         )}
