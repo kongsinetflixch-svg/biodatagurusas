@@ -1897,8 +1897,9 @@ function GuruProfile() {
               <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group">
                 <canvas 
                   ref={canvasRef}
-                  width={500}
-                  height={150}
+                  width={800}
+                  height={250}
+
                   onMouseDown={startDrawing}
                   onMouseMove={draw}
                   onMouseUp={stopDrawing}
