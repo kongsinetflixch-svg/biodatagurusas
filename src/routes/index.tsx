@@ -83,7 +83,7 @@ function GuruProfile() {
     const { data, error } = await supabase
       .from('teachers')
       .select('*')
-      .eq('ic_number', ic)
+      .or(`ic_number.eq.${ic},owner_id.eq.${ic}`)
       .order('created_at', { ascending: true });
 
     if (error) {
