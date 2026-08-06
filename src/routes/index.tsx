@@ -218,7 +218,6 @@ function GuruProfile() {
 
   const handleIcLogin = async () => {
     if (!icInput.trim()) {
-      alert("IC INPUT IS EMPTY: '" + icInput + "'");
       toast.error("Sila masukkan No. IC.");
       return;
     }
