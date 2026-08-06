@@ -64,28 +64,34 @@ export async function parseEOperasiPDF(base64: string) {
     if (gredMatch) profile.gred = gredMatch[1].toUpperCase().trim();
 
     // Kelulusan (Basic extraction)
-    // Looking for lines with years (20XX) and degrees
-    const academicMatch = text.match(/Nama\s*Institusi\s*:\s*([^\n\r*]+)/i);
-    const yearMatch = text.match(/Tahun\s*:\s*(\d{4})/i);
-    const degreeMatch = text.match(/Peringkat\s*Akademik\s*1\s*:\s*([^\n\r*]+)/i) || text.match(/Kelulusan\s*Tertinggi\s*:\s*([^\n\r*]+)/i);
-    
     const kelulusan = [];
-    if (academicMatch || degreeMatch) {
-      kelulusan.push({
-        id: 'imported-1',
-        kelayakan: degreeMatch ? degreeMatch[1].trim() : 'Ijazah',
-        bidang: 'Sila Kemaskini',
-        institusi: academicMatch ? academicMatch[1].trim() : '-',
-        tahun: yearMatch ? yearMatch[1].trim() : '-'
-      });
+    const academicSections = text.split(/Peringkat\s*Akademik/i);
+    
+    if (academicSections.length > 1) {
+      for (let i = 1; i < academicSections.length; i++) {
+        const section = academicSections[i];
+        const instMatch = section.match(/Nama\s*Institusi\s*[:\s]\s*([^\n\r*]+)/i);
+        const yearMatch = section.match(/Tahun\s*[:\s]\s*(\d{4})/i);
+        const degMatch = section.match(/[:\s]\s*([^\n\r*]+)/i); // First line after header is usually the degree
+        
+        if (instMatch || yearMatch) {
+          kelulusan.push({
+            id: `imported-a-${i}`,
+            kelayakan: degMatch ? degMatch[1].trim() : 'Ijazah',
+            bidang: 'Sila Kemaskini',
+            institusi: instMatch ? instMatch[1].trim() : '-',
+            tahun: yearMatch ? yearMatch[1].trim() : '-'
+          });
+        }
+      }
     }
 
     // Sejarah Perkhidmatan (Basic extraction)
     const history: any[] = [];
-    const historyMatches = text.matchAll(/Nama\s*Tempat\s*Berkhidmat\s*:\s*([^\n\r*]+)[\s\S]*?Tarikh\s*Mula\s*:\s*([\d/]+)/gi);
+    const historyMatches = text.matchAll(/Nama\s*Tempat\s*Berkhidmat\s*[:\s]\s*([^\n\r*]+)[\s\S]*?Tarikh\s*Mula\s*[:\s]\s*([\d/]+)/gi);
     let count = 0;
     for (const match of historyMatches) {
-      if (count >= 5) break;
+      if (count >= 10) break;
       history.push({
         id: `imported-h-${count}`,
         sekolah: match[1].trim(),
@@ -97,8 +103,8 @@ export async function parseEOperasiPDF(base64: string) {
 
     return {
       profile,
-      kelulusan,
-      sejarah: history
+      kelulusan: kelulusan.length > 0 ? kelulusan : undefined,
+      sejarah: history.length > 0 ? history : undefined
     };
   } catch (error) {
     console.error('Error parsing PDF:', error);
