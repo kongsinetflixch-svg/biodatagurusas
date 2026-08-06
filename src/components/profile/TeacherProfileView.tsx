@@ -88,7 +88,7 @@ export const TeacherProfileView: React.FC<TeacherProfileViewProps> = ({
       </div>
 
       {/* A4 Document Container */}
-      <div className="mx-auto mt-4 sm:mt-8 print:mt-0 shadow-2xl print:shadow-none bg-white min-h-[297mm] w-fit sm:w-[210mm]">
+      <div className="mx-auto mt-4 sm:mt-8 print:mt-0 shadow-2xl print:shadow-none bg-white min-h-[297mm] w-full sm:w-[210mm]">
         <PrintableTeacherProfile teacher={teacher} isAdminMode={isAdminMode} />
       </div>
 
