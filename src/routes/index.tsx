@@ -2014,7 +2014,7 @@ function GuruProfile() {
 
                             />
                           ) : (
-                            <p className="font-bold text-slate-700">{row.sekolah}</p>
+                            <p className="font-medium text-slate-700">{row.sekolah}</p>
                           )}
                         </TableCell>
                         <TableCell className="text-center">
