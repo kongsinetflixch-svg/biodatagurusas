@@ -40,7 +40,7 @@ import { lovable } from "@/integrations/lovable";
 
 // Hardcoded teachers data from SAS 2026 List
 // Filtering for Guru, Pentadbir, and Pengetua only
-const SAS_TEACHERS = [
+const SAS_TEACHERS: { nama: string, kp: string, jabatan: string }[] = [
   { nama: "AFIZAWATI BINTI ISMAIL", kp: "790902045232", jabatan: "Guru" },
   { nama: "AHMAD FAIZAL BIN AYOP", kp: "801022016573", jabatan: "Guru" },
   { nama: "AHMAD FAZIERUL BIN AHMAD FARDUN", kp: "980429085665", jabatan: "Guru" },
