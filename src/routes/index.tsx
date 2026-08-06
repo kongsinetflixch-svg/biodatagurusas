@@ -258,7 +258,7 @@ function GuruProfilePage() {
             sejarah: []
           };
           const { data, error } = await supabase.from('teachers').insert([newTeacher]).select();
-          if (!error && data) {
+          if (!error && data && data[0]) {
             setTeachers([...teachers, { ...data[0], profileImage: data[0].profile_image }]);
             setActiveTeacherId(data[0].id);
             setIsEditMode(true);
