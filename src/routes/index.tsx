@@ -608,7 +608,7 @@ function GuruProfile() {
                       <TableCell>
                         <Avatar className="w-10 h-10 border-2 border-slate-100">
                           <AvatarImage src={t.profileImage || ""} />
-                          <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{t.profile.nama.charAt(0)}</AvatarFallback>
+                          <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
                         </Avatar>
                       </TableCell>
                       <TableCell className="font-bold text-slate-700">{t.profile.nama || "Tanpa Nama"}</TableCell>
