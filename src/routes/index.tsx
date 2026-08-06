@@ -257,7 +257,8 @@ const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isA
              <span className="text-[10px] font-black text-white">KPM</span>
           </div>
           <div>
-            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">PROFIL GURU PROFESIONAL 2026</h1>
+            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">Profile Guru</h1>
+            <p className="text-sm font-bold text-[#002B5B] uppercase mb-1">SMK Sultan Ahmad Shah</p>
             <p className="text-[8pt] font-bold text-slate-500 uppercase tracking-widest">Kementerian Pendidikan Malaysia</p>
           </div>
         </div>
