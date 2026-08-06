@@ -1617,7 +1617,7 @@ function GuruProfile() {
 
                     />
                   ) : (
-                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.alamat || "-"}</p>
+                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.alamat || "-"}</p>
                   )}
                 </div>
 
