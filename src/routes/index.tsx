@@ -1446,7 +1446,7 @@ function GuruProfile() {
 
         {/* TWO COLUMNS DATA */}
         <div className="grid lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white">
+          <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white card-print">
             <div className="h-2 bg-[#002B5B]"></div>
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8">
               <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3">
