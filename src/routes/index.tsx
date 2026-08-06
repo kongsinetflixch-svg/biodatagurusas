@@ -1764,10 +1764,6 @@ function GuruProfile() {
                     <ShieldCheck className="w-3.5 h-3.5" />
                     Profile Guru SMK Sultan Ahmad Shah
                   </div>
-                  <div className="text-blue-100/70 font-bold text-xs sm:text-sm flex items-center gap-2 px-1">
-                    <MapPin className="w-4 h-4 text-[#D4AF37]" />
-                    SMK Sultan Ahmad Shah
-                  </div>
                 </div>
               </div>
             </div>
