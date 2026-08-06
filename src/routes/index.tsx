@@ -1327,7 +1327,6 @@ function GuruProfile() {
                   { label: "Nama Sekolah", key: "nama" },
                   { label: "Kod Sekolah", key: "kod" },
                   { label: "Jawatan", key: "jawatan" },
-                  { label: "Pemeriksa SPM", key: "pemeriksaSPM" },
                 ].map((item) => (
                   <div key={item.key} className="space-y-2">
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
@@ -1350,10 +1349,39 @@ function GuruProfile() {
                     )}
                   </div>
                 ))}
+
                 <div className="space-y-2">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Sekolah</Label>
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Pemeriksa SPM</Label>
                   {isEditMode ? (
-                    <Textarea 
+                    <Select
+                      value={(profile as any).sekolah?.pemeriksaSPM || "Tidak"}
+                      onValueChange={(val) => updateCurrentTeacher({ 
+                        profile: {
+                          ...(profile as any), 
+                          sekolah: {
+                            ...((profile as any).sekolah || {}), 
+                            pemeriksaSPM: val
+                          }
+                        } 
+                      })}
+                    >
+                      <SelectTrigger className="h-10 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                        <SelectValue placeholder="Pilih Status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-slate-200">
+                        <SelectItem value="Ya">Ya</SelectItem>
+                        <SelectItem value="Tidak">Tidak</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Jalan Sekolah</Label>
+                  {isEditMode ? (
+                    <Input 
                       value={(profile as any).sekolah?.alamat || ""} 
                       onChange={(e) => updateCurrentTeacher({ 
                         profile: {
@@ -1364,10 +1392,82 @@ function GuruProfile() {
                           }
                         } 
                       })}
-                      className="min-h-[80px] rounded-xl border-slate-100"
+                      className="h-10 rounded-xl border-slate-100"
                     />
                   ) : (
-                    <p className="font-bold text-slate-700 text-sm leading-relaxed">{(profile as any).sekolah?.alamat || "-"}</p>
+                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.alamat || "-"}</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Poskod</Label>
+                    {isEditMode ? (
+                      <Input 
+                        value={(profile as any).sekolah?.poskod || ""} 
+                        onChange={(e) => updateCurrentTeacher({ 
+                          profile: {
+                            ...(profile as any), 
+                            sekolah: {
+                              ...((profile as any).sekolah || {}), 
+                              poskod: e.target.value
+                            }
+                          } 
+                        })}
+                        className="h-10 rounded-xl border-slate-100"
+                      />
+                    ) : (
+                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.poskod || "-"}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Daerah</Label>
+                    {isEditMode ? (
+                      <Input 
+                        value={(profile as any).sekolah?.daerah || ""} 
+                        onChange={(e) => updateCurrentTeacher({ 
+                          profile: {
+                            ...(profile as any), 
+                            sekolah: {
+                              ...((profile as any).sekolah || {}), 
+                              daerah: e.target.value
+                            }
+                          } 
+                        })}
+                        className="h-10 rounded-xl border-slate-100"
+                      />
+                    ) : (
+                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.daerah || "-"}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Negeri</Label>
+                  {isEditMode ? (
+                    <Select
+                      value={(profile as any).sekolah?.negeri || ""}
+                      onValueChange={(val) => updateCurrentTeacher({ 
+                        profile: {
+                          ...(profile as any), 
+                          sekolah: {
+                            ...((profile as any).sekolah || {}), 
+                            negeri: val
+                          }
+                        } 
+                      })}
+                    >
+                      <SelectTrigger className="h-10 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                        <SelectValue placeholder="Pilih Negeri" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-slate-200">
+                        {MALAYSIAN_STATES.map(state => (
+                          <SelectItem key={state} value={state}>{state}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.negeri || "-"}</p>
                   )}
                 </div>
               </CardContent>
