@@ -635,7 +635,36 @@ function GuruProfile() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
-        <Loader2 className="w-10 h-10 text-[#002B5B] animate-spin" />
+        <Card className="max-w-xs w-full border-none shadow-2xl rounded-3xl p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
+          <div className="flex justify-between items-start mb-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold text-xs p-0 h-auto"
+            >
+              <LogOut className="w-4 h-4 mr-1" /> Log Keluar
+            </Button>
+            <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
+              <Settings className="w-4 h-4 text-slate-300" />
+            </div>
+          </div>
+
+          <div className="w-20 h-20 bg-[#002B5B] rounded-2xl mx-auto flex items-center justify-center p-3 shadow-xl transform rotate-3">
+             <span className="text-xl font-black text-white">KPM</span>
+          </div>
+          
+          <div className="space-y-2">
+            <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profil Guru</h3>
+            <p className="text-slate-500 text-sm font-medium px-4">
+              Sila tunggu sebentar sementara kami memuatkan maklumat anda...
+            </p>
+          </div>
+
+          <div className="flex justify-center">
+            <Loader2 className="w-10 h-10 text-[#002B5B] animate-spin opacity-40" />
+          </div>
+        </Card>
       </div>
     );
   }
