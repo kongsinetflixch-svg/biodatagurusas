@@ -40,7 +40,7 @@ import { lovable } from "@/integrations/lovable";
 
 // Hardcoded teachers data from SAS 2026 List
 // Filtering for Guru, Pentadbir, and Pengetua only
-const SAS_TEACHERS = [
+const SAS_TEACHERS: { nama: string, kp: string, jabatan: string }[] = [
   { nama: "AFIZAWATI BINTI ISMAIL", kp: "790902045232", jabatan: "Guru" },
   { nama: "AHMAD FAIZAL BIN AYOP", kp: "801022016573", jabatan: "Guru" },
   { nama: "AHMAD FAZIERUL BIN AHMAD FARDUN", kp: "980429085665", jabatan: "Guru" },
@@ -72,7 +72,7 @@ const SAS_TEACHERS = [
   { nama: "MANGAIYARKARASI A/P RAJAREM", kp: "710707085594", jabatan: "Guru" },
   { nama: "MASLINAWATI BINTI MUJIIB", kp: "761001145006", jabatan: "Guru" },
   { nama: "MASNIZAM BINTI MOHAMED", kp: "770613035750", jabatan: "Guru" },
-  { nama: "MIATI BINTI MOHD LELA", kp: "760202115212", Pentadbir: "Pentadbir" },
+  { nama: "MIATI BINTI MOHD LELA", kp: "760202115212", jabatan: "Pentadbir" },
   { nama: "MOHAMAD NURSALAM BIN MOHD FOUZI", kp: "960803115425", jabatan: "Guru" },
   { nama: "MOHAMMAD FAIRUS KHAZALI BIN ISMAIL", kp: "840517115233", jabatan: "Guru" },
   { nama: "MOHD ERMAN BIN MAHMAT", kp: "800309035793", jabatan: "Pentadbir" },
@@ -166,6 +166,8 @@ function GuruProfile() {
   const [isSaving, setIsSaving] = useState(false);
   const [icInput, setIcInput] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showRoleManager, setShowRoleManager] = useState(false);
+  const [roleSearchTerm, setRoleSearchTerm] = useState("");
   
   // Teachers state for multi-profile support
   const [teachers, setTeachers] = useState<any[]>([]);
@@ -657,7 +659,14 @@ function GuruProfile() {
                 <p className="text-blue-100/80 font-medium">Pengurusan Panitia Guru 2026</p>
               </div>
             </div>
-            <div className="flex gap-3 mt-4 md:mt-0 relative z-10">
+            <div className="flex flex-wrap gap-3 mt-4 md:mt-0 relative z-10">
+              <Button 
+                onClick={() => setShowRoleManager(!showRoleManager)} 
+                className={`${showRoleManager ? 'bg-[#D4AF37] text-white' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'} font-bold rounded-xl shadow-lg border transition-all`}
+              >
+                <Users className="w-4 h-4 mr-2" /> 
+                {showRoleManager ? "Senarai Profil" : "Urus Peranan"}
+              </Button>
               <Button onClick={() => setShowAdminDashboard(false)} className="bg-white text-[#002B5B] hover:bg-blue-50 font-bold rounded-xl shadow-lg">
                 <LayoutDashboard className="w-4 h-4 mr-2" /> Lihat Profil
               </Button>
@@ -707,81 +716,145 @@ function GuruProfile() {
 
           <Card className="border-none shadow-xl rounded-3xl overflow-hidden bg-white">
             <CardHeader className="border-b border-slate-50 flex flex-row items-center justify-between p-6">
-              <CardTitle className="text-xl font-black text-[#002B5B]">Senarai Guru Panitia</CardTitle>
+              <CardTitle className="text-xl font-black text-[#002B5B]">
+                {showRoleManager ? "Urus Peranan Guru/Pentadbir" : "Senarai Profil Guru Panitia"}
+              </CardTitle>
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input 
-                  placeholder="Cari guru..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={showRoleManager ? "Cari dalam senarai KPM..." : "Cari profil..."} 
+                  value={showRoleManager ? roleSearchTerm : searchTerm}
+                  onChange={(e) => showRoleManager ? setRoleSearchTerm(e.target.value) : setSearchTerm(e.target.value)}
                   className="pl-10 h-10 bg-slate-50 border-none rounded-xl text-sm"
                 />
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-slate-50/50">
-                  <TableRow>
-                    <TableHead className="w-[100px]">Profil</TableHead>
-                    <TableHead>Nama Penuh</TableHead>
-                    <TableHead>No. KP</TableHead>
-                    <TableHead>Jawatan</TableHead>
-                    <TableHead className="text-right">Tindakan</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {teachers
-                    .filter(t => (t.profile as any)?.nama?.toLowerCase().includes(searchTerm.toLowerCase()))
-                    .map((t) => (
-                    <TableRow key={t.id} className="hover:bg-slate-50/50 transition-colors">
-                      <TableCell>
-                        <Avatar className="w-10 h-10 border-2 border-slate-100">
-                          <AvatarImage src={t.profileImage || ""} />
-                          <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-bold text-slate-700">{(t.profile as any)?.nama || "Tanpa Nama"}</TableCell>
-                      <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.kp || "-"}</TableCell>
-                      <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.sekolah?.jawatan || "-"}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(false); }}
-                            className="h-8 rounded-lg border-slate-200 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          >
-                            <FileText className="w-3.5 h-3.5 mr-1" /> Lihat
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(true); }}
-                            className="h-8 rounded-lg border-slate-200 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                          >
-                            <Edit2 className="w-3.5 h-3.5 mr-1" /> Edit
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={(e) => handleDeleteTeacher(t.id, e)}
-                            className="h-8 rounded-lg border-slate-200 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {teachers.length === 0 && (
+              {showRoleManager ? (
+                <Table>
+                  <TableHeader className="bg-slate-50/50">
                     <TableRow>
-                      <TableCell colSpan={5} className="h-32 text-center text-slate-400 font-medium">
-                        Tiada rekod guru dijumpai.
-                      </TableCell>
+                      <TableHead>Nama Guru (Senarai KPM)</TableHead>
+                      <TableHead>No. KP</TableHead>
+                      <TableHead>Peranan Semasa</TableHead>
+                      <TableHead className="text-right">Kemaskini Peranan</TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {SAS_TEACHERS
+                      .filter(t => t.nama.toLowerCase().includes(roleSearchTerm.toLowerCase()) || t.kp.includes(roleSearchTerm))
+                      .map((t, idx) => (
+                        <TableRow key={t.kp + idx} className="hover:bg-slate-50/50 transition-colors">
+                          <TableCell className="font-bold text-slate-700">{t.nama}</TableCell>
+                          <TableCell className="text-slate-500 text-sm">{t.kp}</TableCell>
+                          <TableCell>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                              t.jabatan === 'Pengetua' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                              t.jabatan === 'Pentadbir' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
+                              'bg-slate-100 text-slate-700 border border-slate-200'
+                            }`}>
+                              {t.jabatan}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-1">
+                              {['Guru', 'Pentadbir', 'Pengetua'].map((role) => (
+                                <Button
+                                  key={role}
+                                  variant={t.jabatan === role ? "default" : "outline"}
+                                  size="sm"
+                                  onClick={() => {
+                                    const teacherIdx = SAS_TEACHERS.findIndex(st => st.kp === t.kp);
+                                    if (teacherIdx !== -1) {
+                                      const teacher = SAS_TEACHERS[teacherIdx];
+                                      if (teacher) {
+                                        teacher.jabatan = role;
+                                        setRoleSearchTerm(prev => prev + " "); // Force re-render
+                                        setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
+                                        toast.success(`Peranan ${t.nama} dikemaskini ke ${role}`);
+                                      }
+                                    }
+                                  }}
+                                  className={`h-7 px-2 text-[10px] rounded-lg font-black ${
+                                    t.jabatan === role 
+                                      ? 'bg-[#002B5B] text-white hover:bg-[#003B7B]' 
+                                      : 'bg-white text-slate-400 hover:text-[#002B5B] border-slate-200'
+                                  }`}
+                                >
+                                  {role}
+                                </Button>
+                              ))}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <Table>
+                  <TableHeader className="bg-slate-50/50">
+                    <TableRow>
+                      <TableHead className="w-[100px]">Profil</TableHead>
+                      <TableHead>Nama Penuh</TableHead>
+                      <TableHead>No. KP</TableHead>
+                      <TableHead>Jawatan</TableHead>
+                      <TableHead className="text-right">Tindakan</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {teachers
+                      .filter(t => (t.profile as any)?.nama?.toLowerCase().includes(searchTerm.toLowerCase()))
+                      .map((t) => (
+                      <TableRow key={t.id} className="hover:bg-slate-50/50 transition-colors">
+                        <TableCell>
+                          <Avatar className="w-10 h-10 border-2 border-slate-100">
+                            <AvatarImage src={t.profileImage || ""} />
+                            <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
+                          </Avatar>
+                        </TableCell>
+                        <TableCell className="font-bold text-slate-700">{(t.profile as any)?.nama || "Tanpa Nama"}</TableCell>
+                        <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.kp || "-"}</TableCell>
+                        <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.sekolah?.jawatan || "-"}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(false); }}
+                              className="h-8 rounded-lg border-slate-200 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            >
+                              <FileText className="w-3.5 h-3.5 mr-1" /> Lihat
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(true); }}
+                              className="h-8 rounded-lg border-slate-200 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                            >
+                              <Edit2 className="w-3.5 h-3.5 mr-1" /> Edit
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={(e) => handleDeleteTeacher(t.id, e)}
+                              className="h-8 rounded-lg border-slate-200 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {teachers.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="h-32 text-center text-slate-400 font-medium">
+                          Tiada rekod guru dijumpai.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              )}
             </CardContent>
           </Card>
         </div>
