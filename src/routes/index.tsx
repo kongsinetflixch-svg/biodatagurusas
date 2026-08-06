@@ -182,6 +182,10 @@ function GuruProfile() {
       // Auto-enable admin mode for superadmin
       if (savedIc === SUPERADMIN_IC) {
         setIsAdminMode(true);
+        setShowAdminDashboard(true);
+      } else {
+        setIsAdminMode(false);
+        setShowAdminDashboard(false);
       }
     } else {
       setIsLoading(false);
