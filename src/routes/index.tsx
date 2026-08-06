@@ -1448,7 +1448,7 @@ function GuruProfile() {
         <div className="grid lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white card-print">
             <div className="h-2 bg-[#002B5B] no-print"></div>
-            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8 print:py-0 print:px-0 print:border-none">
               <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3">
                 <div className="bg-[#002B5B] p-2 rounded-lg"><FileText className="w-5 h-5 text-white" /></div>
                 Maklumat Peribadi
