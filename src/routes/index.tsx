@@ -1538,7 +1538,7 @@ function GuruProfile() {
                   Sekolah
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-8 space-y-6">
+              <CardContent className="p-8 space-y-6 print:p-0 print:space-y-2">
                 {[
                   { label: "Nama Sekolah", key: "nama" },
                   { label: "Kod Sekolah", key: "kod" },
