@@ -20,7 +20,7 @@ export type Database = {
           ic_number: string | null
           id: string
           kelulusan: Json
-          owner_id: string
+          owner_id: string | null
           profile: Json
           profile_image: string | null
           sejarah: Json
@@ -31,7 +31,7 @@ export type Database = {
           ic_number?: string | null
           id?: string
           kelulusan?: Json
-          owner_id: string
+          owner_id?: string | null
           profile?: Json
           profile_image?: string | null
           sejarah?: Json
@@ -42,7 +42,7 @@ export type Database = {
           ic_number?: string | null
           id?: string
           kelulusan?: Json
-          owner_id?: string
+          owner_id?: string | null
           profile?: Json
           profile_image?: string | null
           sejarah?: Json
