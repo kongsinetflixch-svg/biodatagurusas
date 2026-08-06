@@ -580,15 +580,15 @@ function GuruProfile() {
       profile: {
         nama: name,
         kp: ic,
-        tel: "",
-        email: "",
-        pengalaman: "",
-        tempohSemasa: "",
-        tarikhMula: "",
-        opsyen: "",
-        gred: "",
-        mengajarOpsyen: "",
-        alamat: "",
+        tel: "01X-XXXXXXX",
+        email: `${name.toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
+        pengalaman: "10 Tahun",
+        tempohSemasa: "5 Tahun",
+        tarikhMula: "01/01/2015",
+        opsyen: "Sejarah",
+        gred: "DG44",
+        mengajarOpsyen: "Ya",
+        alamat: "Kuwaters Guru, Tanah Rata",
         sekolah: {
           nama: "SMK Sultan Ahmad Shah",
           alamat: "Persiaran Dayang Endah",
@@ -599,14 +599,20 @@ function GuruProfile() {
           tel: "05-4911018",
           faks: "05-4914922",
           jawatan: jabatan,
-          guruKhas: "",
+          guruKhas: "Tiada",
           pemeriksaSPM: "Tidak",
-          lain: ""
+          lain: "-"
         }
       },
-      kelulusan: [],
-      subjek: [],
-      sejarah: [],
+      kelulusan: [
+        { id: 1, kelayakan: "Sarjana Muda Pendidikan", institusi: "UPSI", bidang: "Sejarah", tahun: "2014" }
+      ],
+      subjek: [
+        { id: 1, nama: "Sejarah", kelas: "5 Delta", murid: "30", tov: "45", etr: "75" }
+      ],
+      sejarah: [
+        { id: 1, sekolah: "SMK Sultan Ahmad Shah", tahun: "2015-2026", subjek: "Sejarah" }
+      ],
       ic_number: ic,
       profile_image: null
     } as any;
