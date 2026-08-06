@@ -358,10 +358,12 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: ic,
+      owner_id: null,
       ic_number: ic,
       profile_image: null
     };
+
+    console.log("Payload to insert:", newTeacherData);
 
     const { data, error } = await supabase
       .from('teachers')
@@ -369,10 +371,9 @@ function GuruProfile() {
       .select();
 
     if (error) {
-      toast.error("Gagal menjana profil guru secara automatik.");
-      console.error(error);
+      toast.error(`Gagal menjana profil: ${error.message}`);
+      console.error("Auto-creation error:", error);
       setIsLoading(false);
-      console.log("Auto-creation failed for IC:", ic);
     } else if (data && data[0]) {
       const teacher = data[0];
       const newTeacher = {
