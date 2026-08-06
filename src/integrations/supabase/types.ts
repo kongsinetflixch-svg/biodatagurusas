@@ -17,6 +17,7 @@ export type Database = {
       teachers: {
         Row: {
           created_at: string
+          ic_number: string | null
           id: string
           kelulusan: Json
           owner_id: string
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          ic_number?: string | null
           id?: string
           kelulusan?: Json
           owner_id: string
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          ic_number?: string | null
           id?: string
           kelulusan?: Json
           owner_id?: string
