@@ -1534,7 +1534,7 @@ function GuruProfile() {
               <div className="h-2 bg-[#D4AF37] no-print"></div>
               <CardHeader className="py-6 px-8 border-b border-slate-50 print:py-0 print:px-0 print:border-none">
                 <CardTitle className="text-lg font-black text-[#002B5B] flex items-center gap-3 section-title">
-                  <div className="bg-[#D4AF37] p-2 rounded-lg"><Briefcase className="w-5 h-5 text-white" /></div>
+                  <div className="bg-[#D4AF37] p-2 rounded-lg no-print"><Briefcase className="w-5 h-5 text-white" /></div>
                   Sekolah
                 </CardTitle>
               </CardHeader>
