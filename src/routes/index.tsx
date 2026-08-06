@@ -71,29 +71,38 @@ function GuruProfilePage() {
       .eq('ic_number', cleanIc)
       .order('created_at', { ascending: true });
 
-    if (!error && data) {
-      const mapped = data.map(t => ({ ...t, profileImage: t.profile_image }));
-      setTeachers(mapped);
-      if (mapped.length > 0 && !activeTeacherId) {
-        setActiveTeacherId(mapped[0].id);
-      }
-      if (cleanIc === SUPERADMIN_IC) {
-        setIsAdminMode(true);
-      }
+    if (error || !data) {
+      setIsLoading(false);
+      return;
+    }
+
+    const mapped = data.map(t => ({ ...t, profileImage: t.profile_image }));
+    setTeachers(mapped);
+    
+    if (mapped.length > 0 && !activeTeacherId) {
+      setActiveTeacherId(mapped[0].id);
+    }
+    
+    if (cleanIc === SUPERADMIN_IC) {
+      setIsAdminMode(true);
     }
     setIsLoading(false);
   };
 
   const handleIcLogin = async () => {
     const cleanIc = icInput.replace(/-/g, "");
-    if (!cleanIc) return toast.error("Sila masukkan No. IC.");
+    if (!cleanIc) {
+      toast.error("Sila masukkan No. IC.");
+      return;
+    }
     
     setIsLoggingIn(true);
     const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
     
     if (!sasTeacher && cleanIc !== SUPERADMIN_IC) {
       setIsLoggingIn(false);
-      return toast.error("IC tidak dijumpai.");
+      toast.error("IC tidak dijumpai.");
+      return;
     }
 
     localStorage.setItem('guru_ic_session', cleanIc);
@@ -128,7 +137,7 @@ function GuruProfilePage() {
       .eq('id', activeTeacherId);
 
     setIsSaving(false);
-    if (!error) {
+    if (!error && activeTeacherId) {
       setIsEditMode(false);
       toast.success("Disimpan!");
     }
