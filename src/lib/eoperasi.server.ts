@@ -2,7 +2,7 @@
 
 export async function parseEOperasiPDF(base64: string) {
   try {
-    const pdf = await import('pdf-parse/lib/pdf-parse.js');
+    const pdf = await import('pdf-parse');
     const buffer = Buffer.from(base64, 'base64');
     const pdfParser = pdf.default || pdf;
     const data = await pdfParser(buffer);
