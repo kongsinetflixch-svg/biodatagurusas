@@ -262,7 +262,8 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
           <div>
             <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">Profile Guru</h1>
-            <p className="text-sm font-bold text-[#002B5B] uppercase mb-1">SMK Sultan Ahmad Shah</p>
+            <p className="text-sm font-bold text-[#002B5B] uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
+            <p className="text-xs font-bold text-[#002B5B] uppercase leading-tight">CAMERON HIGHLANDS</p>
             
           </div>
         </div>
@@ -300,26 +301,17 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
         ))}
       </div>
-      <div className="info-item mt-1">
-        <span className="info-label">Alamat Kediaman</span>
-        <span className="info-value">{(profile as any)?.alamat || "-"}</span>
+      <div className="info-grid mt-1">
+        <div className="info-item">
+          <span className="info-label">Alamat Kediaman</span>
+          <span className="info-value">{(profile as any)?.alamat || "-"}</span>
+        </div>
+        <div className="info-item">
+          <span className="info-label">Jawatan</span>
+          <span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span>
+        </div>
       </div>
 
-      {/* School Info */}
-      <span className="section-title">Maklumat Sekolah</span>
-      <div className="info-grid">
-        <div className="info-item"><span className="info-label">Nama Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.nama || "-"}</span></div>
-        <div className="info-item"><span className="info-label">Kod Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.kod || "-"}</span></div>
-        <div className="info-item"><span className="info-label">Jawatan</span><span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span></div>
-        <div className="info-item"><span className="info-label">Pemeriksa SPM</span><span className="info-value">{(profile as any)?.sekolah?.pemeriksaSPM || "-"}</span></div>
-      </div>
-      
-      <div className="info-item mt-1">
-        <span className="info-label">Alamat Sekolah</span>
-        <span className="info-value">
-          {(profile as any)?.sekolah?.alamat}, {(profile as any)?.sekolah?.poskod} {(profile as any)?.sekolah?.daerah}, {(profile as any)?.sekolah?.negeri}
-        </span>
-      </div>
 
       {/* Academic */}
       <span className="section-title">Kelulusan Akademik</span>
@@ -1874,7 +1866,7 @@ function GuruProfile() {
             </CardContent>
           </Card>
 
-          <div className="space-y-6">
+          <div className="space-y-6 no-print">
             <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white card-print">
               <div className="h-2 bg-[#D4AF37] no-print"></div>
               <CardHeader className="py-6 px-8 border-b border-slate-50 print:py-0 print:px-0 print:border-none">
@@ -1891,7 +1883,6 @@ function GuruProfile() {
                 ].map((item) => (
                   <div key={item.key} className="space-y-2 info-item">
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
-
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.[item.key] || ""} 
@@ -1905,7 +1896,6 @@ function GuruProfile() {
                           } 
                         })}
                         className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-
                       />
                     ) : (
                       <p className="text-slate-700 info-value">{(profile as any).sekolah?.[item.key] || "-"}</p>
@@ -1915,7 +1905,6 @@ function GuruProfile() {
 
                 <div className="space-y-2 info-item">
                   <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Pemeriksa SPM</Label>
-
                   {isEditMode ? (
                     <Select
                       value={(profile as any).sekolah?.pemeriksaSPM || "Tidak"}
@@ -1930,7 +1919,6 @@ function GuruProfile() {
                       })}
                     >
                       <SelectTrigger className="h-12 sm:h-10 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
-
                         <SelectValue placeholder="Pilih Status" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-slate-200">
@@ -1945,7 +1933,6 @@ function GuruProfile() {
 
                 <div className="space-y-2 info-item">
                   <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Sekolah</Label>
-
                   {isEditMode ? (
                     <Input 
                       value={(profile as any).sekolah?.alamat || ""} 
@@ -1959,7 +1946,6 @@ function GuruProfile() {
                         } 
                       })}
                       className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-
                     />
                   ) : (
                     <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.alamat || "-"}</p>
@@ -1969,7 +1955,6 @@ function GuruProfile() {
                 <div className="grid grid-cols-2 gap-4 print:grid-cols-1 print:gap-2">
                   <div className="space-y-2 info-item">
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Poskod</Label>
-
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.poskod || ""} 
@@ -1983,7 +1968,6 @@ function GuruProfile() {
                           } 
                         })}
                         className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-
                       />
                     ) : (
                       <p className="text-slate-700 info-value">{(profile as any).sekolah?.poskod || "-"}</p>
@@ -1991,7 +1975,6 @@ function GuruProfile() {
                   </div>
                   <div className="space-y-2 info-item">
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Daerah</Label>
-
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.daerah || ""} 
@@ -2014,7 +1997,6 @@ function GuruProfile() {
 
                 <div className="space-y-2 info-item">
                   <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Negeri</Label>
-
                   {isEditMode ? (
                     <Select
                       value={(profile as any).sekolah?.negeri || ""}
