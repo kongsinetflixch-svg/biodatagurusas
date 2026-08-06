@@ -301,9 +301,15 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
         ))}
       </div>
-      <div className="info-item mt-1">
-        <span className="info-label">Alamat Kediaman</span>
-        <span className="info-value">{(profile as any)?.alamat || "-"}</span>
+      <div className="info-grid mt-1">
+        <div className="info-item">
+          <span className="info-label">Alamat Kediaman</span>
+          <span className="info-value">{(profile as any)?.alamat || "-"}</span>
+        </div>
+        <div className="info-item">
+          <span className="info-label">Jawatan</span>
+          <span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span>
+        </div>
       </div>
 
 
