@@ -1467,11 +1467,12 @@ function GuruProfile() {
                   { label: "Tarikh Berkhidmat", key: "tarikhMula", icon: "📅" },
                   { label: "Gred Jawatan", key: "gred", icon: "🎗️" },
                 ].map((item) => (
-                  <div key={item.key} className="space-y-2 group">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm opacity-50">{item.icon}</span>
-                      <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
+                  <div key={item.key} className="space-y-2 group info-item">
+                    <div className="flex items-center gap-2 print:gap-0">
+                      <span className="text-sm opacity-50 no-print">{item.icon}</span>
+                      <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
                     </div>
+
                     {isEditMode ? (
                       item.key === 'gred' ? (
                         <Select
