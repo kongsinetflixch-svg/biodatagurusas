@@ -1900,7 +1900,7 @@ function GuruProfile() {
                             />
                           ) : row.kelas}
                         </TableCell>
-                        <TableCell className="font-bold text-slate-700">
+                        <TableCell className="font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.murid} 
