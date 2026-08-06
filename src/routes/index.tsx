@@ -1644,8 +1644,9 @@ function GuruProfile() {
                       <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.poskod || "-"}</p>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Daerah</Label>
+                  <div className="space-y-2 info-item">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Daerah</Label>
+
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.daerah || ""} 
