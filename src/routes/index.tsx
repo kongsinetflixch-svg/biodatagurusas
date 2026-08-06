@@ -1798,7 +1798,7 @@ function GuruProfile() {
                             />
                           ) : row.bidang}
                         </TableCell>
-                        <TableCell className="font-bold text-[#002B5B]">
+                        <TableCell className="font-medium text-[#002B5B]">
                           {isEditMode ? (
                             <Input 
                               value={row.tahun} 
