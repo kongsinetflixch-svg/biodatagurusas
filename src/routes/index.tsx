@@ -2070,7 +2070,7 @@ function GuruProfile() {
                 </div>
               </div>
               
-              <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group">
+              <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group print:bg-transparent print:border-none print:mt-10">
                 <canvas 
                   ref={canvasRef}
                   width={800}
