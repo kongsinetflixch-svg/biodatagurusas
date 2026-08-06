@@ -262,7 +262,7 @@ function GuruProfile() {
         .from('teachers')
         .select('*')
         .eq('ic_number', cleanIc)
-        .maybeSingle();
+        .order('created_at', { ascending: true });
 
       if (error) {
         console.error("Ralat Supabase:", error);
@@ -271,14 +271,15 @@ function GuruProfile() {
         localStorage.setItem('guru_ic_session', cleanIc);
         setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
         
-        if (data) {
+        if (data && data.length > 0) {
           await fetchTeachersByIc(cleanIc);
-          const teacherName = (data.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
+          const firstTeacher = data[0];
+          const teacherName = (firstTeacher.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
           
-          // If not superadmin and profile exists, jump straight to the profile
+          // If not superadmin and profile exists, jump straight to the first profile
           if (cleanIc !== SUPERADMIN_IC) {
-             setActiveTeacherId(data.id);
+             setActiveTeacherId(firstTeacher.id);
              setIsEditMode(false);
           }
         } else {
