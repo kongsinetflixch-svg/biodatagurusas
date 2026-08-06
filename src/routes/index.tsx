@@ -332,7 +332,7 @@ function GuruProfile() {
     console.log("Auto-creating profile for IC:", ic);
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "Guru Baru",
+        nama: sasTeacher?.nama || "",
         kp: ic || "",
         tel: "",
         email: "",
@@ -475,7 +475,7 @@ function GuruProfile() {
 
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "Guru Baru",
+        nama: sasTeacher?.nama || "",
         kp: ic || "",
         tel: "",
         email: "",
@@ -501,7 +501,6 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: ic,
       ic_number: ic,
       profile_image: null
     };
