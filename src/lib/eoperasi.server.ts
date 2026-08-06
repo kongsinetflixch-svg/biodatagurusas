@@ -1,5 +1,4 @@
-// @ts-ignore
-const pdf = require('pdf-parse');
+import pdf from 'pdf-parse';
 
 
 export async function parseEOperasiPDF(base64: string) {
