@@ -925,8 +925,16 @@ function GuruProfile() {
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
                     {isEditMode ? (
                       <Input 
-                        value={(profile as any).sekolah[item.key as keyof typeof (profile as any).sekolah] as string} 
-                        onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), sekolah: {...(profile as any).sekolah, [item.key]: e.target.value}} } )}
+                        value={(profile as any).sekolah?.[item.key] || ""} 
+                        onChange={(e) => updateCurrentTeacher({ 
+                          profile: {
+                            ...(profile as any), 
+                            sekolah: {
+                              ...((profile as any).sekolah || {}), 
+                              [item.key]: e.target.value
+                            }
+                          } 
+                        })}
                         className="h-10 rounded-xl border-slate-100"
                       />
                     ) : (
