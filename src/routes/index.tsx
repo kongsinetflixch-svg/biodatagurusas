@@ -313,7 +313,7 @@ function GuruProfile() {
       return;
     }
 
-    const ic = session.user.ic;
+    const ic = session.user.ic.replace(/-/g, "");
 
     const sasTeacher = SAS_TEACHERS.find(t => t.kp === ic);
 
