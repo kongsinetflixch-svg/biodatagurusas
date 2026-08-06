@@ -2057,7 +2057,7 @@ function GuruProfile() {
           <div className="space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Tandatangan Guru</p>
+                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs info-label">Tandatangan Guru</p>
                 <div className="no-print flex gap-2">
                   <Button 
                     variant="ghost" 
