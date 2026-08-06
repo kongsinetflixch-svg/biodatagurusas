@@ -959,7 +959,7 @@ function GuruProfile() {
                       className="min-h-[80px] rounded-xl border-slate-100"
                     />
                   ) : (
-                    <p className="font-bold text-slate-700 text-sm leading-relaxed">{profile.sekolah.alamat || "-"}</p>
+                    <p className="font-bold text-slate-700 text-sm leading-relaxed">{(profile as any).sekolah?.alamat || "-"}</p>
                   )}
                 </div>
               </CardContent>
