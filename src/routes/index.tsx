@@ -518,7 +518,7 @@ const SUPERADMIN_IC = "801022016573";
 export const Route = createFileRoute("/")({
 
   head: () => ({
-    title: "Profil Guru Profesional 2026",
+    title: "Profile Guru | SMK Sultan Ahmad Shah",
     meta: [
       { name: "description", content: "Portal Rasmi Profil Guru Profesional 2026 - KPM" },
       { property: "og:title", content: "Profil Guru Profesional 2026" },
@@ -1141,7 +1141,8 @@ function GuruProfile() {
              <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
           <div className="space-y-2">
-            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
+            <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
             <p className="text-slate-500 font-semibold text-sm sm:text-base px-2">Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.</p>
           </div>
           <div className="space-y-4 pt-4 sm:pt-6">
@@ -1213,7 +1214,8 @@ function GuruProfile() {
              <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
           <div className="space-y-3">
-            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
+            <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
             <div className="bg-blue-50/50 py-3 px-4 rounded-2xl">
               <p className="text-[#002B5B] font-bold text-sm sm:text-base">
                 Memuatkan maklumat anda...
