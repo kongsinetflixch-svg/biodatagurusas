@@ -3,28 +3,10 @@
   margin: 10mm;
 }
 
-/* Base Editorial Styles - Available on screen and print */
-.print-ready,
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Note: We apply these specifically to the container when in preview mode 
-     to avoid breaking the whole app UI, but to body in print */
-}
-
-@media print {
-  body {
-    background: white !important;
-    color: black !important;
-    font-family: "Inter", "Segoe UI", sans-serif !important;
-    font-size: 10pt !important;
-    line-height: 1.15 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
+/* Base Editorial Styles - Shared across screen and print */
+* {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
 
 /* Shared Professional Layout Classes */
@@ -42,12 +24,6 @@
 
 .section {
   margin-bottom: 3mm !important;
-}
-
-@media print {
-  .section {
-    page-break-inside: avoid !important;
-  }
 }
 
 .section-title {
@@ -172,7 +148,18 @@ th {
   padding-top: 1mm !important;
 }
 
+/* Print-Specific Overrides */
 @media print {
+  body {
+    background: white !important;
+    color: black !important;
+    font-family: "Inter", "Segoe UI", sans-serif !important;
+    font-size: 10pt !important;
+    line-height: 1.15 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   .no-print {
     display: none !important;
   }
@@ -181,7 +168,18 @@ th {
     page-break-after: always !important;
   }
 
+  .section {
+    page-break-inside: avoid !important;
+  }
+
   body:after {
     content: none !important;
   }
+}
+
+/* Preview-Specific Overrides (when .print-ready class is added) */
+.print-ready body {
+  background: white !important;
+  color: black !important;
+  font-family: "Inter", "Segoe UI", sans-serif !important;
 }
