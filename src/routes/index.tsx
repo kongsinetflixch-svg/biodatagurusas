@@ -1506,7 +1506,7 @@ function GuruProfile() {
                     )}
                   </div>
                 ))}
-                <div className="md:col-span-2 space-y-2">
+                <div className="md:col-span-2 space-y-2 info-item">
                   <div className="flex items-center gap-2">
                     <span className="text-sm opacity-50">🏠</span>
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Kediaman</Label>
