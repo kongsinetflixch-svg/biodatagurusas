@@ -602,7 +602,7 @@ function GuruProfile() {
                 </TableHeader>
                 <TableBody>
                   {teachers
-                    .filter(t => t.profile.nama.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .filter(t => (t.profile as any)?.nama?.toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((t) => (
                     <TableRow key={t.id} className="hover:bg-slate-50/50 transition-colors">
                       <TableCell>
