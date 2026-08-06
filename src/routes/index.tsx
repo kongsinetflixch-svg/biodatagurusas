@@ -262,7 +262,7 @@ function GuruProfile() {
         .from('teachers')
         .select('*')
         .eq('ic_number', cleanIc)
-        .maybeSingle();
+        .order('created_at', { ascending: true });
 
       if (error) {
         console.error("Ralat Supabase:", error);
@@ -271,14 +271,15 @@ function GuruProfile() {
         localStorage.setItem('guru_ic_session', cleanIc);
         setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
         
-        if (data) {
+        if (data && data.length > 0) {
           await fetchTeachersByIc(cleanIc);
-          const teacherName = (data.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
+          const firstTeacher = data[0];
+          const teacherName = (firstTeacher?.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
           
-          // If not superadmin and profile exists, jump straight to the profile
-          if (cleanIc !== SUPERADMIN_IC) {
-             setActiveTeacherId(data.id);
+          // If not superadmin and profile exists, jump straight to the first profile
+          if (cleanIc !== SUPERADMIN_IC && firstTeacher) {
+             setActiveTeacherId(firstTeacher.id);
              setIsEditMode(false);
           }
         } else {
@@ -332,7 +333,7 @@ function GuruProfile() {
     console.log("Auto-creating profile for IC:", ic);
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "Guru Baru",
+        nama: sasTeacher?.nama || "",
         kp: ic || "",
         tel: "",
         email: "",
@@ -475,7 +476,7 @@ function GuruProfile() {
 
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "Guru Baru",
+        nama: sasTeacher?.nama || "",
         kp: ic || "",
         tel: "",
         email: "",
@@ -501,7 +502,6 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: ic,
       ic_number: ic,
       profile_image: null
     };
@@ -1053,7 +1053,7 @@ function GuruProfile() {
   const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher || {
     profile: {
       nama: "", kp: "", tel: "", email: "", pengalaman: "", tempohSemasa: "", tarikhMula: "", opsyen: "", gred: "", mengajarOpsyen: "", alamat: "",
-      sekolah: { nama: "", alamat: "", kod: "", tel: "", faks: "", jawatan: "", guruKhas: "", pemeriksaSPM: "", lain: "" }
+      sekolah: { nama: "SMK Sultan Ahmad Shah", alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur", kod: "CEB1003", tel: "05-4911018", faks: "05-4914922", jawatan: "", guruKhas: "", pemeriksaSPM: "", lain: "" }
     },
     profileImage: null,
     kelulusan: [],
@@ -1205,13 +1205,12 @@ function GuruProfile() {
         </div>
 
         {/* STATS CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 no-print">
           {[
             { title: "Pengalaman Mengajar", value: (profile as any).pengalaman || "-", icon: Briefcase, color: "text-[#002B5B]", bg: "bg-white" },
             { title: "Sekolah Semasa", value: (profile as any).tempohSemasa || "-", icon: Clock, color: "text-[#002B5B]", bg: "bg-white" },
             { title: "Bidang Opsyen", value: (profile as any).opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
-            { title: "Kelayakan", value: "Ijazah & Diploma", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
-
+            { title: "Kelayakan", value: (kelulusan && (kelulusan as any[]).length > 0) ? (kelulusan as any[])[0].kelayakan : "-", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
           ].map((item, i) => (
             <Card key={i} className="border-none shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 animate-in slide-up duration-500 rounded-2xl overflow-hidden" style={{ animationDelay: `${i * 100}ms` }}>
               <CardContent className="p-0 flex items-stretch h-full">
@@ -1400,10 +1399,54 @@ function GuruProfile() {
                       </TableRow>
                     ) : (kelulusan as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="px-8 font-bold text-slate-700">{row.kelayakan}</TableCell>
-                        <TableCell className="text-slate-600">{row.institusi}</TableCell>
-                        <TableCell className="text-slate-600 font-medium">{row.bidang}</TableCell>
-                        <TableCell className="font-bold text-[#002B5B]">{row.tahun}</TableCell>
+                        <TableCell className="px-8 font-bold text-slate-700">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.kelayakan} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, kelayakan: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.kelayakan}
+                        </TableCell>
+                        <TableCell className="text-slate-600">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.institusi} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, institusi: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.institusi}
+                        </TableCell>
+                        <TableCell className="text-slate-600 font-medium">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.bidang} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, bidang: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.bidang}
+                        </TableCell>
+                        <TableCell className="font-bold text-[#002B5B]">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.tahun} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, tahun: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg w-20"
+                            />
+                          ) : row.tahun}
+                        </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
                             <Button 
@@ -1467,11 +1510,70 @@ function GuruProfile() {
                     ) : (subjek as any[]).map((row, idx) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
-                        <TableCell className="font-bold text-slate-700">{row.nama}</TableCell>
-                        <TableCell className="font-medium text-slate-500">{row.kelas}</TableCell>
-                        <TableCell className="font-bold text-slate-700">{row.murid || "-"}</TableCell>
-                        <TableCell className="text-center"><span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span></TableCell>
-                        <TableCell className="text-center"><span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span></TableCell>
+                        <TableCell className="font-bold text-slate-700">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.nama} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, nama: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.nama}
+                        </TableCell>
+                        <TableCell className="font-medium text-slate-500">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.kelas} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, kelas: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.kelas}
+                        </TableCell>
+                        <TableCell className="font-bold text-slate-700">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.murid} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, murid: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg w-20"
+                            />
+                          ) : (row.murid || "-")}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.tov} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, tov: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                            />
+                          ) : (
+                            <span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.etr} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, etr: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                            />
+                          ) : (
+                            <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span>
+                          )}
+                        </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
                             <Button 
@@ -1533,12 +1635,45 @@ function GuruProfile() {
                     ) : (sejarah as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="px-8 py-4">
-                          <p className="font-bold text-slate-700">{row.sekolah}</p>
+                          {isEditMode ? (
+                            <Input 
+                              value={row.sekolah} 
+                              onChange={(e) => {
+                                const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, sekolah: e.target.value} : s);
+                                updateCurrentTeacher({ sejarah: newSejarah });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : (
+                            <p className="font-bold text-slate-700">{row.sekolah}</p>
+                          )}
                         </TableCell>
                         <TableCell className="text-center">
-                          <span className="px-3 py-1 bg-[#002B5B] text-white rounded-full text-[10px] font-black">{row.tahun}</span>
+                          {isEditMode ? (
+                            <Input 
+                              value={row.tahun} 
+                              onChange={(e) => {
+                                const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, tahun: e.target.value} : s);
+                                updateCurrentTeacher({ sejarah: newSejarah });
+                              }}
+                              className="h-8 rounded-lg w-24 mx-auto"
+                            />
+                          ) : (
+                            <span className="px-3 py-1 bg-[#002B5B] text-white rounded-full text-[10px] font-black">{row.tahun}</span>
+                          )}
                         </TableCell>
-                        <TableCell className="font-medium text-slate-600">{row.subjek}</TableCell>
+                        <TableCell className="font-medium text-slate-600">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.subjek} 
+                              onChange={(e) => {
+                                const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, subjek: e.target.value} : s);
+                                updateCurrentTeacher({ sejarah: newSejarah });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.subjek}
+                        </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
                             <Button 
