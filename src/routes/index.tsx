@@ -760,43 +760,52 @@ function GuruProfile() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
-          <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
-             <span className="text-2xl font-black text-white">KPM</span>
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0">
+             <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
           <div className="space-y-2">
-            <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium">Sila masukkan No. Kad Pengenalan untuk mula.</p>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <p className="text-slate-500 font-semibold text-sm sm:text-base px-2">Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.</p>
           </div>
-          <div className="space-y-4 pt-4">
-            <div className="space-y-2 text-left">
-              <Label htmlFor="ic-login" className="text-slate-600 font-bold ml-1 text-xs uppercase tracking-wider">No. Kad Pengenalan</Label>
-              <Input 
-                id="ic-login"
-                placeholder="Contoh: 770613035750" 
-                className="h-14 rounded-2xl border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg font-bold transition-all"
-                value={icInput}
-                onChange={(e) => setIcInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
-              />
+          <div className="space-y-4 pt-4 sm:pt-6">
+            <div className="space-y-3 text-left">
+              <Label htmlFor="ic-login" className="text-slate-500 font-black ml-1 text-[10px] uppercase tracking-[0.2em]">No. Kad Pengenalan</Label>
+              <div className="relative group">
+                <Input 
+                  id="ic-login"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Contoh: 770613035750" 
+                  className="h-14 sm:h-16 rounded-[1.25rem] border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg sm:text-xl font-bold transition-all px-6 bg-slate-50/50 group-hover:bg-white"
+                  value={icInput}
+                  onChange={(e) => setIcInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
+                />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-20">
+                  <User className="w-6 h-6 text-[#002B5B]" />
+                </div>
+              </div>
             </div>
             <Button 
               onClick={handleIcLogin} 
               disabled={isLoggingIn}
-              className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+              className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 mt-2"
             >
               {isLoggingIn ? (
                 <Loader2 className="w-6 h-6 animate-spin" />
               ) : (
                 <>
-                  <LogIn className="w-6 h-6 mr-2" /> Masuk Profil
+                  <LogIn className="w-6 h-6 mr-3 stroke-[3px]" /> Masuk Profil
                 </>
               )}
             </Button>
-            <p className="text-[10px] text-slate-400 font-medium italic">
-              *Masukkan No. IC tanpa tanda sempang (-)
-            </p>
+            <div className="pt-2">
+              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider bg-slate-50 py-2 rounded-lg inline-block px-4">
+                Tanpa tanda sempang <span className="text-[#002B5B] font-black mx-1">(-)</span>
+              </p>
+            </div>
           </div>
         </Card>
       </div>
@@ -805,32 +814,49 @@ function GuruProfile() {
 
   if (teachers.length === 0 && !isAdminMode && session) {
     return (
-      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
           <div className="flex justify-between items-center no-print">
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold">
-              <LogOut className="w-4 h-4 mr-1" /> Log Keluar
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout} 
+              className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-black text-xs uppercase tracking-tighter rounded-xl px-4"
+            >
+              <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="text-slate-200 hover:text-[#002B5B] transition-colors">
-              <Settings className="w-4 h-4" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} 
+              className="text-slate-100 hover:text-[#002B5B] transition-colors rounded-xl"
+            >
+              <Settings className="w-5 h-5" />
             </Button>
           </div>
-          <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
-             <span className="text-2xl font-black text-white">KPM</span>
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3">
+             <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
-          <div className="space-y-2">
-            <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium text-sm">
-              Sila tunggu sebentar sementara kami memuatkan maklumat anda...
-            </p>
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <div className="bg-blue-50/50 py-3 px-4 rounded-2xl">
+              <p className="text-[#002B5B] font-bold text-sm sm:text-base">
+                Memuatkan maklumat anda...
+              </p>
+            </div>
           </div>
-          <div className="flex justify-center py-4">
-            <Loader2 className="w-8 h-8 text-[#002B5B] animate-spin" />
+          <div className="flex justify-center py-6 sm:py-8">
+            <div className="relative">
+              <Loader2 className="w-12 h-12 text-[#002B5B] animate-spin stroke-[3px]" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse" />
+              </div>
+            </div>
           </div>
           <Button 
             variant="outline" 
             onClick={() => handleIcLogin()} 
-            className="w-full mt-4 text-[#002B5B] font-bold border-slate-200"
+            className="w-full h-14 sm:h-16 text-[#002B5B] font-black border-2 border-slate-100 rounded-2xl hover:bg-slate-50 hover:border-slate-200 transition-all active:scale-[0.98]"
           >
             Cuba Muat Semula
           </Button>
@@ -843,30 +869,32 @@ function GuruProfile() {
     return (
       <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans animate-in fade-in duration-700">
         <div className="max-w-6xl mx-auto space-y-8">
-          <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group">
-            <div className="flex items-center gap-6 relative z-10">
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center p-2 shadow-inner transform -rotate-3">
-                 <span className="text-lg font-black text-[#002B5B]">KPM</span>
+          <header className="flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0">
+                   <span className="text-lg sm:text-2xl font-black text-[#002B5B] tracking-tighter">KPM</span>
+                </div>
+                <div className="text-center md:text-left">
+                  <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight">Dashboard Admin</h1>
+                  <p className="text-blue-100/70 font-bold text-sm sm:text-base mt-1">Pengurusan Panitia Guru 2026</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-black text-white tracking-tight uppercase">Dashboard Admin</h1>
-                <p className="text-blue-100/80 font-medium">Pengurusan Panitia Guru 2026</p>
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 w-full md:w-auto">
+                <Button 
+                  onClick={() => setShowRoleManager(!showRoleManager)} 
+                  className={`h-12 sm:h-14 px-6 ${showRoleManager ? 'bg-[#D4AF37] text-white border-[#D4AF37]' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'} font-black rounded-2xl shadow-lg border transition-all text-sm uppercase tracking-wider`}
+                >
+                  <Users className="w-5 h-5 mr-3" /> 
+                  {showRoleManager ? "Senarai Profil" : "Urus Peranan"}
+                </Button>
+                <Button onClick={() => setShowAdminDashboard(false)} className="h-12 sm:h-14 px-6 bg-white text-[#002B5B] hover:bg-blue-50 font-black rounded-2xl shadow-lg text-sm uppercase tracking-wider">
+                  <LayoutDashboard className="w-5 h-5 mr-3" /> Lihat Profil
+                </Button>
+                <Button variant="outline" onClick={() => { setIsAdminMode(false); setShowAdminDashboard(false); }} className="h-12 sm:h-14 px-6 bg-transparent border-2 border-white/30 text-white hover:bg-white/10 font-black rounded-2xl text-sm uppercase tracking-wider">
+                  <User className="w-5 h-5 mr-3" /> Paparan Guru
+                </Button>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-4 md:mt-0 relative z-10">
-              <Button 
-                onClick={() => setShowRoleManager(!showRoleManager)} 
-                className={`${showRoleManager ? 'bg-[#D4AF37] text-white' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'} font-bold rounded-xl shadow-lg border transition-all`}
-              >
-                <Users className="w-4 h-4 mr-2" /> 
-                {showRoleManager ? "Senarai Profil" : "Urus Peranan"}
-              </Button>
-              <Button onClick={() => setShowAdminDashboard(false)} className="bg-white text-[#002B5B] hover:bg-blue-50 font-bold rounded-xl shadow-lg">
-                <LayoutDashboard className="w-4 h-4 mr-2" /> Lihat Profil
-              </Button>
-              <Button variant="outline" onClick={() => { setIsAdminMode(false); setShowAdminDashboard(false); }} className="bg-transparent border-white text-white hover:bg-white/10 font-bold rounded-xl">
-                <User className="w-4 h-4 mr-2" /> Paparan Guru
-              </Button>
             </div>
           </header>
 
@@ -1145,90 +1173,108 @@ function GuruProfile() {
 
 
         {/* HEADER */}
-        <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-white/10 transition-colors duration-500"></div>
+        <header className="flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-2xl border-b-8 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-110 duration-1000" />
           
-          <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-3 shadow-inner transform -rotate-3 hover:rotate-0 transition-transform duration-300">
-               <span className="text-xl font-black text-[#002B5B]">KPM</span>
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 relative z-10">
+            <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8">
+              <div className="relative group/avatar">
+                <div className="absolute inset-0 bg-[#D4AF37] rounded-[2rem] blur-xl opacity-20 group-hover/avatar:opacity-40 transition-opacity"></div>
+                <Avatar className="w-24 h-24 sm:w-36 sm:h-36 border-4 border-white shadow-2xl rounded-[2rem] overflow-hidden transition-all group-hover/avatar:scale-105 group-hover/avatar:rotate-2 duration-500">
+                  <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} className="object-cover" />
+                  <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-black">
+                    {(profile as any)?.nama?.charAt(0) || "G"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-2 -right-2 no-print">
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleImageUpload} 
+                    accept="image/*" 
+                    className="hidden" 
+                  />
+                  <Button 
+                    size="icon" 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-10 h-10 sm:w-12 sm:h-12 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl flex items-center justify-center cursor-pointer shadow-xl transition-all hover:scale-110 active:scale-95 border-4 border-white"
+                  >
+                    <Camera className="w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="text-center md:text-left space-y-3">
+                <div className="flex flex-col md:flex-row items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 hidden sm:flex">
+                     <span className="text-xs font-black text-[#002B5B]">KPM</span>
+                  </div>
+                  <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight drop-shadow-lg">
+                    {(profile as any)?.nama || "SILA ISI NAMA GURU"}
+                  </h1>
+                </div>
+                
+                <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 mt-2">
+                  <div className="text-[#D4AF37] font-black text-[10px] sm:text-xs flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10 uppercase tracking-[0.1em]">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    Profil Guru Profesional
+                  </div>
+                  <div className="text-blue-100/70 font-bold text-xs sm:text-sm flex items-center gap-2 px-1">
+                    <MapPin className="w-4 h-4 text-[#D4AF37]" />
+                    SMK Sultan Ahmad Shah
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">{(profile as any)?.nama || "PROFIL GURU"}</h1>
-              <p className="text-blue-100/80 font-medium text-lg mt-1 flex items-center justify-center md:justify-start gap-2">
-                  <MapPin className="w-5 h-5 text-[#D4AF37]" />
-                  SMK Sultan Ahmad Shah
-                </p>
-                <p className="text-blue-100/60 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">
-                  <FileText className="w-4 h-4 text-[#D4AF37]" />
-                  Borang Profil Guru 2026
-                </p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col items-center md:items-end gap-4 mt-8 md:mt-0 relative z-10">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
-              <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
-                <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} />
-                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">{(profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
-              </Avatar>
-              <div className="absolute -bottom-2 right-2 no-print">
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleImageUpload} 
-                  accept="image/*" 
-                  className="hidden" 
-                />
+
+            <div className="w-full md:w-auto mt-4 md:mt-2">
+              <div className="flex flex-col sm:flex-row items-center gap-3 no-print">
                 <Button 
-                  size="icon" 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="rounded-full w-10 h-10 shadow-lg bg-[#D4AF37] hover:bg-[#B8962E] text-white border-2 border-white transition-transform hover:scale-110 active:scale-95"
+                  onClick={() => setIsEditMode(!isEditMode)} 
+                  variant={isEditMode ? "destructive" : "secondary"}
+                  className={`w-full sm:w-auto h-12 px-8 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${!isEditMode && 'bg-white text-[#002B5B] hover:bg-blue-50'}`}
                 >
-                   <Camera className="w-5 h-5" />
+                  {isEditMode ? <><X className="w-5 h-5 mr-3" /> Batal</> : <><Edit2 className="w-5 h-5 mr-3" /> Edit Maklumat</>}
                 </Button>
+                {isEditMode && (
+                  <Button 
+                    onClick={handleSave} 
+                    disabled={isSaving}
+                    className="w-full sm:w-auto h-12 px-10 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-[#D4AF37]/20 transition-all animate-in zoom-in"
+                  >
+                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Save className="w-5 h-5 mr-3" /> Simpan Profil</>}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
         </header>
 
         {/* SEARCH & ACTIONS */}
-        <div className="flex flex-col md:flex-row gap-4 no-print sticky top-4 z-50">
+        <div className="flex flex-col md:flex-row gap-4 no-print sticky top-4 z-50 animate-in slide-in-from-top duration-1000">
           <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#002B5B] transition-colors w-5 h-5" />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#002B5B] transition-colors w-6 h-6" />
             <Input 
-              placeholder="Cari nama, sekolah, subjek atau kelayakan..." 
-              className="pl-12 h-14 bg-white/90 backdrop-blur-md border-white shadow-lg rounded-2xl focus:ring-2 focus:ring-[#002B5B] transition-all"
+              placeholder="Cari maklumat profil..." 
+              className="pl-14 h-16 bg-white/95 backdrop-blur-xl border-white shadow-2xl shadow-[#002B5B]/10 rounded-[1.25rem] focus:ring-4 focus:ring-[#002B5B]/5 transition-all text-lg font-medium"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex flex-wrap gap-2 p-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white">
-            {!isEditMode ? (
-              <Button onClick={() => setIsEditMode(true)} className="h-10 bg-[#002B5B] hover:bg-[#003B7B] rounded-xl font-bold shadow-md hover:shadow-lg transition-all">
-                <Edit2 className="w-4 h-4 mr-2" /> Edit Maklumat
-              </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button onClick={handleSave} disabled={isSaving} className="h-10 bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold shadow-md disabled:opacity-50">
-                  {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />} 
-                  {isSaving ? "Menyimpan..." : "Simpan"}
-                </Button>
-                <Button variant="outline" onClick={() => setIsEditMode(false)} className="h-10 text-rose-600 border-rose-100 hover:bg-rose-50 rounded-xl font-bold">
-                  <X className="w-4 h-4 mr-2" /> Batal
-                </Button>
-              </div>
-            )}
-            <div className="w-[1px] bg-slate-200 mx-1"></div>
-            <Button variant="outline" onClick={handlePrint} className="h-10 rounded-xl border-slate-200 hover:bg-slate-50">
-              <Printer className="w-4 h-4 mr-2" /> Cetak
+          <div className="flex items-center justify-center gap-3 p-3 bg-white/95 backdrop-blur-xl rounded-[1.25rem] shadow-2xl shadow-[#002B5B]/10 border border-white">
+            <Button 
+              onClick={handlePrint} 
+              variant="outline"
+              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-slate-100 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all"
+            >
+              <Printer className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Cetak</span>
             </Button>
-            <Button variant="outline" onClick={handlePrint} className="h-10 rounded-xl border-slate-200 hover:bg-slate-50">
-              <Download className="w-4 h-4 mr-2" /> Simpan PDF
-            </Button>
-            <div className="w-[1px] bg-slate-200 mx-1"></div>
-            <Button variant="ghost" onClick={handleLogout} className="h-10 px-4 rounded-xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold">
-              <LogOut className="w-4 h-4 mr-2" /> Log Keluar
+            <Button 
+              onClick={handlePrint}
+              className="h-12 w-12 sm:w-auto sm:px-8 bg-[#002B5B] hover:bg-[#003B7B] text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+            >
+              <Download className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">PDF</span>
             </Button>
           </div>
         </div>
@@ -1270,7 +1316,7 @@ function GuruProfile() {
                           value={(profile as any)[item.key] || ""}
                           onValueChange={(val) => updateCurrentTeacher({ profile: { ...(profile as any), [item.key]: val } })}
                         >
-                          <SelectTrigger className="h-11 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                          <SelectTrigger className="h-12 sm:h-11 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
                             <SelectValue placeholder="Pilih Gred" />
                           </SelectTrigger>
                           <SelectContent className="bg-white border-slate-200">
@@ -1286,7 +1332,7 @@ function GuruProfile() {
                             const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
                             updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
                           }}
-                          className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
+                          className="h-12 sm:h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-base"
                         />
                       )
                     ) : (
@@ -1305,7 +1351,7 @@ function GuruProfile() {
                     <Textarea 
                       value={(profile as any).alamat} 
                       onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), alamat: e.target.value}})}
-                      className="min-h-[100px] rounded-xl border-slate-100"
+                      className="min-h-[100px] rounded-xl border-slate-100 text-base"
                     />
                   ) : (
                     <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
@@ -1346,7 +1392,8 @@ function GuruProfile() {
                             }
                           } 
                         })}
-                        className="h-10 rounded-xl border-slate-100"
+                        className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
+
                       />
                     ) : (
                       <p className="font-bold text-slate-700">{(profile as any).sekolah?.[item.key] || "-"}</p>
@@ -1369,7 +1416,8 @@ function GuruProfile() {
                         } 
                       })}
                     >
-                      <SelectTrigger className="h-10 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                      <SelectTrigger className="h-12 sm:h-10 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
+
                         <SelectValue placeholder="Pilih Status" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-slate-200">
@@ -1396,7 +1444,8 @@ function GuruProfile() {
                           }
                         } 
                       })}
-                      className="h-10 rounded-xl border-slate-100"
+                      className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
+
                     />
                   ) : (
                     <p className="font-bold text-slate-700">{(profile as any).sekolah?.alamat || "-"}</p>
@@ -1418,7 +1467,8 @@ function GuruProfile() {
                             }
                           } 
                         })}
-                        className="h-10 rounded-xl border-slate-100"
+                        className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
+
                       />
                     ) : (
                       <p className="font-bold text-slate-700">{(profile as any).sekolah?.poskod || "-"}</p>
@@ -1438,7 +1488,7 @@ function GuruProfile() {
                             }
                           } 
                         })}
-                        className="h-10 rounded-xl border-slate-100"
+                        className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
                       />
                     ) : (
                       <p className="font-bold text-slate-700">{(profile as any).sekolah?.daerah || "-"}</p>
@@ -1461,7 +1511,7 @@ function GuruProfile() {
                         } 
                       })}
                     >
-                      <SelectTrigger className="h-10 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                      <SelectTrigger className="h-12 sm:h-10 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
                         <SelectValue placeholder="Pilih Negeri" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-slate-200">
@@ -1530,7 +1580,8 @@ function GuruProfile() {
                                 const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, kelayakan: e.target.value} : k);
                                 updateCurrentTeacher({ kelulusan: newKelulusan });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.kelayakan}
                         </TableCell>
@@ -1542,7 +1593,8 @@ function GuruProfile() {
                                 const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, institusi: e.target.value} : k);
                                 updateCurrentTeacher({ kelulusan: newKelulusan });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.institusi}
                         </TableCell>
@@ -1554,7 +1606,8 @@ function GuruProfile() {
                                 const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, bidang: e.target.value} : k);
                                 updateCurrentTeacher({ kelulusan: newKelulusan });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.bidang}
                         </TableCell>
@@ -1566,7 +1619,8 @@ function GuruProfile() {
                                 const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, tahun: e.target.value} : k);
                                 updateCurrentTeacher({ kelulusan: newKelulusan });
                               }}
-                              className="h-8 rounded-lg w-20"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-20 text-base"
+
                             />
                           ) : row.tahun}
                         </TableCell>
@@ -1653,7 +1707,8 @@ function GuruProfile() {
                                 const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, kelas: e.target.value} : s);
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.kelas}
                         </TableCell>
@@ -1665,7 +1720,7 @@ function GuruProfile() {
                                 const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, murid: e.target.value} : s);
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
-                              className="h-8 rounded-lg w-20"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-20 text-base"
                             />
                           ) : (row.murid || "-")}
                         </TableCell>
@@ -1677,7 +1732,8 @@ function GuruProfile() {
                                 const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, tov: e.target.value} : s);
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
-                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
+
                             />
                           ) : (
                             <span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span>
@@ -1691,7 +1747,7 @@ function GuruProfile() {
                                 const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, etr: e.target.value} : s);
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
-                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
                             />
                           ) : (
                             <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span>
@@ -1765,7 +1821,8 @@ function GuruProfile() {
                                 const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, sekolah: e.target.value} : s);
                                 updateCurrentTeacher({ sejarah: newSejarah });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : (
                             <p className="font-bold text-slate-700">{row.sekolah}</p>
@@ -1779,7 +1836,7 @@ function GuruProfile() {
                                 const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, tahun: e.target.value} : s);
                                 updateCurrentTeacher({ sejarah: newSejarah });
                               }}
-                              className="h-8 rounded-lg w-24 mx-auto"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-24 mx-auto text-base"
                             />
                           ) : (
                             <span className="px-3 py-1 bg-[#002B5B] text-white rounded-full text-[10px] font-black">{row.tahun}</span>
@@ -1793,7 +1850,8 @@ function GuruProfile() {
                                 const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, subjek: e.target.value} : s);
                                 updateCurrentTeacher({ sejarah: newSejarah });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.subjek}
                         </TableCell>
@@ -1839,8 +1897,9 @@ function GuruProfile() {
               <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group">
                 <canvas 
                   ref={canvasRef}
-                  width={500}
-                  height={150}
+                  width={800}
+                  height={250}
+
                   onMouseDown={startDrawing}
                   onMouseMove={draw}
                   onMouseUp={stopDrawing}
@@ -1848,7 +1907,7 @@ function GuruProfile() {
                   onTouchStart={startDrawing}
                   onTouchMove={draw}
                   onTouchEnd={stopDrawing}
-                  className="w-full h-[150px] cursor-crosshair touch-none"
+                  className="w-full h-[250px] cursor-crosshair touch-none bg-white/50"
                 />
                 {!hasSignature && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
