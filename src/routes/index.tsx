@@ -32,10 +32,18 @@ import {
   LogIn,
   Loader2,
   LayoutDashboard,
-  Users
+  Users,
+  MapPin
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 
@@ -143,6 +151,17 @@ const SAS_TEACHERS: { nama: string, kp: string, jabatan: string }[] = [
 
 const SUPERADMIN_IC = "801022016573";
 
+
+// Gred Jawatan SSPA (Sistem Saraan Perkhidmatan Awam) 2024/2025
+const SSPA_GRADES = [
+  "DG54", "DG52", "DG48", "DG44", "DG41", "DG38", "DG34", "DG32", "DG29"
+];
+
+const MALAYSIAN_STATES = [
+  "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Perak", "Perlis", 
+  "Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu", "Wilayah Persekutuan Kuala Lumpur", 
+  "Wilayah Persekutuan Labuan", "Wilayah Persekutuan Putrajaya"
+];
 
 export const Route = createFileRoute("/")({
 
@@ -346,13 +365,16 @@ function GuruProfile() {
         alamat: "",
         sekolah: {
           nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
+          alamat: "Persiaran Dayang Endah",
+          poskod: "39000",
+          daerah: "Tanah Rata",
+          negeri: "Pahang",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
           jawatan: sasTeacher?.jabatan || "",
           guruKhas: "",
-          pemeriksaSPM: "",
+          pemeriksaSPM: "Tidak",
           lain: ""
         }
       },
@@ -414,13 +436,16 @@ function GuruProfile() {
         alamat: "",
         sekolah: {
           nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
+          alamat: "Persiaran Dayang Endah",
+          poskod: "39000",
+          daerah: "Tanah Rata",
+          negeri: "Pahang",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
           jawatan: jabatan,
           guruKhas: "",
-          pemeriksaSPM: "",
+          pemeriksaSPM: "Tidak",
           lain: ""
         }
       },
@@ -1053,7 +1078,7 @@ function GuruProfile() {
   const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher || {
     profile: {
       nama: "", kp: "", tel: "", email: "", pengalaman: "", tempohSemasa: "", tarikhMula: "", opsyen: "", gred: "", mengajarOpsyen: "", alamat: "",
-      sekolah: { nama: "SMK Sultan Ahmad Shah", alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur", kod: "CEB1003", tel: "05-4911018", faks: "05-4914922", jawatan: "", guruKhas: "", pemeriksaSPM: "", lain: "" }
+      sekolah: { nama: "SMK Sultan Ahmad Shah", alamat: "Persiaran Dayang Endah", poskod: "39000", daerah: "Tanah Rata", negeri: "Pahang", kod: "CEB1003", tel: "05-4911018", faks: "05-4914922", jawatan: "", guruKhas: "", pemeriksaSPM: "Tidak", lain: "" }
     },
     profileImage: null,
     kelulusan: [],
@@ -1130,9 +1155,13 @@ function GuruProfile() {
             <div className="text-center md:text-left">
               <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">{(profile as any)?.nama || "PROFIL GURU"}</h1>
               <p className="text-blue-100/80 font-medium text-lg mt-1 flex items-center justify-center md:justify-start gap-2">
-                <FileText className="w-5 h-5 text-[#D4AF37]" />
-                Borang Profil Guru 2026
-              </p>
+                  <MapPin className="w-5 h-5 text-[#D4AF37]" />
+                  SMK Sultan Ahmad Shah
+                </p>
+                <p className="text-blue-100/60 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">
+                  <FileText className="w-4 h-4 text-[#D4AF37]" />
+                  Borang Profil Guru 2026
+                </p>
             </div>
           </div>
           
@@ -1236,14 +1265,30 @@ function GuruProfile() {
                       <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
                     </div>
                     {isEditMode ? (
-                      <Input 
-                        value={(profile as any)[item.key as keyof typeof profile] as string} 
-                        onChange={(e) => {
-                          const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
-                          updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
-                        }}
-                        className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
-                      />
+                      item.key === 'gred' ? (
+                        <Select
+                          value={(profile as any)[item.key] || ""}
+                          onValueChange={(val) => updateCurrentTeacher({ profile: { ...(profile as any), [item.key]: val } })}
+                        >
+                          <SelectTrigger className="h-11 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                            <SelectValue placeholder="Pilih Gred" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white border-slate-200">
+                            {SSPA_GRADES.map(grade => (
+                              <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input 
+                          value={(profile as any)[item.key as keyof typeof profile] as string} 
+                          onChange={(e) => {
+                            const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
+                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
+                          }}
+                          className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
+                        />
+                      )
                     ) : (
                       <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
                         <p className="font-bold text-slate-700">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
@@ -1286,7 +1331,6 @@ function GuruProfile() {
                   { label: "Nama Sekolah", key: "nama" },
                   { label: "Kod Sekolah", key: "kod" },
                   { label: "Jawatan", key: "jawatan" },
-                  { label: "Pemeriksa SPM", key: "pemeriksaSPM" },
                 ].map((item) => (
                   <div key={item.key} className="space-y-2">
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
@@ -1309,10 +1353,39 @@ function GuruProfile() {
                     )}
                   </div>
                 ))}
+
                 <div className="space-y-2">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Sekolah</Label>
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Pemeriksa SPM</Label>
                   {isEditMode ? (
-                    <Textarea 
+                    <Select
+                      value={(profile as any).sekolah?.pemeriksaSPM || "Tidak"}
+                      onValueChange={(val) => updateCurrentTeacher({ 
+                        profile: {
+                          ...(profile as any), 
+                          sekolah: {
+                            ...((profile as any).sekolah || {}), 
+                            pemeriksaSPM: val
+                          }
+                        } 
+                      })}
+                    >
+                      <SelectTrigger className="h-10 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                        <SelectValue placeholder="Pilih Status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-slate-200">
+                        <SelectItem value="Ya">Ya</SelectItem>
+                        <SelectItem value="Tidak">Tidak</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Jalan Sekolah</Label>
+                  {isEditMode ? (
+                    <Input 
                       value={(profile as any).sekolah?.alamat || ""} 
                       onChange={(e) => updateCurrentTeacher({ 
                         profile: {
@@ -1323,10 +1396,82 @@ function GuruProfile() {
                           }
                         } 
                       })}
-                      className="min-h-[80px] rounded-xl border-slate-100"
+                      className="h-10 rounded-xl border-slate-100"
                     />
                   ) : (
-                    <p className="font-bold text-slate-700 text-sm leading-relaxed">{(profile as any).sekolah?.alamat || "-"}</p>
+                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.alamat || "-"}</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Poskod</Label>
+                    {isEditMode ? (
+                      <Input 
+                        value={(profile as any).sekolah?.poskod || ""} 
+                        onChange={(e) => updateCurrentTeacher({ 
+                          profile: {
+                            ...(profile as any), 
+                            sekolah: {
+                              ...((profile as any).sekolah || {}), 
+                              poskod: e.target.value
+                            }
+                          } 
+                        })}
+                        className="h-10 rounded-xl border-slate-100"
+                      />
+                    ) : (
+                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.poskod || "-"}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Daerah</Label>
+                    {isEditMode ? (
+                      <Input 
+                        value={(profile as any).sekolah?.daerah || ""} 
+                        onChange={(e) => updateCurrentTeacher({ 
+                          profile: {
+                            ...(profile as any), 
+                            sekolah: {
+                              ...((profile as any).sekolah || {}), 
+                              daerah: e.target.value
+                            }
+                          } 
+                        })}
+                        className="h-10 rounded-xl border-slate-100"
+                      />
+                    ) : (
+                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.daerah || "-"}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Negeri</Label>
+                  {isEditMode ? (
+                    <Select
+                      value={(profile as any).sekolah?.negeri || ""}
+                      onValueChange={(val) => updateCurrentTeacher({ 
+                        profile: {
+                          ...(profile as any), 
+                          sekolah: {
+                            ...((profile as any).sekolah || {}), 
+                            negeri: val
+                          }
+                        } 
+                      })}
+                    >
+                      <SelectTrigger className="h-10 rounded-xl border-slate-100 focus:ring-[#002B5B]">
+                        <SelectValue placeholder="Pilih Negeri" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-slate-200">
+                        {MALAYSIAN_STATES.map(state => (
+                          <SelectItem key={state} value={state}>{state}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.negeri || "-"}</p>
                   )}
                 </div>
               </CardContent>
