@@ -262,7 +262,8 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
           <div>
             <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">Profile Guru</h1>
-            <p className="text-sm font-bold text-[#002B5B] uppercase mb-1">SMK Sultan Ahmad Shah</p>
+            <p className="text-sm font-bold text-[#002B5B] uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
+            <p className="text-xs font-bold text-[#002B5B] uppercase leading-tight">CAMERON HIGHLANDS</p>
             
           </div>
         </div>
