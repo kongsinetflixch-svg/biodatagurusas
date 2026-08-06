@@ -1,5 +1,5 @@
 
-import * as pdf from 'pdf-parse';
+const pdf = require('pdf-parse');
 
 export async function parseEOperasiPDF(base64: string) {
   try {
