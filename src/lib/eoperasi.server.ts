@@ -17,7 +17,7 @@ export async function parseEOperasiPDF(base64: string) {
       try {
         await PDFDocument.load(buffer);
       } catch (pdfLibError) {
-        if (pdfLibError.message.includes('password')) {
+        if (pdfLibError.message.toLowerCase().includes('password') || pdfLibError.message.toLowerCase().includes('encrypted')) {
           throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
         }
       }
@@ -25,6 +25,13 @@ export async function parseEOperasiPDF(base64: string) {
     }
 
     if (!text || text.trim().length < 10) {
+      // One more try with pdf-lib to see if it's actually encrypted but didn't throw yet
+      try {
+        const doc = await PDFDocument.load(buffer);
+        if (doc.isEncrypted) {
+          throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
+        }
+      } catch (innerE) {}
       throw new Error('Gagal mengekstrak teks daripada PDF. Pastikan ia adalah fail "Paparan Semakan Data" asli dari eOperasi dan bukan hasil imbasan (scan).');
     }
 
