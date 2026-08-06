@@ -301,9 +301,11 @@ function GuruProfile() {
 
     const ic = session.user.ic;
 
+    const sasTeacher = SAS_TEACHERS.find(t => t.kp === ic);
+
     const newTeacherData = {
       profile: {
-        nama: "Guru Baru",
+        nama: sasTeacher?.nama || "Guru Baru",
         kp: ic || "",
         tel: "",
         email: "",
@@ -315,12 +317,12 @@ function GuruProfile() {
         mengajarOpsyen: "",
         alamat: "",
         sekolah: {
-          nama: "",
-          alamat: "",
-          kod: "",
-          tel: "",
-          faks: "",
-          jawatan: "",
+          nama: "SMK Sultan Ahmad Shah",
+          alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
+          kod: "CEB1003",
+          tel: "05-4911018",
+          faks: "05-4914922",
+          jawatan: sasTeacher?.jabatan || "",
           guruKhas: "",
           pemeriksaSPM: "",
           lain: ""
