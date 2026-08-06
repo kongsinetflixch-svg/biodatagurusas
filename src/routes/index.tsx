@@ -659,7 +659,14 @@ function GuruProfile() {
                 <p className="text-blue-100/80 font-medium">Pengurusan Panitia Guru 2026</p>
               </div>
             </div>
-            <div className="flex gap-3 mt-4 md:mt-0 relative z-10">
+            <div className="flex flex-wrap gap-3 mt-4 md:mt-0 relative z-10">
+              <Button 
+                onClick={() => setShowRoleManager(!showRoleManager)} 
+                className={`${showRoleManager ? 'bg-[#D4AF37] text-white' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'} font-bold rounded-xl shadow-lg border transition-all`}
+              >
+                <Users className="w-4 h-4 mr-2" /> 
+                {showRoleManager ? "Senarai Profil" : "Urus Peranan"}
+              </Button>
               <Button onClick={() => setShowAdminDashboard(false)} className="bg-white text-[#002B5B] hover:bg-blue-50 font-bold rounded-xl shadow-lg">
                 <LayoutDashboard className="w-4 h-4 mr-2" /> Lihat Profil
               </Button>
