@@ -1,0 +1,197 @@
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+@media print {
+  /* Reset Styles */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-family: "Inter", "Segoe UI", sans-serif !important;
+    font-size: 10pt !important;
+    line-height: 1.15 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Layout Containers */
+  .profile-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  /* Component Hiding */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 {
+    color: #002B5B !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Information Density */
+  .section {
+    margin-bottom: 3mm !important;
+    page-break-inside: avoid !important;
+  }
+
+  .section-title {
+    font-size: 9.5pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    border-bottom: 0.5pt solid #002B5B !important;
+    padding-bottom: 0.5mm !important;
+    margin-bottom: 1.5mm !important;
+    color: #002B5B !important;
+  }
+
+  /* Grid System */
+  .info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(12, 1fr) !important;
+    gap: 1.5mm 3mm !important;
+  }
+
+  .col-6 { grid-column: span 6 !important; }
+  .col-4 { grid-column: span 4 !important; }
+  .col-3 { grid-column: span 3 !important; }
+  .col-12 { grid-column: span 12 !important; }
+
+  /* Data Items */
+  .data-field {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5mm !important;
+  }
+
+  .data-label {
+    font-size: 7pt !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    color: #555 !important;
+  }
+
+  .data-value {
+    font-size: 9pt !important;
+    font-weight: 500 !important;
+    color: black !important;
+    min-height: 4mm !important;
+  }
+
+  /* Tables */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 2mm !important;
+  }
+
+  th, td {
+    border: 0.5pt solid #ccc !important;
+    padding: 1mm 1.5mm !important;
+    text-align: left !important;
+    font-size: 8.5pt !important;
+  }
+
+  th {
+    background-color: #f5f5f5 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Header Specifics */
+  .official-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    border-bottom: 1.5pt solid #002B5B !important;
+    padding-bottom: 2mm !important;
+    margin-bottom: 4mm !important;
+  }
+
+  .kpm-logo-area {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3mm !important;
+  }
+
+  .kpm-text {
+    font-size: 20pt !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.5pt !important;
+  }
+
+  .header-titles {
+    text-align: right !important;
+  }
+
+  .doc-title {
+    font-size: 14pt !important;
+    font-weight: 800 !important;
+  }
+
+  .doc-subtitle {
+    font-size: 8pt !important;
+    font-weight: 600 !important;
+    color: #666 !important;
+  }
+
+  /* Photo Frame */
+  .photo-frame {
+    width: 30mm !important;
+    height: 38mm !important;
+    border: 0.5pt solid #000 !important;
+    margin-left: 5mm !important;
+    overflow: hidden !important;
+  }
+
+  .photo-frame img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* Signature Box */
+  .signature-area {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10mm !important;
+    margin-top: 5mm !important;
+  }
+
+  .sig-container {
+    border: 0.5pt solid #eee !important;
+    padding: 2mm !important;
+    height: 30mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  .sig-line {
+    border-top: 0.5pt solid #000 !important;
+    margin-top: 15mm !important;
+    text-align: center !important;
+    font-size: 7.5pt !important;
+    padding-top: 1mm !important;
+  }
+
+  /* Page Break Control */
+  .page-break {
+    page-break-after: always !important;
+  }
+
+  /* Avoid empty pages */
+  body:after {
+    content: none !important;
+  }
+}
