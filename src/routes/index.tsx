@@ -925,15 +925,34 @@ function GuruProfile() {
                                   key={role}
                                   variant={t.jabatan === role ? "default" : "outline"}
                                   size="sm"
-                                  onClick={() => {
+                                  onClick={async () => {
                                     const teacherIdx = SAS_TEACHERS.findIndex(st => st.kp === t.kp);
                                     if (teacherIdx !== -1) {
-                                      const teacher = SAS_TEACHERS[teacherIdx];
-                                      if (teacher) {
-                                        teacher.jabatan = role;
-                                        setRoleSearchTerm(prev => prev + " "); // Force re-render
-                                        setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
-                                        toast.success(`Peranan ${t.nama} dikemaskini ke ${role}`);
+                                      SAS_TEACHERS[teacherIdx].jabatan = role;
+                                      setRoleSearchTerm(prev => prev + " ");
+                                      setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
+                                      
+                                      // Check if profile exists and update it, else create it
+                                      const { data: existing } = await supabase
+                                        .from('teachers')
+                                        .select('id')
+                                        .eq('ic_number', t.kp)
+                                        .maybeSingle();
+                                        
+                                      if (existing) {
+                                        await supabase
+                                          .from('teachers')
+                                          .update({ 
+                                            profile: { 
+                                              ...(existing as any).profile, 
+                                              sekolah: { ...((existing as any).profile?.sekolah || {}), jawatan: role } 
+                                            } 
+                                          } as any)
+                                          .eq('id', (existing as any).id);
+                                        toast.success(`Peranan ${t.nama} dikemaskini.`);
+                                      } else {
+                                        // Auto-create profile with the new role
+                                        handleManualCreateTeacher(t.kp, t.nama, role);
                                       }
                                     }
                                   }}
