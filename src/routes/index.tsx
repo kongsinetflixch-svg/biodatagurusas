@@ -273,7 +273,6 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           {currentTeacher.profileImage ? (
             <img 
               src={currentTeacher.profileImage} 
-
               alt="Profil" 
               className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
             />
