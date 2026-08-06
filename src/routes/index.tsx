@@ -215,8 +215,22 @@ function GuruProfile() {
       return;
     }
     setIsLoggingIn(true);
+
+    // Validate if the IC exists in SAS_TEACHERS softcoded list
+    const sasTeacher = SAS_TEACHERS.find(t => t.kp === icInput.trim());
     
-    // Check if teacher exists with this IC
+    if (!sasTeacher && icInput.trim() !== SUPERADMIN_IC) {
+      toast.error("Maaf, No. IC anda tiada dalam senarai Guru/Pentadbir SAS 2026.");
+      setIsLoggingIn(false);
+      return;
+    }
+
+    if (icInput.trim() === SUPERADMIN_IC) {
+      setIsAdminMode(true);
+      toast.success("Selamat datang, Superadmin!");
+    }
+    
+    // Check if teacher profile already exists in DB
     const { data, error } = await supabase
       .from('teachers')
       .select('*')
@@ -225,19 +239,20 @@ function GuruProfile() {
 
     if (error) {
       toast.error("Ralat semasa log masuk.");
-    } else if (data) {
-      localStorage.setItem('guru_ic_session', icInput);
-      setSession({ user: { ic: icInput, id: 'pseudo-user' } });
-      await fetchTeachersByIc(icInput);
-      const teacherName = (data.profile as any)?.nama || 'Cikgu';
-      toast.success(`Selamat kembali, ${teacherName}`);
     } else {
-      // If doesn't exist, we'll allow creating one for this IC if they want
-      toast.info("No. IC tidak dijumpai. Anda boleh mula mengisi profil baru.");
       localStorage.setItem('guru_ic_session', icInput);
       setSession({ user: { ic: icInput, id: 'pseudo-user' } });
-      setTeachers([]);
-      setIsLoading(false);
+      
+      if (data) {
+        await fetchTeachersByIc(icInput);
+        const teacherName = (data.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
+        toast.success(`Selamat kembali, ${teacherName}`);
+      } else {
+        // If profile doesn't exist in DB, start fresh for this user from the list
+        toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
+        setTeachers([]);
+        setIsLoading(false);
+      }
     }
     setIsLoggingIn(false);
   };
