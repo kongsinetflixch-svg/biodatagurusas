@@ -1,5 +1,5 @@
 
-import pdf from 'pdf-parse';
+import * as pdf from 'pdf-parse';
 
 export async function parseEOperasiPDF(base64: string) {
   try {
