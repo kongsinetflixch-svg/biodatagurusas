@@ -1585,7 +1585,7 @@ function GuruProfile() {
             <div className="flex flex-col">
               <span className="kpm-logo-text">KPM</span>
               <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
-                Profil Guru Profesional 2026
+                Profile Guru SMK Sultan Ahmad Shah
               </div>
               <h1 className="text-xl font-black text-[#002B5B] uppercase leading-tight mt-2">
                 REKOD PERIBADI PENJAWAT AWAM
