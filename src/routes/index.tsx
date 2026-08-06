@@ -1826,24 +1826,11 @@ function GuruProfile() {
               )}
             </Button>
             <Button 
-              onClick={() => setShowPrintPreview(true)} 
-              variant="outline"
-              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-slate-100 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all text-[#002B5B]"
-            >
-              <FileText className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Pratonton Cetak</span>
-            </Button>
-            <Button 
               onClick={handlePrint} 
               variant="outline"
-              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-slate-100 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all"
+              className="h-12 w-full sm:w-auto sm:px-8 bg-[#002B5B] hover:bg-[#003B7B] text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
             >
-              <Printer className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Cetak</span>
-            </Button>
-            <Button 
-              onClick={handlePrint}
-              className="h-12 w-12 sm:w-auto sm:px-8 bg-[#002B5B] hover:bg-[#003B7B] text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
-            >
-              <Download className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">PDF</span>
+              <Printer className="w-5 h-5 sm:mr-3" /> <span className="">Cetak / Simpan PDF</span>
             </Button>
           </div>
 
