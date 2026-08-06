@@ -1544,8 +1544,9 @@ function GuruProfile() {
                   { label: "Kod Sekolah", key: "kod" },
                   { label: "Jawatan", key: "jawatan" },
                 ].map((item) => (
-                  <div key={item.key} className="space-y-2">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
+                  <div key={item.key} className="space-y-2 info-item">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
+
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.[item.key] || ""} 
