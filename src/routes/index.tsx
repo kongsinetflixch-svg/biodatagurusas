@@ -306,21 +306,6 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
         <span className="info-value">{(profile as any)?.alamat || "-"}</span>
       </div>
 
-      {/* School Info */}
-      <span className="section-title">Maklumat Sekolah</span>
-      <div className="info-grid">
-        <div className="info-item"><span className="info-label">Nama Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.nama || "-"}</span></div>
-        <div className="info-item"><span className="info-label">Kod Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.kod || "-"}</span></div>
-        <div className="info-item"><span className="info-label">Jawatan</span><span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span></div>
-        <div className="info-item"><span className="info-label">Pemeriksa SPM</span><span className="info-value">{(profile as any)?.sekolah?.pemeriksaSPM || "-"}</span></div>
-      </div>
-      
-      <div className="info-item mt-1">
-        <span className="info-label">Alamat Sekolah</span>
-        <span className="info-value">
-          {(profile as any)?.sekolah?.alamat}, {(profile as any)?.sekolah?.poskod} {(profile as any)?.sekolah?.daerah}, {(profile as any)?.sekolah?.negeri}
-        </span>
-      </div>
 
       {/* Academic */}
       <span className="section-title">Kelulusan Akademik</span>
