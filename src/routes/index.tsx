@@ -932,26 +932,25 @@ function GuruProfile() {
                                       setRoleSearchTerm(prev => prev + " ");
                                       setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
                                       
-                                      // Check if profile exists and update it, else create it
                                       const { data: existing } = await supabase
                                         .from('teachers')
-                                        .select('id')
+                                        .select('*')
                                         .eq('ic_number', t.kp)
                                         .maybeSingle();
                                         
                                       if (existing) {
+                                        const typedExisting = existing as any;
                                         await supabase
                                           .from('teachers')
                                           .update({ 
                                             profile: { 
-                                              ...(existing as any).profile, 
-                                              sekolah: { ...((existing as any).profile?.sekolah || {}), jawatan: role } 
+                                              ...typedExisting.profile, 
+                                              sekolah: { ...(typedExisting.profile?.sekolah || {}), jawatan: role } 
                                             } 
                                           } as any)
-                                          .eq('id', (existing as any).id);
+                                          .eq('id', typedExisting.id);
                                         toast.success(`Peranan ${t.nama} dikemaskini.`);
                                       } else {
-                                        // Auto-create profile with the new role
                                         handleManualCreateTeacher(t.kp, t.nama, role);
                                       }
                                     }
