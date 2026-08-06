@@ -59,34 +59,87 @@ function GuruProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [icInput, setIcInput] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   
   // Teachers state for multi-profile support
   const [teachers, setTeachers] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) {
-        fetchTeachers(session.user.id);
-      } else {
-        setIsLoading(false);
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        fetchTeachers(session.user.id);
-      } else {
-        setTeachers([]);
-        setIsLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // We check for a "pseudo-session" in localStorage for IC login
+    const savedIc = localStorage.getItem('guru_ic_session');
+    if (savedIc) {
+      setSession({ user: { ic: savedIc, id: 'pseudo-user' } });
+      fetchTeachersByIc(savedIc);
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
+  const fetchTeachersByIc = async (ic: string) => {
+    setIsLoading(true);
+    // In "IC Mode", if it's admin, we might want to see all, but for now we follow user's request
+    // which implies personal access by IC.
+    const { data, error } = await supabase
+      .from('teachers')
+      .select('*')
+      .or(`ic_number.eq.${ic},owner_id.eq.${ic}`)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      toast.error("Gagal memuat profil guru.");
+      console.error(error);
+    } else if (data) {
+      const mappedData = data.map((t: any) => ({
+        ...t,
+        profileImage: t.profile_image,
+      }));
+      setTeachers(mappedData);
+      if (mappedData.length > 0) {
+        if (!activeTeacherId) {
+          setActiveTeacherId(mappedData[0].id);
+        }
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const handleIcLogin = async () => {
+    if (!icInput.trim()) {
+      toast.error("Sila masukkan No. IC.");
+      return;
+    }
+    setIsLoggingIn(true);
+    
+    // Check if teacher exists with this IC
+    const { data, error } = await supabase
+      .from('teachers')
+      .select('*')
+      .or(`ic_number.eq.${icInput},owner_id.eq.${icInput}`)
+      .maybeSingle();
+
+    if (error) {
+      toast.error("Ralat semasa log masuk.");
+    } else if (data) {
+      localStorage.setItem('guru_ic_session', icInput);
+      setSession({ user: { ic: icInput, id: 'pseudo-user' } });
+      await fetchTeachersByIc(icInput);
+      const teacherName = (data.profile as any)?.nama || 'Cikgu';
+      toast.success(`Selamat kembali, ${teacherName}`);
+    } else {
+      // If doesn't exist, we'll allow creating one for this IC if they want
+      toast.info("No. IC tidak dijumpai. Anda boleh mula mengisi profil baru.");
+      localStorage.setItem('guru_ic_session', icInput);
+      setSession({ user: { ic: icInput, id: 'pseudo-user' } });
+      setTeachers([]);
+      setIsLoading(false);
+    }
+    setIsLoggingIn(false);
+  };
+
   const fetchTeachers = async (userId: string) => {
+    // This function is kept for backward compatibility if needed, 
+    // but we use fetchTeachersByIc now.
     setIsLoading(true);
     const { data, error } = await supabase
       .from('teachers')
@@ -98,7 +151,6 @@ function GuruProfile() {
       toast.error("Gagal memuat profil guru.");
       console.error(error);
     } else if (data) {
-      // Map database fields to the UI state structure
       const mappedData = data.map((t: any) => ({
         ...t,
         profileImage: t.profile_image,
@@ -127,10 +179,12 @@ function GuruProfile() {
       return;
     }
 
+    const ic = session.user.ic;
+
     const newTeacherData = {
       profile: {
         nama: "Guru Baru",
-        kp: "",
+        kp: ic || "",
         tel: "",
         email: "",
         pengalaman: "",
@@ -155,7 +209,8 @@ function GuruProfile() {
       kelulusan: [],
       subjek: [],
       sejarah: [],
-      owner_id: session.user.id,
+      owner_id: ic,
+      ic_number: ic,
       profile_image: null
     };
 
@@ -229,7 +284,8 @@ function GuruProfile() {
         kelulusan: currentTeacher.kelulusan,
         subjek: currentTeacher.subjek,
         sejarah: currentTeacher.sejarah,
-        profile_image: currentTeacher.profileImage
+        profile_image: currentTeacher.profileImage,
+        ic_number: (currentTeacher.profile as any)?.kp // Ensure IC number is synced
       })
       .eq('id', activeTeacherId);
 
@@ -276,7 +332,9 @@ function GuruProfile() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('guru_ic_session');
+    setSession(null);
+    setTeachers([]);
     toast.info("Anda telah log keluar.");
   };
 
@@ -362,12 +420,36 @@ function GuruProfile() {
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium">Log masuk untuk mula menguruskan profil guru anda.</p>
+            <p className="text-slate-500 font-medium">Sila masukkan No. Kad Pengenalan untuk mula.</p>
           </div>
-          <div className="pt-4">
-            <Button onClick={handleLogin} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
-              <LogIn className="w-6 h-6 mr-2" /> Log Masuk dengan Google
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2 text-left">
+              <Label htmlFor="ic-login" className="text-slate-600 font-bold ml-1 text-xs uppercase tracking-wider">No. Kad Pengenalan</Label>
+              <Input 
+                id="ic-login"
+                placeholder="Contoh: 770613035750" 
+                className="h-14 rounded-2xl border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg font-bold transition-all"
+                value={icInput}
+                onChange={(e) => setIcInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
+              />
+            </div>
+            <Button 
+              onClick={handleIcLogin} 
+              disabled={isLoggingIn}
+              className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+            >
+              {isLoggingIn ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                <>
+                  <LogIn className="w-6 h-6 mr-2" /> Masuk Profil
+                </>
+              )}
             </Button>
+            <p className="text-[10px] text-slate-400 font-medium italic">
+              *Masukkan No. IC tanpa tanda sempang (-)
+            </p>
           </div>
         </Card>
       </div>
@@ -522,18 +604,18 @@ function GuruProfile() {
                 </TableHeader>
                 <TableBody>
                   {teachers
-                    .filter(t => t.profile.nama.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .filter(t => (t.profile as any)?.nama?.toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((t) => (
                     <TableRow key={t.id} className="hover:bg-slate-50/50 transition-colors">
                       <TableCell>
                         <Avatar className="w-10 h-10 border-2 border-slate-100">
                           <AvatarImage src={t.profileImage || ""} />
-                          <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{t.profile.nama.charAt(0)}</AvatarFallback>
+                          <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
                         </Avatar>
                       </TableCell>
-                      <TableCell className="font-bold text-slate-700">{t.profile.nama || "Tanpa Nama"}</TableCell>
-                      <TableCell className="text-slate-500 text-sm">{t.profile.kp || "-"}</TableCell>
-                      <TableCell className="text-slate-500 text-sm">{t.profile.sekolah.jawatan || "-"}</TableCell>
+                      <TableCell className="font-bold text-slate-700">{(t.profile as any)?.nama || "Tanpa Nama"}</TableCell>
+                      <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.kp || "-"}</TableCell>
+                      <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.sekolah?.jawatan || "-"}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button 
@@ -615,9 +697,9 @@ function GuruProfile() {
                   <div className="flex items-center gap-2">
                     <Avatar className="w-6 h-6 border border-white/20">
                       <AvatarImage src={t.profileImage || ""} />
-                      <AvatarFallback className="text-[8px]">{t.profile.nama.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="text-[8px]">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
                     </Avatar>
-                    {t.profile.nama || "Tanpa Nama"}
+                    {(t.profile as any)?.nama || "Tanpa Nama"}
                   </div>
                 </Button>
                 {teachers.length > 1 && (
@@ -665,7 +747,7 @@ function GuruProfile() {
                <span className="text-xl font-black text-[#002B5B]">KPM</span>
             </div>
             <div className="text-center md:text-left">
-              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">{profile.nama || "PROFIL GURU"}</h1>
+              <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">{(profile as any)?.nama || "PROFIL GURU"}</h1>
               <p className="text-blue-100/80 font-medium text-lg mt-1 flex items-center justify-center md:justify-start gap-2">
                 <FileText className="w-5 h-5 text-[#D4AF37]" />
                 Borang Profil Guru 2026
@@ -677,8 +759,8 @@ function GuruProfile() {
             <div className="relative group">
               <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
               <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
-                <AvatarImage src={profileImage || ""} alt={profile.nama} />
-                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">{profile.nama.charAt(0)}</AvatarFallback>
+                <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} />
+                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">{(profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-2 right-2 no-print">
                 <input 
@@ -740,9 +822,9 @@ function GuruProfile() {
         {/* STATS CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { title: "Pengalaman Mengajar", value: profile.pengalaman || "-", icon: Briefcase, color: "text-[#002B5B]", bg: "bg-white" },
-            { title: "Sekolah Semasa", value: profile.tempohSemasa || "-", icon: Clock, color: "text-[#002B5B]", bg: "bg-white" },
-            { title: "Bidang Opsyen", value: profile.opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
+            { title: "Pengalaman Mengajar", value: (profile as any).pengalaman || "-", icon: Briefcase, color: "text-[#002B5B]", bg: "bg-white" },
+            { title: "Sekolah Semasa", value: (profile as any).tempohSemasa || "-", icon: Clock, color: "text-[#002B5B]", bg: "bg-white" },
+            { title: "Bidang Opsyen", value: (profile as any).opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
             { title: "Kelayakan", value: "Ijazah & Diploma", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
 
           ].map((item, i) => (
@@ -793,13 +875,13 @@ function GuruProfile() {
                     </div>
                     {isEditMode ? (
                       <Input 
-                        value={profile[item.key as keyof typeof profile] as string} 
-                        onChange={(e) => updateCurrentTeacher({ profile: {...profile, [item.key]: e.target.value}})}
+                        value={(profile as any)[item.key as keyof typeof profile] as string} 
+                        onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), [item.key]: e.target.value}})}
                         className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
                       />
                     ) : (
                       <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
-                        <p className="font-bold text-slate-700">{profile[item.key as keyof typeof profile] as string || "-"}</p>
+                        <p className="font-bold text-slate-700">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
                       </div>
                     )}
                   </div>
@@ -811,13 +893,13 @@ function GuruProfile() {
                   </div>
                   {isEditMode ? (
                     <Textarea 
-                      value={profile.alamat} 
-                      onChange={(e) => updateCurrentTeacher({ profile: {...profile, alamat: e.target.value}})}
+                      value={(profile as any).alamat} 
+                      onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), alamat: e.target.value}})}
                       className="min-h-[100px] rounded-xl border-slate-100"
                     />
                   ) : (
                     <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
-                      <p className="font-bold text-slate-700 leading-relaxed">{profile.alamat || "-"}</p>
+                      <p className="font-bold text-slate-700 leading-relaxed">{(profile as any).alamat || "-"}</p>
                     </div>
                   )}
                 </div>
@@ -845,12 +927,20 @@ function GuruProfile() {
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
                     {isEditMode ? (
                       <Input 
-                        value={profile.sekolah[item.key as keyof typeof profile.sekolah] as string} 
-                        onChange={(e) => updateCurrentTeacher({ profile: {...profile, sekolah: {...profile.sekolah, [item.key]: e.target.value}} } )}
+                        value={(profile as any).sekolah?.[item.key] || ""} 
+                        onChange={(e) => updateCurrentTeacher({ 
+                          profile: {
+                            ...(profile as any), 
+                            sekolah: {
+                              ...((profile as any).sekolah || {}), 
+                              [item.key]: e.target.value
+                            }
+                          } 
+                        })}
                         className="h-10 rounded-xl border-slate-100"
                       />
                     ) : (
-                      <p className="font-bold text-slate-700">{profile.sekolah[item.key as keyof typeof profile.sekolah] as string || "-"}</p>
+                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.[item.key] || "-"}</p>
                     )}
                   </div>
                 ))}
@@ -858,12 +948,20 @@ function GuruProfile() {
                   <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Sekolah</Label>
                   {isEditMode ? (
                     <Textarea 
-                      value={profile.sekolah.alamat} 
-                      onChange={(e) => updateCurrentTeacher({ profile: {...profile, sekolah: {...profile.sekolah, alamat: e.target.value}} } )}
+                      value={(profile as any).sekolah?.alamat || ""} 
+                      onChange={(e) => updateCurrentTeacher({ 
+                        profile: {
+                          ...(profile as any), 
+                          sekolah: {
+                            ...((profile as any).sekolah || {}), 
+                            alamat: e.target.value
+                          }
+                        } 
+                      })}
                       className="min-h-[80px] rounded-xl border-slate-100"
                     />
                   ) : (
-                    <p className="font-bold text-slate-700 text-sm leading-relaxed">{profile.sekolah.alamat || "-"}</p>
+                    <p className="font-bold text-slate-700 text-sm leading-relaxed">{(profile as any).sekolah?.alamat || "-"}</p>
                   )}
                 </div>
               </CardContent>
@@ -1120,7 +1218,7 @@ function GuruProfile() {
 
               <div className="flex flex-col sm:flex-row justify-between gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2">
                 <div className="flex-1 border-b border-slate-100 pb-1">
-                  Nama: <span className="text-[#002B5B] ml-2">{profile.nama || "________________________"}</span>
+                  Nama: <span className="text-[#002B5B] ml-2">{(currentTeacher?.profile as any)?.nama || "________________________"}</span>
                 </div>
                 <div className="w-full sm:w-32 border-b border-slate-100 pb-1">
                   Tarikh: <span className="text-[#002B5B] ml-2">{new Date().toLocaleDateString('ms-MY')}</span>
