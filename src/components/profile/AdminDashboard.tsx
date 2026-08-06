@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, Users, LayoutDashboard, Search, FileText, Edit2, Trash2, Settings, User, Loader2 } from "lucide-react";
+import { Plus, Users, LayoutDashboard, Search, FileText, Edit2, Trash2, Settings, User, Loader2, LogOut } from "lucide-react";
 
 interface AdminDashboardProps {
   teachers: any[];
