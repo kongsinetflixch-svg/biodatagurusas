@@ -1540,10 +1540,11 @@ function GuruProfile() {
             <Button 
               variant="ghost"
               onClick={handleLogout}
-              className="h-12 px-4 rounded-2xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold"
+              className="h-12 px-4 rounded-2xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-black uppercase text-xs tracking-widest"
             >
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
+
           </div>
         )}
 
@@ -1560,8 +1561,9 @@ function GuruProfile() {
               onClick={handlePrint}
               className="bg-[#002B5B] hover:bg-[#003B7B] text-white font-bold rounded-2xl px-6 h-12 shadow-lg"
             >
-              <Printer className="w-4 h-4 mr-2 text-[#D4AF37]" /> Cetak Profil
+              <Printer className="w-4 h-4 mr-2 text-[#D4AF37]" /> Simpan PDF / Cetak
             </Button>
+
           </div>
         )}
 
@@ -2409,8 +2411,9 @@ function GuruProfile() {
                 onClick={handlePrint}
                 className="bg-[#D4AF37] hover:bg-[#B8860B] text-white font-bold rounded-xl px-6"
               >
-                <Printer className="w-4 h-4 mr-2" /> Sah & Cetak
+                <Printer className="w-4 h-4 mr-2" /> Sah & Cetak / PDF
               </Button>
+
               <Button 
                 variant="ghost" 
                 onClick={() => setShowPrintPreview(false)}
