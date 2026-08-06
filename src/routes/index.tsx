@@ -1509,11 +1509,70 @@ function GuruProfile() {
                     ) : (subjek as any[]).map((row, idx) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
-                        <TableCell className="font-bold text-slate-700">{row.nama}</TableCell>
-                        <TableCell className="font-medium text-slate-500">{row.kelas}</TableCell>
-                        <TableCell className="font-bold text-slate-700">{row.murid || "-"}</TableCell>
-                        <TableCell className="text-center"><span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span></TableCell>
-                        <TableCell className="text-center"><span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span></TableCell>
+                        <TableCell className="font-bold text-slate-700">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.nama} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, nama: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.nama}
+                        </TableCell>
+                        <TableCell className="font-medium text-slate-500">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.kelas} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, kelas: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.kelas}
+                        </TableCell>
+                        <TableCell className="font-bold text-slate-700">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.murid} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, murid: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg w-20"
+                            />
+                          ) : (row.murid || "-")}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.tov} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, tov: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                            />
+                          ) : (
+                            <span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.etr} 
+                              onChange={(e) => {
+                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, etr: e.target.value} : s);
+                                updateCurrentTeacher({ subjek: newSubjek });
+                              }}
+                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                            />
+                          ) : (
+                            <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span>
+                          )}
+                        </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
                             <Button 
