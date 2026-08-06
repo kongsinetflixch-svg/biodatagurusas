@@ -2,6 +2,7 @@
 import pdf from 'pdf-parse/lib/pdf-parse.js';
 
 
+
 export async function parseEOperasiPDF(base64: string) {
   try {
     const buffer = Buffer.from(base64, 'base64');
