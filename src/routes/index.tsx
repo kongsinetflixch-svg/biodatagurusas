@@ -760,43 +760,52 @@ function GuruProfile() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
-          <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
-             <span className="text-2xl font-black text-white">KPM</span>
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0">
+             <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
           <div className="space-y-2">
-            <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium">Sila masukkan No. Kad Pengenalan untuk mula.</p>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <p className="text-slate-500 font-semibold text-sm sm:text-base px-2">Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.</p>
           </div>
-          <div className="space-y-4 pt-4">
-            <div className="space-y-2 text-left">
-              <Label htmlFor="ic-login" className="text-slate-600 font-bold ml-1 text-xs uppercase tracking-wider">No. Kad Pengenalan</Label>
-              <Input 
-                id="ic-login"
-                placeholder="Contoh: 770613035750" 
-                className="h-14 rounded-2xl border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg font-bold transition-all"
-                value={icInput}
-                onChange={(e) => setIcInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
-              />
+          <div className="space-y-4 pt-4 sm:pt-6">
+            <div className="space-y-3 text-left">
+              <Label htmlFor="ic-login" className="text-slate-500 font-black ml-1 text-[10px] uppercase tracking-[0.2em]">No. Kad Pengenalan</Label>
+              <div className="relative group">
+                <Input 
+                  id="ic-login"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Contoh: 770613035750" 
+                  className="h-14 sm:h-16 rounded-[1.25rem] border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg sm:text-xl font-bold transition-all px-6 bg-slate-50/50 group-hover:bg-white"
+                  value={icInput}
+                  onChange={(e) => setIcInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
+                />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-20">
+                  <User className="w-6 h-6 text-[#002B5B]" />
+                </div>
+              </div>
             </div>
             <Button 
               onClick={handleIcLogin} 
               disabled={isLoggingIn}
-              className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+              className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 mt-2"
             >
               {isLoggingIn ? (
                 <Loader2 className="w-6 h-6 animate-spin" />
               ) : (
                 <>
-                  <LogIn className="w-6 h-6 mr-2" /> Masuk Profil
+                  <LogIn className="w-6 h-6 mr-3 stroke-[3px]" /> Masuk Profil
                 </>
               )}
             </Button>
-            <p className="text-[10px] text-slate-400 font-medium italic">
-              *Masukkan No. IC tanpa tanda sempang (-)
-            </p>
+            <div className="pt-2">
+              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider bg-slate-50 py-2 rounded-lg inline-block px-4">
+                Tanpa tanda sempang <span className="text-[#002B5B] font-black mx-1">(-)</span>
+              </p>
+            </div>
           </div>
         </Card>
       </div>
