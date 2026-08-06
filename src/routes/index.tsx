@@ -1594,7 +1594,7 @@ function GuruProfile() {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
+                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
                   )}
                 </div>
 
