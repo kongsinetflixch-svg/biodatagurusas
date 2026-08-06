@@ -157,13 +157,81 @@
   .print-only {
     display: block !important;
   }
+  
   body {
     background: white !important;
-  }
-  .print-container {
+    color: black !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 210mm;
-    height: 297mm;
+  }
+
+  /* Reset container for A4 */
+  .container, .print-container {
+    max-width: none !important;
+    width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 10mm !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Force grid for stats cards in print */
+  .grid {
+    display: grid !important;
+  }
+  
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Card styling for print */
+  .card {
+    break-inside: avoid;
+    border: 1px solid #e2e8f0 !important;
+    margin-bottom: 1rem !important;
+    box-shadow: none !important;
+  }
+
+  .bg-\[\#002B5B\] {
+    background-color: #002B5B !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .text-white {
+    color: white !important;
+  }
+
+  /* Table styling for print */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #e2e8f0 !important;
+    padding: 8px !important;
+    text-align: left !important;
+  }
+
+  th {
+    background-color: #f8fafc !important;
+    color: #002B5B !important;
+    font-weight: bold !important;
+  }
+
+  /* Hide scrollbars in tables */
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  /* Signature area */
+  .border-dashed {
+    border-style: solid !important;
+    border-width: 1px !important;
   }
 }
