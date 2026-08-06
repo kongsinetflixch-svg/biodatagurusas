@@ -257,8 +257,9 @@ const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isA
              <span className="text-[10px] font-black text-white">KPM</span>
           </div>
           <div>
-            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">PROFIL GURU PROFESIONAL 2026</h1>
-            <p className="text-[8pt] font-bold text-slate-500 uppercase tracking-widest">Kementerian Pendidikan Malaysia</p>
+            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">Profile Guru</h1>
+            <p className="text-sm font-bold text-[#002B5B] uppercase mb-1">SMK Sultan Ahmad Shah</p>
+            
           </div>
         </div>
         <div className="print-photo-container">
@@ -517,10 +518,10 @@ const SUPERADMIN_IC = "801022016573";
 export const Route = createFileRoute("/")({
 
   head: () => ({
-    title: "Profil Guru Profesional 2026",
+    title: "Profile Guru | SMK Sultan Ahmad Shah",
     meta: [
-      { name: "description", content: "Portal Rasmi Profil Guru Profesional 2026 - KPM" },
-      { property: "og:title", content: "Profil Guru Profesional 2026" },
+      { name: "description", content: "Portal Rasmi Profile Guru - SMK Sultan Ahmad Shah" },
+      { property: "og:title", content: "Profile Guru | SMK Sultan Ahmad Shah" },
     ],
   }),
   component: GuruProfile,
@@ -1118,7 +1119,8 @@ function GuruProfile() {
           </div>
           
           <div className="space-y-2">
-            <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profil Guru</h3>
+            <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profile Guru</h3>
+            <p className="text-sm font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
             <p className="text-slate-500 text-sm font-medium px-4">
               Sila tunggu sebentar sementara kami memuatkan maklumat anda...
             </p>
@@ -1140,7 +1142,8 @@ function GuruProfile() {
              <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
           <div className="space-y-2">
-            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
+            <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
             <p className="text-slate-500 font-semibold text-sm sm:text-base px-2">Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.</p>
           </div>
           <div className="space-y-4 pt-4 sm:pt-6">
@@ -1212,7 +1215,8 @@ function GuruProfile() {
              <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
           <div className="space-y-3">
-            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
+            <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
             <div className="bg-blue-50/50 py-3 px-4 rounded-2xl">
               <p className="text-[#002B5B] font-bold text-sm sm:text-base">
                 Memuatkan maklumat anda...
@@ -1581,7 +1585,7 @@ function GuruProfile() {
             <div className="flex flex-col">
               <span className="kpm-logo-text">KPM</span>
               <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
-                Profil Guru Profesional 2026
+                Profile Guru SMK Sultan Ahmad Shah
               </div>
               <h1 className="text-xl font-black text-[#002B5B] uppercase leading-tight mt-2">
                 REKOD PERIBADI PENJAWAT AWAM
@@ -1646,7 +1650,7 @@ function GuruProfile() {
                 <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 mt-2">
                   <div className="text-[#D4AF37] font-black text-[10px] sm:text-xs flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10 uppercase tracking-[0.1em]">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    Profil Guru Profesional
+                    Profile Guru SMK Sultan Ahmad Shah
                   </div>
                   <div className="text-blue-100/70 font-bold text-xs sm:text-sm flex items-center gap-2 px-1">
                     <MapPin className="w-4 h-4 text-[#D4AF37]" />
@@ -2398,7 +2402,7 @@ function GuruProfile() {
 
         {/* FOOTER */}
         <footer className="no-print text-center py-12 space-y-2">
-          <p className="text-[#002B5B] font-black text-sm">Profil Guru © 2026 | Kementerian Pendidikan Malaysia</p>
+          <p className="text-[#002B5B] font-black text-sm">Profile Guru SMK Sultan Ahmad Shah © 2026</p>
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
