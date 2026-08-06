@@ -195,6 +195,7 @@ function GuruProfile() {
   const fetchTeachersByIc = async (ic: string) => {
     const cleanIc = ic.replace(/-/g, "");
     setIsLoading(true);
+    console.log("Fetching profile for IC:", cleanIc);
     // In "IC Mode", we query by ic_number (TEXT) to avoid UUID errors
     const { data, error } = await supabase
       .from('teachers')
@@ -226,6 +227,7 @@ function GuruProfile() {
       }
     }
     setIsLoading(false);
+    console.log("Fetch complete for IC:", cleanIc);
   };
 
   const handleIcLogin = async () => {
@@ -327,6 +329,7 @@ function GuruProfile() {
   // Automatically creates a teacher profile if it doesn't exist
   const handleAutoCreateTeacher = async (ic: string, sasTeacher: any) => {
     setIsLoading(true);
+    console.log("Auto-creating profile for IC:", ic);
     const newTeacherData = {
       profile: {
         nama: sasTeacher?.nama || "Guru Baru",
@@ -369,6 +372,7 @@ function GuruProfile() {
       toast.error("Gagal menjana profil guru secara automatik.");
       console.error(error);
       setIsLoading(false);
+      console.log("Auto-creation failed for IC:", ic);
     } else if (data && data[0]) {
       const teacher = data[0];
       const newTeacher = {
@@ -379,6 +383,7 @@ function GuruProfile() {
       setActiveTeacherId(teacher.id as string);
       setIsEditMode(false);
       setIsLoading(false);
+      console.log("Auto-creation complete for IC:", ic);
       toast.success("Profil digital anda telah dijanakan secara automatik.");
     }
   };
