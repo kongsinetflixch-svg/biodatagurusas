@@ -520,8 +520,8 @@ export const Route = createFileRoute("/")({
   head: () => ({
     title: "Profile Guru | SMK Sultan Ahmad Shah",
     meta: [
-      { name: "description", content: "Portal Rasmi Profil Guru Profesional 2026 - KPM" },
-      { property: "og:title", content: "Profil Guru Profesional 2026" },
+      { name: "description", content: "Portal Rasmi Profile Guru - SMK Sultan Ahmad Shah" },
+      { property: "og:title", content: "Profile Guru | SMK Sultan Ahmad Shah" },
     ],
   }),
   component: GuruProfile,
@@ -1119,7 +1119,8 @@ function GuruProfile() {
           </div>
           
           <div className="space-y-2">
-            <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profil Guru</h3>
+            <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profile Guru</h3>
+            <p className="text-sm font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
             <p className="text-slate-500 text-sm font-medium px-4">
               Sila tunggu sebentar sementara kami memuatkan maklumat anda...
             </p>
@@ -2401,7 +2402,7 @@ function GuruProfile() {
 
         {/* FOOTER */}
         <footer className="no-print text-center py-12 space-y-2">
-          <p className="text-[#002B5B] font-black text-sm">Profil Guru © 2026 | Kementerian Pendidikan Malaysia</p>
+          <p className="text-[#002B5B] font-black text-sm">Profile Guru SMK Sultan Ahmad Shah © 2026</p>
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
