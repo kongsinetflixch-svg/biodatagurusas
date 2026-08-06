@@ -1850,7 +1850,8 @@ function GuruProfile() {
                                 const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, subjek: e.target.value} : s);
                                 updateCurrentTeacher({ sejarah: newSejarah });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.subjek}
                         </TableCell>
