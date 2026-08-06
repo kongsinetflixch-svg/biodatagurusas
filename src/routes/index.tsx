@@ -1052,7 +1052,7 @@ function GuruProfile() {
   const { profile, profileImage, kelulusan, subjek, sejarah } = currentTeacher || {
     profile: {
       nama: "", kp: "", tel: "", email: "", pengalaman: "", tempohSemasa: "", tarikhMula: "", opsyen: "", gred: "", mengajarOpsyen: "", alamat: "",
-      sekolah: { nama: "", alamat: "", kod: "", tel: "", faks: "", jawatan: "", guruKhas: "", pemeriksaSPM: "", lain: "" }
+      sekolah: { nama: "SMK Sultan Ahmad Shah", alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur", kod: "CEB1003", tel: "05-4911018", faks: "05-4914922", jawatan: "", guruKhas: "", pemeriksaSPM: "", lain: "" }
     },
     profileImage: null,
     kelulusan: [],
