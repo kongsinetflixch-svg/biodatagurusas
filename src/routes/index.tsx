@@ -176,6 +176,10 @@ function GuruProfile() {
     if (savedIc) {
       setSession({ user: { ic: savedIc, id: 'pseudo-user' } });
       fetchTeachersByIc(savedIc);
+      // Auto-enable admin mode for superadmin
+      if (savedIc === SUPERADMIN_IC) {
+        setIsAdminMode(true);
+      }
     } else {
       setIsLoading(false);
     }
