@@ -152,6 +152,17 @@ const SAS_TEACHERS: { nama: string, kp: string, jabatan: string }[] = [
 const SUPERADMIN_IC = "801022016573";
 
 
+// Gred Jawatan SSPA (Sistem Saraan Perkhidmatan Awam) 2024/2025
+const SSPA_GRADES = [
+  "DG54", "DG52", "DG48", "DG44", "DG41", "DG38", "DG34", "DG32", "DG29"
+];
+
+const MALAYSIAN_STATES = [
+  "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Perak", "Perlis", 
+  "Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu", "Wilayah Persekutuan Kuala Lumpur", 
+  "Wilayah Persekutuan Labuan", "Wilayah Persekutuan Putrajaya"
+];
+
 export const Route = createFileRoute("/")({
 
   head: () => ({
