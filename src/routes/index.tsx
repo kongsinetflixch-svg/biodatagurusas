@@ -1251,6 +1251,8 @@ function GuruProfile() {
 
   return (
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
+      <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
+
       <div className="max-w-6xl mx-auto print-container space-y-6">
         
         {/* PANITIA SELECTOR / TABS */}
