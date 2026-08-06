@@ -32,12 +32,28 @@ import {
   LogIn,
   Loader2,
   LayoutDashboard,
-  Users
+  Users,
+  FileDown
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { 
+  Document, 
+  Packer, 
+  Paragraph, 
+  TextRun, 
+  Table as DocxTable, 
+  TableRow as DocxTableRow, 
+  TableCell as DocxTableCell, 
+  WidthType, 
+  BorderStyle,
+  AlignmentType,
+  HeadingLevel,
+  VerticalAlign
+} from "docx";
+import { saveAs } from "file-saver";
 
 // Hardcoded teachers data from SAS 2026 List
 // Filtering for Guru, Pentadbir, and Pengetua only
