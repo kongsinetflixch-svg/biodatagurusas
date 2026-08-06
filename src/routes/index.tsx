@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/")({
 
@@ -262,13 +263,13 @@ function GuruProfile() {
   };
 
   const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
+    const { error } = await lovable.auth.signInWithOAuth('google', {
+      redirect_uri: `${window.location.origin}/auth/callback`
     });
-    if (error) toast.error("Gagal log masuk.");
+    if (error) {
+      console.error("Login error:", error);
+      toast.error("Gagal log masuk. Sila cuba lagi.");
+    }
   };
 
   const handleLogout = async () => {
