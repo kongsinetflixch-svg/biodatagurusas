@@ -1,5 +1,6 @@
-
+// @ts-ignore
 const pdf = require('pdf-parse');
+
 
 export async function parseEOperasiPDF(base64: string) {
   try {
