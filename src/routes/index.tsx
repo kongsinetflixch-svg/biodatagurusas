@@ -131,6 +131,41 @@ function GuruProfilePage() {
 
     localStorage.setItem('guru_ic_session', cleanIc);
     setSession({ user: { ic: cleanIc } });
+    
+    // Check if profile exists, if not create one automatically
+    const { data: existing } = await supabase
+      .from('teachers')
+      .select('id')
+      .eq('ic_number', cleanIc)
+      .maybeSingle();
+
+    if (!existing && sasTeacher) {
+      const newTeacher = {
+        ic_number: cleanIc,
+        profile: {
+          nama: sasTeacher.nama,
+          kp: cleanIc,
+          tel: "01X-XXXXXXX",
+          email: "guru@moe-dl.edu.my",
+          gred: "DG44",
+          alamat: "Alamat Rumah Guru",
+          sekolah: {
+            nama: "SMK SULTAN AHMAD SHAH",
+            kod: "CEB1003",
+            alamat: "Persiaran Dayang Endah",
+            poskod: "39000",
+            daerah: "Tanah Rata",
+            negeri: "Pahang",
+            tel: "05-4911046"
+          }
+        },
+        kelulusan: [{ id: 1, tahap: "Sarjana Muda", bidang: "Pendidikan (Sejarah)", institusi: "UPSI", tahun: "2015" }],
+        subjek: [{ id: 1, subjek: "Sejarah", kelas: "4 Amanah", jam: "4" }],
+        sejarah: [{ id: 1, jawatan: "Guru Akademik Biasa", tempat: "SMK SULTAN AHMAD SHAH", tahun: "2015 - Kini" }]
+      };
+      await supabase.from('teachers').insert([newTeacher]);
+    }
+
     await fetchTeachersByIc(cleanIc);
     setIsLoggingIn(false);
   };
