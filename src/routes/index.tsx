@@ -274,11 +274,11 @@ function GuruProfile() {
         if (data && data.length > 0) {
           await fetchTeachersByIc(cleanIc);
           const firstTeacher = data[0];
-          const teacherName = (firstTeacher.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
+          const teacherName = (firstTeacher?.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
           
           // If not superadmin and profile exists, jump straight to the first profile
-          if (cleanIc !== SUPERADMIN_IC) {
+          if (cleanIc !== SUPERADMIN_IC && firstTeacher) {
              setActiveTeacherId(firstTeacher.id);
              setIsEditMode(false);
           }
