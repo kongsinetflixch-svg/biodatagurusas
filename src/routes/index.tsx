@@ -946,8 +946,16 @@ function GuruProfile() {
                   <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Sekolah</Label>
                   {isEditMode ? (
                     <Textarea 
-                      value={profile.sekolah.alamat} 
-                      onChange={(e) => updateCurrentTeacher({ profile: {...profile, sekolah: {...profile.sekolah, alamat: e.target.value}} } )}
+                      value={(profile as any).sekolah?.alamat || ""} 
+                      onChange={(e) => updateCurrentTeacher({ 
+                        profile: {
+                          ...(profile as any), 
+                          sekolah: {
+                            ...((profile as any).sekolah || {}), 
+                            alamat: e.target.value
+                          }
+                        } 
+                      })}
                       className="min-h-[80px] rounded-xl border-slate-100"
                     />
                   ) : (
