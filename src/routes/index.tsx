@@ -1351,7 +1351,7 @@ function GuruProfile() {
                     <Textarea 
                       value={(profile as any).alamat} 
                       onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), alamat: e.target.value}})}
-                      className="min-h-[100px] rounded-xl border-slate-100"
+                      className="min-h-[100px] rounded-xl border-slate-100 text-base"
                     />
                   ) : (
                     <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
