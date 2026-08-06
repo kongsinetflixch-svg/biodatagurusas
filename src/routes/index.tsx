@@ -1456,7 +1456,7 @@ function GuruProfile() {
               {!isEditMode && <div className="text-[10px] px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold uppercase tracking-wider">Lengkap</div>}
             </CardHeader>
             <CardContent className="p-8 print:p-0">
-              <div className="grid md:grid-cols-2 gap-x-10 gap-y-8">
+              <div className="grid md:grid-cols-2 gap-x-10 gap-y-8 info-grid">
                 {[
                   { label: "Nama Penuh", key: "nama", icon: "👤" },
                   { label: "No. Kad Pengenalan", key: "kp", icon: "🆔" },
