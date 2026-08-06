@@ -1239,7 +1239,7 @@ function GuruProfile() {
                 </Button>
                 {isEditMode && (
                   <Button 
-                    onClick={handleSaveTeacher} 
+                    onClick={handleSave} 
                     disabled={isSaving}
                     className="w-full sm:w-auto h-12 px-10 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-[#D4AF37]/20 transition-all animate-in zoom-in"
                   >
