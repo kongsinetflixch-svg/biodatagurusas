@@ -1759,7 +1759,7 @@ function GuruProfile() {
                       </TableRow>
                     ) : (kelulusan as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="px-8 font-bold text-slate-700">
+                        <TableCell className="px-8 font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.kelayakan} 
