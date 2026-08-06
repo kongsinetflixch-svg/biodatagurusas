@@ -1650,7 +1650,7 @@ function GuruProfile() {
                 <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 mt-2">
                   <div className="text-[#D4AF37] font-black text-[10px] sm:text-xs flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10 uppercase tracking-[0.1em]">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    Profil Guru Profesional
+                    Profile Guru SMK Sultan Ahmad Shah
                   </div>
                   <div className="text-blue-100/70 font-bold text-xs sm:text-sm flex items-center gap-2 px-1">
                     <MapPin className="w-4 h-4 text-[#D4AF37]" />
