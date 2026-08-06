@@ -1875,7 +1875,7 @@ function GuruProfile() {
                     ) : (subjek as any[]).map((row, idx) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
-                        <TableCell className="font-bold text-slate-700">
+                        <TableCell className="font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.nama} 
