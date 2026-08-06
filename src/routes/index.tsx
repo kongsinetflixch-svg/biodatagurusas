@@ -66,6 +66,12 @@ const PRINT_STYLES = `
     margin: 10mm;
   }
 
+  @media screen {
+    .print-only {
+      display: none !important;
+    }
+  }
+
   @media print {
     body {
       background: white !important;
@@ -77,9 +83,23 @@ const PRINT_STYLES = `
       margin: 0 !important;
     }
 
-    .no-print {
+    /* Hide everything by default during print */
+    #root > div:not(.print-only),
+    .no-print,
+    .dashboard-container,
+    header,
+    footer,
+    nav,
+    aside {
       display: none !important;
     }
+
+    /* Show only the print layout */
+    .print-only {
+      display: block !important;
+      width: 100% !important;
+    }
+
 
     #profile-container {
       padding: 0 !important;
