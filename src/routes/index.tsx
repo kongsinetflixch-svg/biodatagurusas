@@ -1585,6 +1585,13 @@ function GuruProfile() {
           </div>
           <div className="flex items-center justify-center gap-3 p-3 bg-white/95 backdrop-blur-xl rounded-[1.25rem] shadow-2xl shadow-[#002B5B]/10 border border-white">
             <Button 
+              onClick={() => setShowPrintPreview(true)} 
+              variant="outline"
+              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-slate-100 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all text-[#002B5B]"
+            >
+              <FileText className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Pratonton Cetak</span>
+            </Button>
+            <Button 
               onClick={handlePrint} 
               variant="outline"
               className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-slate-100 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all"
@@ -1599,6 +1606,7 @@ function GuruProfile() {
             </Button>
           </div>
         </div>
+
 
         {/* STATS CARDS REMOVED PER USER REQUEST */}
 
