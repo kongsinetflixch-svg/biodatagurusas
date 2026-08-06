@@ -311,7 +311,66 @@ function GuruProfile() {
     }
     setIsLoading(false);
   };
+  // Automatically creates a teacher profile if it doesn't exist
+  const handleAutoCreateTeacher = async (ic: string, sasTeacher: any) => {
+    setIsLoading(true);
+    const newTeacherData = {
+      profile: {
+        nama: sasTeacher?.nama || "Guru Baru",
+        kp: ic || "",
+        tel: "",
+        email: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        gred: "",
+        mengajarOpsyen: "",
+        alamat: "",
+        sekolah: {
+          nama: "SMK Sultan Ahmad Shah",
+          alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
+          kod: "CEB1003",
+          tel: "05-4911018",
+          faks: "05-4914922",
+          jawatan: sasTeacher?.jabatan || "",
+          guruKhas: "",
+          pemeriksaSPM: "",
+          lain: ""
+        }
+      },
+      kelulusan: [],
+      subjek: [],
+      sejarah: [],
+      owner_id: ic,
+      ic_number: ic,
+      profile_image: null
+    };
 
+    const { data, error } = await supabase
+      .from('teachers')
+      .insert([newTeacherData])
+      .select();
+
+    if (error) {
+      toast.error("Gagal menjana profil guru secara automatik.");
+      console.error(error);
+      setIsLoading(false);
+    } else if (data && data[0]) {
+      const teacher = data[0];
+      const newTeacher = {
+        ...teacher,
+        profileImage: teacher.profile_image
+      };
+      setTeachers([newTeacher]);
+      setActiveTeacherId(teacher.id as string);
+      setIsEditMode(false);
+      setIsLoading(false);
+      toast.success("Profil digital anda telah dijanakan secara automatik.");
+    }
+  };
+
+  
   // Derived state for current active teacher
   const currentTeacher = activeTeacherId ? teachers.find(t => t.id === activeTeacherId) : null;
 
