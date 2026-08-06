@@ -875,9 +875,12 @@ function GuruProfile() {
       const base64 = (reader.result as string).split(',')[1];
       try {
         const importedData = await importEOperasi({
-          fileBase64: base64,
-          fileName: file.name
+          data: {
+            fileBase64: base64,
+            fileName: file.name
+          }
         });
+
 
         if (importedData && currentTeacher) {
           // Merge imported data with current teacher
