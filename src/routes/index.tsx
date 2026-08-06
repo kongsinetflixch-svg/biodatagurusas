@@ -66,6 +66,12 @@ const PRINT_STYLES = `
     margin: 10mm;
   }
 
+  @media screen {
+    .print-only {
+      display: none !important;
+    }
+  }
+
   @media print {
     body {
       background: white !important;
@@ -77,16 +83,28 @@ const PRINT_STYLES = `
       margin: 0 !important;
     }
 
-    .no-print {
+    /* Hide everything by default during print */
+    #root > div:not(.print-only),
+    .no-print,
+    .dashboard-container,
+    header,
+    footer,
+    nav,
+    aside {
       display: none !important;
     }
 
-    #profile-container {
+    /* Show only the print layout */
+    .print-only {
+      display: block !important;
+      width: 100% !important;
+    }
+
+
+    .print-layout-container {
       padding: 0 !important;
       margin: 0 !important;
-      box-shadow: none !important;
       background: white !important;
-      border: none !important;
     }
 
     .print-header {
@@ -98,19 +116,13 @@ const PRINT_STYLES = `
       margin-bottom: 4mm !important;
     }
 
-    .kpm-logo-text {
-      font-size: 18pt !important;
-      font-weight: 900 !important;
-      color: #002B5B !important;
-      letter-spacing: -1pt !important;
-    }
-
     .print-photo {
       width: 30mm !important;
       height: 38mm !important;
       border: 0.5pt solid #000 !important;
       object-fit: cover !important;
     }
+
 
     .section-title {
       font-size: 10pt !important;
@@ -159,8 +171,8 @@ const PRINT_STYLES = `
       width: 100% !important;
       border-collapse: collapse !important;
       margin-top: 2mm !important;
-      table-layout: auto !important;
     }
+
 
     th {
       background: #eee !important;
@@ -194,21 +206,6 @@ const PRINT_STYLES = `
       font-size: 8pt !important;
     }
 
-    .card-print {
-      border: none !important;
-      padding: 0 !important;
-      margin-bottom: 3mm !important;
-      background: transparent !important;
-      box-shadow: none !important;
-    }
-
-    .preview-only {
-      display: none !important;
-    }
-    
-    .print-only {
-      display: block !important;
-    }
   }
 
   /* Print Preview Styles */
@@ -243,88 +240,165 @@ const PRINT_STYLES = `
   .print-preview-content .no-print {
     display: none !important;
   }
-
-  .print-preview-content .section-title {
-    font-size: 10pt !important;
-    font-weight: bold !important;
-    text-transform: uppercase !important;
-    color: #002B5B !important;
-    border-bottom: 0.5pt solid #002B5B !important;
-    padding-bottom: 1pt !important;
-    margin: 3mm 0 2mm 0 !important;
-    display: block !important;
-  }
-
-  .print-preview-content .info-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 1.5mm 6mm !important;
-  }
-
-  .print-preview-content .info-item {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: baseline !important;
-    gap: 2mm !important;
-  }
-
-  .print-preview-content .info-label {
-    font-size: 8pt !important;
-    color: #333 !important;
-    text-transform: uppercase !important;
-    font-weight: bold !important;
-    min-width: 35mm !important;
-    flex-shrink: 0 !important;
-  }
-
-  .print-preview-content .info-label::after {
-    content: ":" !important;
-  }
-
-  .print-preview-content .info-value {
-    font-size: 9.5pt !important;
-    font-weight: normal !important;
-    color: black !important;
-  }
-
-  .print-preview-content table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    margin-top: 2mm !important;
-  }
-
-  .print-preview-content th {
-    background: #eee !important;
-    font-size: 8pt !important;
-    text-transform: uppercase !important;
-    padding: 1mm 2mm !important;
-    border: 0.5pt solid #000 !important;
-    text-align: left !important;
-  }
-
-  .print-preview-content td {
-    padding: 1mm 2mm !important;
-    border: 0.5pt solid #000 !important;
-    font-size: 9pt !important;
-    vertical-align: top !important;
-  }
-  
-  .print-preview-content .signature-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 15mm !important;
-    margin-top: 8mm !important;
-  }
-  
-  .print-preview-content .sig-box {
-    border-top: 0.5pt solid #000 !important;
-    margin-top: 15mm !important;
-    padding-top: 1mm !important;
-    text-align: center !important;
-    font-size: 8pt !important;
-  }
 `;
 
+
+// Reusable Print Layout Component to ensure "pratonton" and "cetak" match perfectly
+const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isAdminMode: boolean }) => {
+  if (!currentTeacher) return null;
+  const profile = currentTeacher.profile || {};
+  
+  return (
+    <div className="print-layout-container">
+      {/* Header */}
+      <div className="print-header flex items-center justify-between border-b-[1.5pt] border-[#002B5B] pb-3 mb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-[#002B5B] rounded-lg flex items-center justify-center p-2">
+             <span className="text-[10px] font-black text-white">KPM</span>
+          </div>
+          <div>
+            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">PROFIL GURU PROFESIONAL 2026</h1>
+            <p className="text-[8pt] font-bold text-slate-500 uppercase tracking-widest">Kementerian Pendidikan Malaysia</p>
+          </div>
+        </div>
+        {currentTeacher.profile_image && (
+          <img 
+            src={currentTeacher.profile_image} 
+            alt="Profil" 
+            className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
+          />
+        )}
+      </div>
+
+      {/* Personal Info */}
+      <span className="section-title">Maklumat Peribadi</span>
+      <div className="info-grid">
+        {[
+          { label: "Nama Penuh", value: (profile as any)?.nama },
+          { label: "No. Kad Pengenalan", value: (profile as any)?.kp },
+          { label: "No. Telefon", value: (profile as any)?.tel },
+          { label: "E-mel", value: (profile as any)?.email },
+          { label: "Pengalaman Mengajar", value: (profile as any)?.pengalaman },
+          { label: "Tempoh Sekolah Semasa", value: (profile as any)?.tempohSemasa },
+          { label: "Tarikh Berkhidmat", value: (profile as any)?.tarikhMula },
+          { label: "Gred Jawatan", value: (profile as any)?.gred },
+        ].map((item) => (
+          <div key={item.label} className="info-item">
+            <span className="info-label">{item.label}</span>
+            <span className="info-value">{item.value || "-"}</span>
+          </div>
+        ))}
+      </div>
+      <div className="info-item mt-1">
+        <span className="info-label">Alamat Kediaman</span>
+        <span className="info-value">{(profile as any)?.alamat || "-"}</span>
+      </div>
+
+      {/* School Info */}
+      <span className="section-title">Maklumat Sekolah</span>
+      <div className="info-grid">
+        <div className="info-item"><span className="info-label">Nama Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.nama || "-"}</span></div>
+        <div className="info-item"><span className="info-label">Kod Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.kod || "-"}</span></div>
+        <div className="info-item"><span className="info-label">Jawatan</span><span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span></div>
+        <div className="info-item"><span className="info-label">Pemeriksa SPM</span><span className="info-value">{(profile as any)?.sekolah?.pemeriksaSPM || "-"}</span></div>
+      </div>
+      
+      <div className="info-item mt-1">
+        <span className="info-label">Alamat Sekolah</span>
+        <span className="info-value">
+          {(profile as any)?.sekolah?.alamat}, {(profile as any)?.sekolah?.poskod} {(profile as any)?.sekolah?.daerah}, {(profile as any)?.sekolah?.negeri}
+        </span>
+      </div>
+
+      {/* Academic */}
+      <span className="section-title">Kelulusan Akademik</span>
+      <table>
+        <thead>
+          <tr>
+            <th>Tahap Kelulusan</th>
+            <th>Bidang / Pengkhususan</th>
+            <th>Institusi / Universiti</th>
+            <th>Tahun</th>
+          </tr>
+        </thead>
+        <tbody>
+          {((currentTeacher.kelulusan || []) as any[]).map((row: any) => (
+            <tr key={row.id}>
+              <td>{row.kelayakan}</td>
+              <td>{row.bidang}</td>
+              <td>{row.institusi}</td>
+              <td>{row.tahun}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Subjects */}
+      <span className="section-title">Subjek yang Diajar</span>
+      <table>
+        <thead>
+          <tr>
+            <th>Subjek</th>
+            <th>Tingkatan / Tahun</th>
+            <th>Bil. Murid</th>
+            <th>TOV</th>
+            <th>ETR</th>
+          </tr>
+        </thead>
+        <tbody>
+          {((currentTeacher.subjek || []) as any[]).map((row: any) => (
+            <tr key={row.id}>
+              <td>{row.nama}</td>
+              <td>{row.kelas}</td>
+              <td>{row.murid}</td>
+              <td>{row.tov}</td>
+              <td>{row.etr}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Service History */}
+      <span className="section-title">Sejarah Perkhidmatan</span>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama dan Alamat Sekolah</th>
+            <th>Tahun</th>
+            <th>Subjek yang Diajar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {((currentTeacher.sejarah || []) as any[]).map((row: any) => (
+            <tr key={row.id}>
+              <td>{row.sekolah}</td>
+              <td>{row.tahun}</td>
+              <td>{row.subjek}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Signatures */}
+      <div className="signature-grid">
+        <div>
+          <span className="info-label block mb-10">Tandatangan Guru</span>
+          <div className="sig-box">
+            Nama: {(profile as any)?.nama}
+          </div>
+        </div>
+        {isAdminMode && (
+          <div>
+            <span className="info-label block mb-10">Disahkan Oleh</span>
+            <div className="sig-box">
+              Cap dan Tandatangan Pengetua
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 
 // Hardcoded teachers data from SAS 2026 List
@@ -1412,7 +1486,13 @@ function GuruProfile() {
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
       <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
 
-      <div id="profile-container" className="max-w-6xl mx-auto print-container space-y-6">
+      <div className="print-only">
+        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} />
+      </div>
+
+      <div id="profile-container" className="max-w-6xl mx-auto print-container space-y-6 no-print">
+
+
         
         {/* PANITIA SELECTOR / TABS */}
         {isAdminMode && (
@@ -1460,12 +1540,33 @@ function GuruProfile() {
             <Button 
               variant="ghost"
               onClick={handleLogout}
-              className="h-12 px-4 rounded-2xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold"
+              className="h-12 px-4 rounded-2xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-black uppercase text-xs tracking-widest"
             >
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
+
           </div>
         )}
+
+        {/* PRINT BUTTONS (Visible in Web UI) */}
+        {!isEditMode && currentTeacher && (
+          <div className="no-print flex justify-end gap-3 mb-4">
+            <Button 
+              onClick={() => setShowPrintPreview(true)}
+              className="bg-white text-[#002B5B] hover:bg-slate-50 border border-slate-200 font-bold rounded-2xl px-6 h-12 shadow-sm"
+            >
+              <FileText className="w-4 h-4 mr-2 text-[#D4AF37]" /> Pratonton Cetak
+            </Button>
+            <Button 
+              onClick={handlePrint}
+              className="bg-[#002B5B] hover:bg-[#003B7B] text-white font-bold rounded-2xl px-6 h-12 shadow-lg"
+            >
+              <Printer className="w-4 h-4 mr-2 text-[#D4AF37]" /> Simpan PDF / Cetak
+            </Button>
+
+          </div>
+        )}
+
 
 
         {/* PRINT ONLY HEADER */}
@@ -2310,8 +2411,9 @@ function GuruProfile() {
                 onClick={handlePrint}
                 className="bg-[#D4AF37] hover:bg-[#B8860B] text-white font-bold rounded-xl px-6"
               >
-                <Printer className="w-4 h-4 mr-2" /> Sah & Cetak
+                <Printer className="w-4 h-4 mr-2" /> Sah & Cetak / PDF
               </Button>
+
               <Button 
                 variant="ghost" 
                 onClick={() => setShowPrintPreview(false)}
@@ -2323,152 +2425,9 @@ function GuruProfile() {
           </div>
           
           <div className="print-preview-content animate-in zoom-in-95 duration-500 shadow-2xl rounded-sm">
-             {/* Replicate the print structure manually or use a portal */}
-             <div id="profile-container-preview">
-                {/* Header */}
-                <div className="print-header flex items-center justify-between border-b-[1.5pt] border-[#002B5B] pb-3 mb-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#002B5B] rounded-lg flex items-center justify-center p-2">
-                       <span className="text-[10px] font-black text-white">KPM</span>
-                    </div>
-                    <div>
-                      <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">PROFIL GURU PROFESIONAL 2026</h1>
-                      <p className="text-[8pt] font-bold text-slate-500 uppercase tracking-widest">Kementerian Pendidikan Malaysia</p>
-                    </div>
-                  </div>
-                  {currentTeacher?.profile_image && (
-                    <img 
-                      src={currentTeacher.profile_image} 
-                      alt="Profil" 
-                      className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
-                    />
-                  )}
-                </div>
-
-                {/* Personal Info */}
-                <span className="section-title">Maklumat Peribadi</span>
-                <div className="info-grid">
-                  {[
-                    { label: "Nama Penuh", value: (profile as any)?.nama },
-                    { label: "No. Kad Pengenalan", value: (profile as any)?.kp },
-                    { label: "No. Telefon", value: (profile as any)?.tel },
-                    { label: "E-mel", value: (profile as any)?.email },
-                    { label: "Pengalaman Mengajar", value: (profile as any)?.pengalaman },
-                    { label: "Tempoh Sekolah Semasa", value: (profile as any)?.tempohSemasa },
-                    { label: "Tarikh Berkhidmat", value: (profile as any)?.tarikhMula },
-                    { label: "Gred Jawatan", value: (profile as any)?.gred },
-                  ].map((item) => (
-                    <div key={item.label} className="info-item">
-                      <span className="info-label">{item.label}</span>
-                      <span className="info-value">{item.value || "-"}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="info-item mt-1">
-                  <span className="info-label">Alamat Kediaman</span>
-                  <span className="info-value">{(profile as any)?.alamat || "-"}</span>
-                </div>
-
-                {/* School Info */}
-                <span className="section-title">Maklumat Sekolah</span>
-                <div className="info-grid">
-                  <div className="info-item"><span className="info-label">Nama Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.nama || "-"}</span></div>
-                  <div className="info-item"><span className="info-label">Kod Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.kod || "-"}</span></div>
-                  <div className="info-item"><span className="info-label">Jawatan</span><span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span></div>
-                  <div className="info-item"><span className="info-label">Pemeriksa SPM</span><span className="info-value">{(profile as any)?.sekolah?.pemeriksaSPM || "-"}</span></div>
-                </div>
-                
-                <div className="info-item mt-1">
-                  <span className="info-label">Alamat Sekolah</span>
-                  <span className="info-value">
-                    {(profile as any)?.sekolah?.alamat}, {(profile as any)?.sekolah?.poskod} {(profile as any)?.sekolah?.daerah}, {(profile as any)?.sekolah?.negeri}
-                  </span>
-                </div>
-
-                {/* Academic */}
-                <span className="section-title">Kelulusan Akademik</span>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Tahap Kelulusan</th>
-                      <th>Bidang / Pengkhususan</th>
-                      <th>Institusi / Universiti</th>
-                      <th>Tahun</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {((currentTeacher?.academic || []) as any[]).map((row: any) => (
-                      <tr key={row.id}>
-                        <td>{row.tahap}</td>
-                        <td>{row.bidang}</td>
-                        <td>{row.institusi}</td>
-                        <td>{row.tahun}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                {/* Subjects */}
-                <span className="section-title">Subjek yang Diajar</span>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Subjek</th>
-                      <th>Tingkatan / Tahun</th>
-                      <th>Bilangan Waktu Seminggu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {((currentTeacher?.subjek || []) as any[]).map((row: any) => (
-                      <tr key={row.id}>
-                        <td>{row.nama}</td>
-                        <td>{row.kelas}</td>
-                        <td>{row.waktu}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                {/* Service History */}
-                <span className="section-title">Sejarah Perkhidmatan</span>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Nama dan Alamat Sekolah</th>
-                      <th>Tahun</th>
-                      <th>Subjek yang Diajar</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {((currentTeacher?.sejarah || []) as any[]).map((row: any) => (
-                      <tr key={row.id}>
-                        <td>{row.sekolah}</td>
-                        <td>{row.tahun}</td>
-                        <td>{row.subjek}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                {/* Signatures */}
-                <div className="signature-grid">
-                  <div>
-                    <span className="info-label block mb-10">Tandatangan Guru</span>
-                    <div className="sig-box">
-                      Nama: {(profile as any)?.nama}
-                    </div>
-                  </div>
-                  {isAdminMode && (
-                    <div>
-                      <span className="info-label block mb-10">Disahkan Oleh</span>
-                      <div className="sig-box">
-                        Cap dan Tandatangan Pengetua
-                      </div>
-                    </div>
-                  )}
-                </div>
-             </div>
+             <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} />
           </div>
+
         </div>
       )}
       <Toaster position="top-center" richColors />
