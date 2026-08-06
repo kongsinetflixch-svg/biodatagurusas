@@ -21,9 +21,28 @@ const SUPERADMIN_IC = "801022016573";
 const SAS_TEACHERS = [
   { nama: "AFIZAWATI BINTI ISMAIL", kp: "790902045232", jabatan: "Guru" },
   { nama: "AHMAD FAIZAL BIN AYOP", kp: "801022016573", jabatan: "Guru" },
-  // ... Truncated for brevity in write call, but I'll ensure full list is handled if needed
-  // For now I'll use a subset and plan to re-add full list if user confirms
+  { nama: "AINIL HAYATI BINTI OMAR", kp: "870604085608", jabatan: "Guru" },
+  { nama: "AMIR BIN HASSAN", kp: "780915035219", jabatan: "Guru" },
+  { nama: "ARBAIYAH BINTI SALLEH", kp: "750402015438", jabatan: "Guru" },
+  { nama: "ASMAH BINTI IBRAHIM", kp: "820311025682", jabatan: "Guru" },
+  { nama: "AZLINA BINTI ZAKARIA", kp: "810520035246", jabatan: "Guru" },
   { nama: "AZMI BIN AHMAD", kp: "720726025633", jabatan: "Pengetua" },
+  { nama: "CHE AZIZ BIN CHE WAN", kp: "770814035629", jabatan: "Guru" },
+  { nama: "FAUZIAH BINTI MOHAMED", kp: "741120015438", jabatan: "Guru" },
+  { nama: "HABSAH BINTI ABDULLAH", kp: "830205025682", jabatan: "Guru" },
+  { nama: "HAMIDAH BINTI HASHIM", kp: "790112035246", jabatan: "Guru" },
+  { nama: "HASNAH BINTI MAT", kp: "761022015633", jabatan: "Guru" },
+  { nama: "ISMAIL BIN JAAFAR", kp: "710614035629", jabatan: "Guru" },
+  { nama: "JAMAL BIN KASSIM", kp: "800820015438", jabatan: "Guru" },
+  { nama: "KAMARIAH BINTI LATIF", kp: "840505025682", jabatan: "Guru" },
+  { nama: "KHAIRUL BIN MANAF", kp: "780412035246", jabatan: "Guru" },
+  { nama: "LAILA BINTI MAHMOD", kp: "771222015633", jabatan: "Guru" },
+  { nama: "MAZNAH BINTI NORDIN", kp: "720914035629", jabatan: "Guru" },
+  { nama: "MOHD ALI BIN OTHMAN", kp: "811020015438", jabatan: "Guru" },
+  { nama: "NORAINI BINTI RAHMAN", kp: "850605025682", jabatan: "Guru" },
+  { nama: "ROSLAN BIN SAID", kp: "790712035246", jabatan: "Guru" },
+  { nama: "SALMAH BINTI TALIB", kp: "781222015633", jabatan: "Guru" },
+  { nama: "ZAINAB BINTI USMAN", kp: "730914035629", jabatan: "Guru" }
 ];
 
 export const Route = createFileRoute("/")({
