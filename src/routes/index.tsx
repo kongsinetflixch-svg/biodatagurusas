@@ -991,13 +991,6 @@ function GuruProfile() {
             >
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
-            <Button 
-              variant="outline"
-              onClick={() => { setIsAdminMode(false); setShowAdminDashboard(false); }}
-              className="h-12 px-6 rounded-2xl border-slate-200 text-slate-600 hover:bg-slate-50 font-bold"
-            >
-              <User className="w-4 h-4 mr-2" /> Paparan Guru
-            </Button>
           </div>
         )}
 
