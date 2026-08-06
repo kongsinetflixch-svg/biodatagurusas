@@ -2123,7 +2123,7 @@ function GuruProfile() {
 
 
         {/* FOOTER */}
-        <footer className="text-center py-12 space-y-2">
+        <footer className="no-print text-center py-12 space-y-2">
           <p className="text-[#002B5B] font-black text-sm">Profil Guru © 2026 | Kementerian Pendidikan Malaysia</p>
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
