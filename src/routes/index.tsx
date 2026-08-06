@@ -611,9 +611,9 @@ function GuruProfile() {
                           <AvatarFallback className="bg-slate-100 text-[#002B5B] font-bold">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
                         </Avatar>
                       </TableCell>
-                      <TableCell className="font-bold text-slate-700">{t.profile.nama || "Tanpa Nama"}</TableCell>
-                      <TableCell className="text-slate-500 text-sm">{t.profile.kp || "-"}</TableCell>
-                      <TableCell className="text-slate-500 text-sm">{t.profile.sekolah.jawatan || "-"}</TableCell>
+                      <TableCell className="font-bold text-slate-700">{(t.profile as any)?.nama || "Tanpa Nama"}</TableCell>
+                      <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.kp || "-"}</TableCell>
+                      <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.sekolah?.jawatan || "-"}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button 
