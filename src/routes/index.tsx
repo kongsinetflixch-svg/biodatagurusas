@@ -1450,7 +1450,7 @@ function GuruProfile() {
             <div className="h-2 bg-[#002B5B] no-print"></div>
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8 print:py-0 print:px-0 print:border-none">
               <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3 section-title">
-                <div className="bg-[#002B5B] p-2 rounded-lg"><FileText className="w-5 h-5 text-white" /></div>
+                <div className="bg-[#002B5B] p-2 rounded-lg no-print"><FileText className="w-5 h-5 text-white" /></div>
                 Maklumat Peribadi
               </CardTitle>
               {!isEditMode && <div className="text-[10px] px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold uppercase tracking-wider">Lengkap</div>}
