@@ -1616,7 +1616,7 @@ function GuruProfile() {
                 </div>
 
                 <div className="space-y-2 info-item">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Jalan Sekolah</Label>
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Sekolah</Label>
 
                   {isEditMode ? (
                     <Input 
