@@ -101,12 +101,10 @@ const PRINT_STYLES = `
     }
 
 
-    #profile-container {
+    .print-layout-container {
       padding: 0 !important;
       margin: 0 !important;
-      box-shadow: none !important;
       background: white !important;
-      border: none !important;
     }
 
     .print-header {
@@ -118,19 +116,13 @@ const PRINT_STYLES = `
       margin-bottom: 4mm !important;
     }
 
-    .kpm-logo-text {
-      font-size: 18pt !important;
-      font-weight: 900 !important;
-      color: #002B5B !important;
-      letter-spacing: -1pt !important;
-    }
-
     .print-photo {
       width: 30mm !important;
       height: 38mm !important;
       border: 0.5pt solid #000 !important;
       object-fit: cover !important;
     }
+
 
     .section-title {
       font-size: 10pt !important;
