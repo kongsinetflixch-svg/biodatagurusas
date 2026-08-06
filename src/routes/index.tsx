@@ -663,8 +663,10 @@ function GuruProfile() {
           // If profile doesn't exist in DB, start fresh for this user from the list
           if (cleanIc !== SUPERADMIN_IC) {
             // Automatically trigger creation if not superadmin
-            handleAutoCreateTeacher(cleanIc, sasTeacher);
+            toast.info("Menjana profil baru anda...", { duration: 2000 });
+            await handleAutoCreateTeacher(cleanIc, sasTeacher);
           } else {
+
             toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
             setTeachers([]);
             setIsLoading(false);
