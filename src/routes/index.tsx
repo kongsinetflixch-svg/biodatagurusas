@@ -869,30 +869,32 @@ function GuruProfile() {
     return (
       <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans animate-in fade-in duration-700">
         <div className="max-w-6xl mx-auto space-y-8">
-          <header className="flex flex-col md:flex-row items-center justify-between bg-[#002B5B] p-8 rounded-3xl shadow-xl border-b-4 border-[#D4AF37] relative overflow-hidden group">
-            <div className="flex items-center gap-6 relative z-10">
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center p-2 shadow-inner transform -rotate-3">
-                 <span className="text-lg font-black text-[#002B5B]">KPM</span>
+          <header className="flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0">
+                   <span className="text-lg sm:text-2xl font-black text-[#002B5B] tracking-tighter">KPM</span>
+                </div>
+                <div className="text-center md:text-left">
+                  <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight">Dashboard Admin</h1>
+                  <p className="text-blue-100/70 font-bold text-sm sm:text-base mt-1">Pengurusan Panitia Guru 2026</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-black text-white tracking-tight uppercase">Dashboard Admin</h1>
-                <p className="text-blue-100/80 font-medium">Pengurusan Panitia Guru 2026</p>
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 w-full md:w-auto">
+                <Button 
+                  onClick={() => setShowRoleManager(!showRoleManager)} 
+                  className={`h-12 sm:h-14 px-6 ${showRoleManager ? 'bg-[#D4AF37] text-white border-[#D4AF37]' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'} font-black rounded-2xl shadow-lg border transition-all text-sm uppercase tracking-wider`}
+                >
+                  <Users className="w-5 h-5 mr-3" /> 
+                  {showRoleManager ? "Senarai Profil" : "Urus Peranan"}
+                </Button>
+                <Button onClick={() => setShowAdminDashboard(false)} className="h-12 sm:h-14 px-6 bg-white text-[#002B5B] hover:bg-blue-50 font-black rounded-2xl shadow-lg text-sm uppercase tracking-wider">
+                  <LayoutDashboard className="w-5 h-5 mr-3" /> Lihat Profil
+                </Button>
+                <Button variant="outline" onClick={() => { setIsAdminMode(false); setShowAdminDashboard(false); }} className="h-12 sm:h-14 px-6 bg-transparent border-2 border-white/30 text-white hover:bg-white/10 font-black rounded-2xl text-sm uppercase tracking-wider">
+                  <User className="w-5 h-5 mr-3" /> Paparan Guru
+                </Button>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-4 md:mt-0 relative z-10">
-              <Button 
-                onClick={() => setShowRoleManager(!showRoleManager)} 
-                className={`${showRoleManager ? 'bg-[#D4AF37] text-white' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'} font-bold rounded-xl shadow-lg border transition-all`}
-              >
-                <Users className="w-4 h-4 mr-2" /> 
-                {showRoleManager ? "Senarai Profil" : "Urus Peranan"}
-              </Button>
-              <Button onClick={() => setShowAdminDashboard(false)} className="bg-white text-[#002B5B] hover:bg-blue-50 font-bold rounded-xl shadow-lg">
-                <LayoutDashboard className="w-4 h-4 mr-2" /> Lihat Profil
-              </Button>
-              <Button variant="outline" onClick={() => { setIsAdminMode(false); setShowAdminDashboard(false); }} className="bg-transparent border-white text-white hover:bg-white/10 font-bold rounded-xl">
-                <User className="w-4 h-4 mr-2" /> Paparan Guru
-              </Button>
             </div>
           </header>
 
