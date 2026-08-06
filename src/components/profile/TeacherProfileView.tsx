@@ -1,64 +1,102 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Printer, Edit2, LogOut, LayoutDashboard } from "lucide-react";
+import { LogOut, LayoutDashboard, Printer, Edit, Shield } from "lucide-react";
 import { PrintableTeacherProfile } from "./PrintableTeacherProfile";
+import { toast } from "sonner";
 
 interface TeacherProfileViewProps {
   teacher: any;
-  isAdminMode: boolean | undefined;
+  isAdminMode: boolean;
+  isSuperadmin: boolean;
   onEdit: () => void;
   onLogout: () => void;
   onShowAdmin: () => void;
-  isSuperadmin: boolean;
 }
 
 export const TeacherProfileView: React.FC<TeacherProfileViewProps> = ({
   teacher,
   isAdminMode,
+  isSuperadmin,
   onEdit,
   onLogout,
-  onShowAdmin,
-  isSuperadmin
+  onShowAdmin
 }) => {
-  if (!teacher) return null;
+  const handlePrint = () => {
+    window.print();
+  };
+
+  if (!teacher) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50 space-y-4">
+        <div className="w-16 h-16 bg-[#002B5B] rounded-xl flex items-center justify-center text-white font-black animate-pulse">KPM</div>
+        <p className="text-slate-500 font-medium">Tiada profil dijumpai. Sila hubungi Admin.</p>
+        <Button onClick={onLogout} variant="outline" className="border-rose-200 text-rose-600 hover:bg-rose-50">Log Keluar</Button>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Toolbars - Hidden in Print */}
-      <div className="no-print sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b px-4 py-3 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#002B5B] rounded-xl flex items-center justify-center p-2 shadow-inner">
-             <span className="text-white text-xs font-black tracking-tight">KPM</span>
+    <div className="min-h-screen bg-slate-100/50 print:bg-white pb-12 print:pb-0">
+      {/* Editorial Toolbar */}
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 no-print shadow-sm">
+        <div className="max-w-[210mm] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-[#002B5B] rounded-lg flex items-center justify-center text-white text-xs font-black">KPM</div>
+            <span className="text-sm font-bold text-[#002B5B] hidden sm:inline">PROFIL GURU 2026</span>
           </div>
-          <div>
-            <h1 className="text-sm font-bold text-[#002B5B] leading-none mb-1">PROFIL GURU 2026</h1>
-            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">SMK Sultan Ahmad Shah</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {isSuperadmin && (
-            <Button variant="outline" size="sm" onClick={onShowAdmin} className="h-9 px-4 rounded-full border-slate-200">
-              <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
+          
+          <div className="flex items-center gap-2">
+            {(isAdminMode || isSuperadmin) && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onShowAdmin}
+                className="text-blue-600 hover:bg-blue-50 font-bold text-xs uppercase tracking-wider"
+              >
+                <LayoutDashboard className="w-4 h-4 mr-2" /> Admin
+              </Button>
+            )}
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onEdit}
+              className="border-slate-200 text-slate-600 font-bold text-xs uppercase tracking-wider"
+            >
+              <Edit className="w-4 h-4 mr-2" /> Kemaskini
             </Button>
-          )}
-          <Button variant="outline" size="sm" onClick={onEdit} className="h-9 px-4 rounded-full border-slate-200">
-            <Edit2 className="w-4 h-4 mr-2" /> Kemaskini
-          </Button>
-          <Button onClick={() => window.print()} className="h-9 px-4 rounded-full bg-[#002B5B] hover:bg-[#003d82]">
-            <Printer className="w-4 h-4 mr-2" /> Cetak / PDF
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onLogout} className="h-9 w-9 p-0 rounded-full text-rose-500 hover:bg-rose-50">
-            <LogOut className="w-4 h-4" />
-          </Button>
+            
+            <Button 
+              variant="default" 
+              size="sm" 
+              onClick={handlePrint}
+              className="bg-[#002B5B] text-white hover:bg-[#003B7B] font-bold text-xs uppercase tracking-wider shadow-sm"
+            >
+              <Printer className="w-4 h-4 mr-2" /> Cetak A4
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onLogout}
+              className="text-rose-500 hover:bg-rose-50 font-bold text-xs uppercase tracking-wider"
+            >
+              <LogOut className="w-4 h-4 mr-2" /> Keluar
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* A4 Preview Sheet */}
-      <div className="max-w-[210mm] mx-auto my-8 print:my-0 shadow-[0_0_50px_rgba(0,0,0,0.05)] print:shadow-none overflow-x-auto">
-        <div className="bg-white p-[10mm] min-h-[297mm] w-full print:p-0">
-          <PrintableTeacherProfile teacher={teacher} isAdminMode={isAdminMode} />
-        </div>
+      {/* A4 Document Container */}
+      <div className="max-w-[210mm] mx-auto mt-8 print:mt-0 shadow-2xl print:shadow-none bg-white min-h-[297mm]">
+        <PrintableTeacherProfile teacher={teacher} isAdminMode={isAdminMode} />
+      </div>
+
+      {/* Editorial Disclaimer Footer */}
+      <div className="max-w-[210mm] mx-auto mt-8 px-4 text-center no-print">
+        <p className="text-[10px] text-slate-400 font-medium uppercase tracking-[0.2em] flex items-center justify-center gap-2">
+          <Shield className="w-3 h-3" /> Dokumen Rasmi Kementerian Pendidikan Malaysia • 2026
+        </p>
       </div>
     </div>
   );
