@@ -2083,7 +2083,7 @@ function GuruProfile() {
                   onTouchStart={startDrawing}
                   onTouchMove={draw}
                   onTouchEnd={stopDrawing}
-                  className="w-full h-[250px] cursor-crosshair touch-none bg-white/50"
+                  className="w-full h-[250px] cursor-crosshair touch-none bg-white/50 print:bg-transparent print:h-[150px]"
                 />
                 {!hasSignature && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
