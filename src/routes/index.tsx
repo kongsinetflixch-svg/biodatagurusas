@@ -2113,7 +2113,7 @@ function GuruProfile() {
 
               <div className="flex flex-col sm:flex-row justify-between gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2 print:flex-row print:justify-between">
                 <div className="flex-1 border-b border-slate-100 pb-1 sig-box">
-                  Nama: <span className="text-[#002B5B] ml-2">{(currentTeacher?.profile as any)?.nama || "________________________"}</span>
+                  Nama: <span className="text-[#002B5B] ml-2 font-medium">{(currentTeacher?.profile as any)?.nama || "________________________"}</span>
                 </div>
                 <div className="w-full sm:w-32 border-b border-slate-100 pb-1">
                   Tarikh: <span className="text-[#002B5B] ml-2">{new Date().toLocaleDateString('ms-MY')}</span>
