@@ -115,7 +115,7 @@ function GuruProfile() {
     const { data, error } = await supabase
       .from('teachers')
       .select('*')
-      .eq('ic_number', icInput)
+      .or(`ic_number.eq.${icInput},owner_id.eq.${icInput}`)
       .maybeSingle();
 
     if (error) {
