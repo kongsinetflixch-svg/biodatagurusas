@@ -66,7 +66,8 @@ export const TeacherProfileForm: React.FC<TeacherProfileFormProps> = ({
   };
 
   return (
-    <div className="space-y-6 pb-20 no-print">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 no-print">
+      <div className="max-w-4xl mx-auto space-y-6 pb-20">
       <div className="flex items-center justify-between sticky top-0 z-10 bg-white/80 backdrop-blur-md p-4 border-b">
         <h2 className="text-xl font-bold text-[#002B5B]">Edit Profil Guru</h2>
         <div className="flex gap-2">
@@ -150,6 +151,7 @@ export const TeacherProfileForm: React.FC<TeacherProfileFormProps> = ({
       </Card>
 
       {/* Tables could be added here in a real app, but sticking to main sections for brevity */}
+      </div>
     </div>
   );
 };
