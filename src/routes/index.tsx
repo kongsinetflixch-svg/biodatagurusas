@@ -814,32 +814,49 @@ function GuruProfile() {
 
   if (teachers.length === 0 && !isAdminMode && session) {
     return (
-      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-none shadow-2xl rounded-3xl overflow-hidden p-8 text-center space-y-6 bg-white animate-in zoom-in duration-500">
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
           <div className="flex justify-between items-center no-print">
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold">
-              <LogOut className="w-4 h-4 mr-1" /> Log Keluar
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout} 
+              className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-black text-xs uppercase tracking-tighter rounded-xl px-4"
+            >
+              <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="text-slate-200 hover:text-[#002B5B] transition-colors">
-              <Settings className="w-4 h-4" />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} 
+              className="text-slate-100 hover:text-[#002B5B] transition-colors rounded-xl"
+            >
+              <Settings className="w-5 h-5" />
             </Button>
           </div>
-          <div className="w-20 h-20 bg-[#002B5B] rounded-3xl flex items-center justify-center mx-auto shadow-xl transform rotate-3">
-             <span className="text-2xl font-black text-white">KPM</span>
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3">
+             <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
           </div>
-          <div className="space-y-2">
-            <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium text-sm">
-              Sila tunggu sebentar sementara kami memuatkan maklumat anda...
-            </p>
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">PROFIL GURU</h1>
+            <div className="bg-blue-50/50 py-3 px-4 rounded-2xl">
+              <p className="text-[#002B5B] font-bold text-sm sm:text-base">
+                Memuatkan maklumat anda...
+              </p>
+            </div>
           </div>
-          <div className="flex justify-center py-4">
-            <Loader2 className="w-8 h-8 text-[#002B5B] animate-spin" />
+          <div className="flex justify-center py-6 sm:py-8">
+            <div className="relative">
+              <Loader2 className="w-12 h-12 text-[#002B5B] animate-spin stroke-[3px]" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-2 h-2 bg-[#D4AF37] rounded-full animate-pulse" />
+              </div>
+            </div>
           </div>
           <Button 
             variant="outline" 
             onClick={() => handleIcLogin()} 
-            className="w-full mt-4 text-[#002B5B] font-bold border-slate-200"
+            className="w-full h-14 sm:h-16 text-[#002B5B] font-black border-2 border-slate-100 rounded-2xl hover:bg-slate-50 hover:border-slate-200 transition-all active:scale-[0.98]"
           >
             Cuba Muat Semula
           </Button>
