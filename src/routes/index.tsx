@@ -260,11 +260,22 @@ function GuruProfile() {
           await fetchTeachersByIc(cleanIc);
           const teacherName = (data.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
+          
+          // If not superadmin and profile exists, jump straight to the profile
+          if (cleanIc !== SUPERADMIN_IC) {
+             setActiveTeacherId(data.id);
+             setIsEditMode(false);
+          }
         } else {
           // If profile doesn't exist in DB, start fresh for this user from the list
-          toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
-          setTeachers([]);
-          setIsLoading(false);
+          if (cleanIc !== SUPERADMIN_IC) {
+            // Automatically trigger creation if not superadmin
+            handleAutoCreateTeacher(cleanIc, sasTeacher);
+          } else {
+            toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
+            setTeachers([]);
+            setIsLoading(false);
+          }
         }
       }
     } catch (err) {
