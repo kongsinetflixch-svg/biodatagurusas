@@ -853,9 +853,61 @@ function GuruProfile() {
   const currentTeacher = activeTeacherId ? teachers.find(t => t.id === activeTeacherId) : null;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const eOperasiInputRef = useRef<HTMLInputElement>(null);
+  const importEOperasi = useServerFn(importEOperasiData);
+  const [isImporting, setIsImporting] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
+
+  const handleEOperasiImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast.error("Sila muat naik fail PDF sahaja.");
+      return;
+    }
+
+    setIsImporting(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(',')[1];
+      try {
+        const importedData = await importEOperasi({
+          fileBase64: base64,
+          fileName: file.name
+        });
+
+        if (importedData && currentTeacher) {
+          // Merge imported data with current teacher
+          const updatedTeacher = {
+            ...currentTeacher,
+            profile: {
+              ...currentTeacher.profile,
+              ...importedData.profile,
+              // Ensure we don't overwrite crucial metadata
+              kp: currentTeacher.profile.kp, 
+            },
+            kelulusan: importedData.kelulusan?.length > 0 ? importedData.kelulusan : currentTeacher.kelulusan,
+            sejarah: importedData.sejarah?.length > 0 ? importedData.sejarah : currentTeacher.sejarah,
+          };
+
+          // Update state
+          setTeachers(prev => prev.map(t => t.id === currentTeacher.id ? updatedTeacher : t));
+          setIsEditMode(true);
+          toast.success("Data eOperasi berjaya diimport! Sila semak dan simpan.");
+        }
+      } catch (err) {
+        console.error("Import error:", err);
+        toast.error("Gagal mengimport data. Sila pastikan fail PDF adalah betul.");
+      } finally {
+        setIsImporting(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
 
   
   // Handlers for switching and creating teachers
