@@ -1,7 +1,7 @@
 import React from "react";
 
 interface SignatureSectionProps {
-  isAdminMode?: boolean;
+  isAdminMode?: boolean | undefined;
 }
 
 export const SignatureSection: React.FC<SignatureSectionProps> = ({ isAdminMode }) => {
