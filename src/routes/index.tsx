@@ -938,7 +938,7 @@ function GuruProfile() {
                         className="h-10 rounded-xl border-slate-100"
                       />
                     ) : (
-                      <p className="font-bold text-slate-700">{profile.sekolah[item.key as keyof typeof profile.sekolah] as string || "-"}</p>
+                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.[item.key] || "-"}</p>
                     )}
                   </div>
                 ))}
