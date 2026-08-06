@@ -1732,7 +1732,8 @@ function GuruProfile() {
                                 const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, tov: e.target.value} : s);
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
-                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
+
                             />
                           ) : (
                             <span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span>
