@@ -820,9 +820,9 @@ function GuruProfile() {
         {/* STATS CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { title: "Pengalaman Mengajar", value: profile.pengalaman || "-", icon: Briefcase, color: "text-[#002B5B]", bg: "bg-white" },
-            { title: "Sekolah Semasa", value: profile.tempohSemasa || "-", icon: Clock, color: "text-[#002B5B]", bg: "bg-white" },
-            { title: "Bidang Opsyen", value: profile.opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
+            { title: "Pengalaman Mengajar", value: (profile as any).pengalaman || "-", icon: Briefcase, color: "text-[#002B5B]", bg: "bg-white" },
+            { title: "Sekolah Semasa", value: (profile as any).tempohSemasa || "-", icon: Clock, color: "text-[#002B5B]", bg: "bg-white" },
+            { title: "Bidang Opsyen", value: (profile as any).opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
             { title: "Kelayakan", value: "Ijazah & Diploma", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
 
           ].map((item, i) => (
