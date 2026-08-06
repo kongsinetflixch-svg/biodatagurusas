@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -45,11 +45,156 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+
+// SSPA Grade Constants
+const SSPA_GRADES = [
+  "DG54", "DG52", "DG48", "DG44", "DG41", "DG38", "DG34", "DG32", "DG29"
+];
+
+// Malaysian States
+const MALAYSIAN_STATES = [
+  "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", 
+  "Perak", "Perlis", "Pulau Pinang", "Sabah", "Sarawak", "Selangor", 
+  "Terengganu", "Wilayah Persekutuan Kuala Lumpur", 
+  "Wilayah Persekutuan Labuan", "Wilayah Persekutuan Putrajaya"
+];
+
+const PRINT_STYLES = `
+  @page {
+    size: A4;
+    margin: 10mm 15mm;
+  }
+
+  @media print {
+    body {
+      background: white !important;
+      color: black !important;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
+      font-size: 10pt !important;
+      line-height: 1.3 !important;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+
+    #profile-container {
+      padding: 0 !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      background: white !important;
+    }
+
+    .print-header {
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      border-bottom: 2px solid #002B5B !important;
+      padding-bottom: 5mm !important;
+      margin-bottom: 5mm !important;
+    }
+
+    .print-photo {
+      width: 32mm !important;
+      height: 40mm !important;
+      border: 1px solid #ddd !important;
+      object-fit: cover !important;
+    }
+
+    .section-title {
+      font-size: 11pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      color: #002B5B !important;
+      border-bottom: 1px solid #eee !important;
+      padding-bottom: 2px !important;
+      margin: 4mm 0 2mm 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+    }
+
+    .info-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 2mm 10mm !important;
+    }
+
+    .info-item {
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .info-label {
+      font-size: 8pt !important;
+      color: #666 !important;
+      text-transform: uppercase !important;
+      font-weight: bold !important;
+    }
+
+    .info-value {
+      font-size: 10pt !important;
+      font-weight: bold !important;
+    }
+
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-top: 2mm !important;
+    }
+
+    th {
+      background: #f8fafc !important;
+      font-size: 8pt !important;
+      text-transform: uppercase !important;
+      padding: 2mm !important;
+      border: 1px solid #e2e8f0 !important;
+      text-align: left !important;
+    }
+
+    td {
+      padding: 2mm !important;
+      border: 1px solid #e2e8f0 !important;
+      font-size: 9pt !important;
+    }
+
+    .signature-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 20mm !important;
+      margin-top: 10mm !important;
+      page-break-inside: avoid !important;
+    }
+
+    .sig-box {
+      border-top: 1px solid #000 !important;
+      margin-top: 20mm !important;
+      padding-top: 2mm !important;
+      text-align: center !important;
+      font-size: 9pt !important;
+      font-weight: bold !important;
+    }
+
+    .kpm-logo-text {
+      font-size: 18pt !important;
+      font-weight: 900 !important;
+      color: #002B5B !important;
+    }
+
+    /* Force compact layout */
+    .card-print {
+      border: none !important;
+      padding: 0 !important;
+      margin-bottom: 4mm !important;
+    }
+  }
+`;
+
 
 // Hardcoded teachers data from SAS 2026 List
 // Filtering for Guru, Pentadbir, and Pengetua only
 const SAS_TEACHERS: { nama: string, kp: string, jabatan: string }[] = [
+
   { nama: "AFIZAWATI BINTI ISMAIL", kp: "790902045232", jabatan: "Guru" },
   { nama: "AHMAD FAIZAL BIN AYOP", kp: "801022016573", jabatan: "Guru" },
   { nama: "AHMAD FAZIERUL BIN AHMAD FARDUN", kp: "980429085665", jabatan: "Guru" },
@@ -152,16 +297,6 @@ const SAS_TEACHERS: { nama: string, kp: string, jabatan: string }[] = [
 const SUPERADMIN_IC = "801022016573";
 
 
-// Gred Jawatan SSPA (Sistem Saraan Perkhidmatan Awam) 2024/2025
-const SSPA_GRADES = [
-  "DG54", "DG52", "DG48", "DG44", "DG41", "DG38", "DG34", "DG32", "DG29"
-];
-
-const MALAYSIAN_STATES = [
-  "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Perak", "Perlis", 
-  "Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu", "Wilayah Persekutuan Kuala Lumpur", 
-  "Wilayah Persekutuan Labuan", "Wilayah Persekutuan Putrajaya"
-];
 
 export const Route = createFileRoute("/")({
 
@@ -1116,6 +1251,8 @@ function GuruProfile() {
 
   return (
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
+      <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
+
       <div className="max-w-6xl mx-auto print-container space-y-6">
         
         {/* PANITIA SELECTOR / TABS */}
@@ -1172,8 +1309,33 @@ function GuruProfile() {
         )}
 
 
-        {/* HEADER */}
-        <header className="flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-2xl border-b-8 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
+        {/* PRINT ONLY HEADER */}
+        <div className="hidden print:block print-header">
+          <div className="flex items-start gap-8">
+            <div className="flex flex-col">
+              <span className="kpm-logo-text">KPM</span>
+              <h1 className="text-2xl font-black text-[#002B5B] uppercase leading-tight mt-2">
+                {(profile as any)?.nama || "PROFIL GURU"}
+              </h1>
+              <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
+                Profil Guru Profesional 2026
+              </div>
+              <div className="text-slate-500 font-bold text-sm mt-1">
+                SMK Sultan Ahmad Shah
+              </div>
+            </div>
+          </div>
+          <Avatar className="print-photo rounded-none">
+            <AvatarImage src={profileImage || ""} />
+            <AvatarFallback className="bg-slate-100 text-[#002B5B] text-xl font-bold">
+              {(profile as any)?.nama?.charAt(0) || "G"}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+
+        {/* SCREEN HEADER */}
+
+        <header className="no-print flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-2xl border-b-8 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
           {/* Decorative elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-110 duration-1000" />
           
@@ -1284,17 +1446,17 @@ function GuruProfile() {
 
         {/* TWO COLUMNS DATA */}
         <div className="grid lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white">
-            <div className="h-2 bg-[#002B5B]"></div>
-            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8">
-              <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3">
-                <div className="bg-[#002B5B] p-2 rounded-lg"><FileText className="w-5 h-5 text-white" /></div>
+          <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white card-print">
+            <div className="h-2 bg-[#002B5B] no-print"></div>
+            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8 print:py-0 print:px-0 print:border-none">
+              <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3 section-title">
+                <div className="bg-[#002B5B] p-2 rounded-lg no-print"><FileText className="w-5 h-5 text-white" /></div>
                 Maklumat Peribadi
               </CardTitle>
               {!isEditMode && <div className="text-[10px] px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold uppercase tracking-wider">Lengkap</div>}
             </CardHeader>
-            <CardContent className="p-8">
-              <div className="grid md:grid-cols-2 gap-x-10 gap-y-8">
+            <CardContent className="p-8 print:p-0">
+              <div className="grid md:grid-cols-2 gap-x-10 gap-y-8 info-grid">
                 {[
                   { label: "Nama Penuh", key: "nama", icon: "👤" },
                   { label: "No. Kad Pengenalan", key: "kp", icon: "🆔" },
@@ -1305,11 +1467,12 @@ function GuruProfile() {
                   { label: "Tarikh Berkhidmat", key: "tarikhMula", icon: "📅" },
                   { label: "Gred Jawatan", key: "gred", icon: "🎗️" },
                 ].map((item) => (
-                  <div key={item.key} className="space-y-2 group">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm opacity-50">{item.icon}</span>
-                      <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
+                  <div key={item.key} className="space-y-2 group info-item">
+                    <div className="flex items-center gap-2 print:gap-0">
+                      <span className="text-sm opacity-50 no-print">{item.icon}</span>
+                      <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
                     </div>
+
                     {isEditMode ? (
                       item.key === 'gred' ? (
                         <Select
@@ -1336,16 +1499,18 @@ function GuruProfile() {
                         />
                       )
                     ) : (
-                      <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
-                        <p className="font-bold text-slate-700">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
+                      <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:min-h-0 print:p-0 print:bg-transparent print:border-none">
+                        <p className="font-bold text-slate-700 info-value">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
                       </div>
+
                     )}
                   </div>
                 ))}
-                <div className="md:col-span-2 space-y-2">
+                <div className="md:col-span-2 space-y-2 info-item">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm opacity-50">🏠</span>
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Kediaman</Label>
+                    <span className="text-sm opacity-50 no-print">🏠</span>
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Kediaman</Label>
+
                   </div>
                   {isEditMode ? (
                     <Textarea 
@@ -1354,9 +1519,10 @@ function GuruProfile() {
                       className="min-h-[100px] rounded-xl border-slate-100 text-base"
                     />
                   ) : (
-                    <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
-                      <p className="font-bold text-slate-700 leading-relaxed">{(profile as any).alamat || "-"}</p>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:p-0 print:bg-transparent print:border-none">
+                      <p className="font-bold text-slate-700 leading-relaxed info-value">{(profile as any).alamat || "-"}</p>
                     </div>
+
                   )}
                 </div>
               </div>
@@ -1364,22 +1530,23 @@ function GuruProfile() {
           </Card>
 
           <div className="space-y-6">
-            <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white">
-              <div className="h-2 bg-[#D4AF37]"></div>
-              <CardHeader className="py-6 px-8 border-b border-slate-50">
-                <CardTitle className="text-lg font-black text-[#002B5B] flex items-center gap-3">
-                  <div className="bg-[#D4AF37] p-2 rounded-lg"><Briefcase className="w-5 h-5 text-white" /></div>
+            <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white card-print">
+              <div className="h-2 bg-[#D4AF37] no-print"></div>
+              <CardHeader className="py-6 px-8 border-b border-slate-50 print:py-0 print:px-0 print:border-none">
+                <CardTitle className="text-lg font-black text-[#002B5B] flex items-center gap-3 section-title">
+                  <div className="bg-[#D4AF37] p-2 rounded-lg no-print"><Briefcase className="w-5 h-5 text-white" /></div>
                   Sekolah
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-8 space-y-6">
+              <CardContent className="p-8 space-y-6 print:p-0 print:space-y-2">
                 {[
                   { label: "Nama Sekolah", key: "nama" },
                   { label: "Kod Sekolah", key: "kod" },
                   { label: "Jawatan", key: "jawatan" },
                 ].map((item) => (
-                  <div key={item.key} className="space-y-2">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{item.label}</Label>
+                  <div key={item.key} className="space-y-2 info-item">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
+
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.[item.key] || ""} 
@@ -1396,13 +1563,14 @@ function GuruProfile() {
 
                       />
                     ) : (
-                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.[item.key] || "-"}</p>
+                      <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.[item.key] || "-"}</p>
                     )}
                   </div>
                 ))}
 
-                <div className="space-y-2">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Pemeriksa SPM</Label>
+                <div className="space-y-2 info-item">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Pemeriksa SPM</Label>
+
                   {isEditMode ? (
                     <Select
                       value={(profile as any).sekolah?.pemeriksaSPM || "Tidak"}
@@ -1426,12 +1594,13 @@ function GuruProfile() {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
+                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Jalan Sekolah</Label>
+                <div className="space-y-2 info-item">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Jalan Sekolah</Label>
+
                   {isEditMode ? (
                     <Input 
                       value={(profile as any).sekolah?.alamat || ""} 
@@ -1448,13 +1617,14 @@ function GuruProfile() {
 
                     />
                   ) : (
-                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.alamat || "-"}</p>
+                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.alamat || "-"}</p>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Poskod</Label>
+                <div className="grid grid-cols-2 gap-4 print:grid-cols-1 print:gap-2">
+                  <div className="space-y-2 info-item">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Poskod</Label>
+
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.poskod || ""} 
@@ -1471,11 +1641,12 @@ function GuruProfile() {
 
                       />
                     ) : (
-                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.poskod || "-"}</p>
+                      <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.poskod || "-"}</p>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Daerah</Label>
+                  <div className="space-y-2 info-item">
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Daerah</Label>
+
                     {isEditMode ? (
                       <Input 
                         value={(profile as any).sekolah?.daerah || ""} 
@@ -1491,13 +1662,14 @@ function GuruProfile() {
                         className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
                       />
                     ) : (
-                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.daerah || "-"}</p>
+                      <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.daerah || "-"}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Negeri</Label>
+                <div className="space-y-2 info-item">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Negeri</Label>
+
                   {isEditMode ? (
                     <Select
                       value={(profile as any).sekolah?.negeri || ""}
@@ -1521,7 +1693,7 @@ function GuruProfile() {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <p className="font-bold text-slate-700">{(profile as any).sekolah?.negeri || "-"}</p>
+                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.negeri || "-"}</p>
                   )}
                 </div>
               </CardContent>
@@ -1533,12 +1705,13 @@ function GuruProfile() {
         <div className="space-y-6 animate-in slide-up duration-500 delay-400">
           
           {/* KELULUSAN ACADEMIK */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
-            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center">
-              <h2 className="text-white text-lg font-black flex items-center gap-3">
-                <div className="bg-white/20 p-1.5 rounded-lg"><GraduationCap className="w-5 h-5" /></div>
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+                <div className="bg-white/20 p-1.5 rounded-lg no-print"><GraduationCap className="w-5 h-5" /></div>
                 Kelulusan Akademik & Ikhtisas
               </h2>
+
               {isEditMode && (
                 <Button 
                   size="sm" 
@@ -1645,12 +1818,13 @@ function GuruProfile() {
           </Card>
 
           {/* SUBJEK DIAJAR */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
-            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center">
-              <h2 className="text-white text-lg font-black flex items-center gap-3">
-                <div className="bg-white/20 p-1.5 rounded-lg"><BookOpen className="w-5 h-5" /></div>
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+                <div className="bg-white/20 p-1.5 rounded-lg no-print"><BookOpen className="w-5 h-5" /></div>
                 Subjek Semasa Diajar
               </h2>
+
               {isEditMode && (
                 <Button 
                   size="sm" 
@@ -1775,12 +1949,13 @@ function GuruProfile() {
 
 
           {/* SEJARAH PERKHIDMATAN */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
-            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center">
-              <h2 className="text-white text-lg font-black flex items-center gap-3">
-                <div className="bg-white/20 p-1.5 rounded-lg"><Clock className="w-5 h-5" /></div>
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+                <div className="bg-white/20 p-1.5 rounded-lg no-print"><Clock className="w-5 h-5" /></div>
                 Sejarah Perkhidmatan
               </h2>
+
               {isEditMode && (
                 <Button 
                   size="sm" 
@@ -1877,11 +2052,12 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden">
+        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:py-0 print:px-0 print:border-none print:shadow-none print:grid-cols-2">
+
           <div className="space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Tandatangan Guru</p>
+                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs info-label">Tandatangan Guru</p>
                 <div className="no-print flex gap-2">
                   <Button 
                     variant="ghost" 
@@ -1894,7 +2070,7 @@ function GuruProfile() {
                 </div>
               </div>
               
-              <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group">
+              <div className="relative bg-slate-50/50 rounded-2xl border-2 border-slate-100 border-dashed overflow-hidden group print:bg-transparent print:border-none print:mt-10">
                 <canvas 
                   ref={canvasRef}
                   width={800}
@@ -1907,7 +2083,7 @@ function GuruProfile() {
                   onTouchStart={startDrawing}
                   onTouchMove={draw}
                   onTouchEnd={stopDrawing}
-                  className="w-full h-[250px] cursor-crosshair touch-none bg-white/50"
+                  className="w-full h-[250px] cursor-crosshair touch-none bg-white/50 print:bg-transparent print:h-[150px]"
                 />
                 {!hasSignature && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
@@ -1921,8 +2097,8 @@ function GuruProfile() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-between gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2">
-                <div className="flex-1 border-b border-slate-100 pb-1">
+              <div className="flex flex-col sm:flex-row justify-between gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2 print:flex-row print:justify-between">
+                <div className="flex-1 border-b border-slate-100 pb-1 sig-box">
                   Nama: <span className="text-[#002B5B] ml-2">{(currentTeacher?.profile as any)?.nama || "________________________"}</span>
                 </div>
                 <div className="w-full sm:w-32 border-b border-slate-100 pb-1">
@@ -1934,11 +2110,11 @@ function GuruProfile() {
           {isAdminMode && (
             <div className="space-y-12 animate-in fade-in duration-700">
               <div className="space-y-4">
-                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Disahkan Oleh</p>
-                <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center">
+                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs info-label">Disahkan Oleh</p>
+                <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center print:border-none print:mt-10">
                   <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Cap dan Tandatangan Pengetua / Guru Besar</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center sig-box">Cap dan Tandatangan Pengetua / Guru Besar</p>
               </div>
             </div>
           )}
@@ -1947,7 +2123,7 @@ function GuruProfile() {
 
 
         {/* FOOTER */}
-        <footer className="text-center py-12 space-y-2">
+        <footer className="no-print text-center py-12 space-y-2">
           <p className="text-[#002B5B] font-black text-sm">Profil Guru © 2026 | Kementerian Pendidikan Malaysia</p>
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
