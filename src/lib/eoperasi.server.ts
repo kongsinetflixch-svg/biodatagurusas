@@ -1,5 +1,5 @@
 // @ts-nocheck
-import pdf from 'pdf-parse';
+import pdf from 'pdf-parse/lib/pdf-parse.js';
 
 
 export async function parseEOperasiPDF(base64: string) {
