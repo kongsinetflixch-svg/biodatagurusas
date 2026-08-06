@@ -1398,10 +1398,54 @@ function GuruProfile() {
                       </TableRow>
                     ) : (kelulusan as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="px-8 font-bold text-slate-700">{row.kelayakan}</TableCell>
-                        <TableCell className="text-slate-600">{row.institusi}</TableCell>
-                        <TableCell className="text-slate-600 font-medium">{row.bidang}</TableCell>
-                        <TableCell className="font-bold text-[#002B5B]">{row.tahun}</TableCell>
+                        <TableCell className="px-8 font-bold text-slate-700">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.kelayakan} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, kelayakan: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.kelayakan}
+                        </TableCell>
+                        <TableCell className="text-slate-600">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.institusi} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, institusi: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.institusi}
+                        </TableCell>
+                        <TableCell className="text-slate-600 font-medium">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.bidang} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, bidang: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg"
+                            />
+                          ) : row.bidang}
+                        </TableCell>
+                        <TableCell className="font-bold text-[#002B5B]">
+                          {isEditMode ? (
+                            <Input 
+                              value={row.tahun} 
+                              onChange={(e) => {
+                                const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, tahun: e.target.value} : k);
+                                updateCurrentTeacher({ kelulusan: newKelulusan });
+                              }}
+                              className="h-8 rounded-lg w-20"
+                            />
+                          ) : row.tahun}
+                        </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
                             <Button 
