@@ -1534,7 +1534,7 @@ function GuruProfile() {
                     />
                   ) : (
                     <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:p-0 print:bg-transparent print:border-none">
-                      <p className="font-bold text-slate-700 leading-relaxed info-value">{(profile as any).alamat || "-"}</p>
+                      <p className="text-slate-700 leading-relaxed info-value">{(profile as any).alamat || "-"}</p>
                     </div>
 
                   )}
