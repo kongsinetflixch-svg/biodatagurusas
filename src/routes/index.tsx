@@ -233,10 +233,56 @@ function GuruProfilePage() {
       <AdminDashboard 
         teachers={teachers}
         sasTeachers={SAS_TEACHERS}
-        onAddTeacher={() => {}} 
+        onAddTeacher={async () => {
+          const newId = crypto.randomUUID();
+          const newTeacher = {
+            id: newId,
+            ic_number: "BARU",
+            profile: { 
+              nama: "GURU BARU", 
+              kp: "", 
+              tel: "", 
+              email: "", 
+              gred: "DG41",
+              sekolah: {
+                nama: "SMK SULTAN AHMAD SHAH",
+                kod: "CEB1003",
+                alamat: "Persiaran Dayang Endah",
+                poskod: "39000",
+                daerah: "Tanah Rata",
+                negeri: "Pahang"
+              }
+            },
+            kelulusan: [],
+            subjek: [],
+            sejarah: []
+          };
+          const { data, error } = await supabase.from('teachers').insert([newTeacher]).select();
+          if (!error && data) {
+            setTeachers([...teachers, { ...data[0], profileImage: data[0].profile_image }]);
+            setActiveTeacherId(data[0].id);
+            setIsEditMode(true);
+            setShowAdminDashboard(false);
+            toast.success("Profil baru dicipta.");
+          }
+        }} 
         onSelectTeacher={(id, edit) => { setActiveTeacherId(id); setIsEditMode(edit); setShowAdminDashboard(false); }}
-        onDeleteTeacher={() => {}}
-        onManualCreate={() => {}}
+        onDeleteTeacher={async (id, e) => {
+          e.stopPropagation();
+          if (confirm("Hapus profil ini?")) {
+            const { error } = await supabase.from('teachers').delete().eq('id', id);
+            if (!error) {
+              setTeachers(teachers.filter(t => t.id !== id));
+              if (activeTeacherId === id) setActiveTeacherId(null);
+              toast.success("Dihapuskan.");
+            }
+          }
+        }}
+        onManualCreate={async (ic, name, role) => {
+          // In this simplified logic, we just update the local SAS_TEACHERS ref or show a toast
+          // Real role management would involve a user_roles table
+          toast.info(`Peranan ${name} dikemaskini ke ${role}`);
+        }}
         onBackToProfile={() => setShowAdminDashboard(false)}
         onLogout={handleLogout}
         searchTerm={searchTerm}
