@@ -458,6 +458,7 @@ function GuruProfile() {
   };
 
   const handleLogout = async () => {
+    setIsAdminMode(false);
     localStorage.removeItem('guru_ic_session');
     setSession(null);
     setTeachers([]);
