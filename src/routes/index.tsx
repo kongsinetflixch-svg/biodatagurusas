@@ -1821,7 +1821,8 @@ function GuruProfile() {
                                 const newSejarah = (sejarah as any[]).map(s => s.id === row.id ? {...s, sekolah: e.target.value} : s);
                                 updateCurrentTeacher({ sejarah: newSejarah });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : (
                             <p className="font-bold text-slate-700">{row.sekolah}</p>
