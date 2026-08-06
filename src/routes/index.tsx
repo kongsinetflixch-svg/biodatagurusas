@@ -171,8 +171,8 @@ const PRINT_STYLES = `
       width: 100% !important;
       border-collapse: collapse !important;
       margin-top: 2mm !important;
-      table-layout: auto !important;
     }
+
 
     th {
       background: #eee !important;
