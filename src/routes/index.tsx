@@ -757,8 +757,8 @@ function GuruProfile() {
             <div className="relative group">
               <div className="absolute inset-0 bg-[#D4AF37] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
               <Avatar className="w-36 h-36 border-4 border-white shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:rotate-2">
-                <AvatarImage src={profileImage || ""} alt={profile.nama} />
-                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">{profile.nama.charAt(0)}</AvatarFallback>
+                <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} />
+                <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-bold">{(profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
               </Avatar>
               <div className="absolute -bottom-2 right-2 no-print">
                 <input 
