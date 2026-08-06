@@ -45,6 +45,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { importEOperasiData } from "@/lib/eoperasi.functions";
+import { useServerFn } from "@tanstack/react-start";
+
 
 // SSPA Grade Constants
 const SSPA_GRADES = [
@@ -660,8 +663,10 @@ function GuruProfile() {
           // If profile doesn't exist in DB, start fresh for this user from the list
           if (cleanIc !== SUPERADMIN_IC) {
             // Automatically trigger creation if not superadmin
-            handleAutoCreateTeacher(cleanIc, sasTeacher);
+            toast.info("Menjana profil baru anda...", { duration: 2000 });
+            await handleAutoCreateTeacher(cleanIc, sasTeacher);
           } else {
+
             toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
             setTeachers([]);
             setIsLoading(false);
@@ -850,9 +855,64 @@ function GuruProfile() {
   const currentTeacher = activeTeacherId ? teachers.find(t => t.id === activeTeacherId) : null;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const eOperasiInputRef = useRef<HTMLInputElement>(null);
+  const importEOperasi = useServerFn(importEOperasiData);
+  const [isImporting, setIsImporting] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
+
+  const handleEOperasiImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast.error("Sila muat naik fail PDF sahaja.");
+      return;
+    }
+
+    setIsImporting(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(',')[1];
+      try {
+        const importedData = await importEOperasi({
+          data: {
+            fileBase64: base64,
+            fileName: file.name
+          }
+        });
+
+
+        if (importedData && currentTeacher) {
+          // Merge imported data with current teacher
+          const updatedTeacher = {
+            ...currentTeacher,
+            profile: {
+              ...currentTeacher.profile,
+              ...importedData.profile,
+              // Ensure we don't overwrite crucial metadata
+              kp: currentTeacher.profile.kp, 
+            },
+            kelulusan: importedData.kelulusan?.length > 0 ? importedData.kelulusan : currentTeacher.kelulusan,
+            sejarah: importedData.sejarah?.length > 0 ? importedData.sejarah : currentTeacher.sejarah,
+          };
+
+          // Update state
+          setTeachers(prev => prev.map(t => t.id === currentTeacher.id ? updatedTeacher : t));
+          setIsEditMode(true);
+          toast.success("Data eOperasi berjaya diimport! Sila semak dan simpan.");
+        }
+      } catch (err) {
+        console.error("Import error:", err);
+        toast.error("Gagal mengimport data. Sila pastikan fail PDF adalah betul.");
+      } finally {
+        setIsImporting(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
 
   
   // Handlers for switching and creating teachers
@@ -1756,6 +1816,25 @@ function GuruProfile() {
             />
           </div>
           <div className="flex items-center justify-center gap-3 p-3 bg-white/95 backdrop-blur-xl rounded-[1.25rem] shadow-2xl shadow-[#002B5B]/10 border border-white">
+            <input 
+              type="file" 
+              ref={eOperasiInputRef} 
+              onChange={handleEOperasiImport} 
+              accept="application/pdf" 
+              className="hidden" 
+            />
+            <Button 
+              onClick={() => eOperasiInputRef.current?.click()} 
+              disabled={isImporting}
+              variant="outline"
+              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-emerald-100 font-black text-xs uppercase tracking-wider hover:bg-emerald-50 transition-all text-emerald-700"
+            >
+              {isImporting ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <><FileSpreadsheet className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Import eOperasi</span></>
+              )}
+            </Button>
             <Button 
               onClick={() => setShowPrintPreview(true)} 
               variant="outline"
@@ -1777,6 +1856,7 @@ function GuruProfile() {
               <Download className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">PDF</span>
             </Button>
           </div>
+
         </div>
 
 
@@ -1785,6 +1865,29 @@ function GuruProfile() {
 
         {/* TWO COLUMNS DATA */}
         <div className="grid lg:grid-cols-3 gap-6">
+          <Card className="lg:col-span-3 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white no-print">
+            <div className="h-2 bg-emerald-500"></div>
+            <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="bg-emerald-100 p-4 rounded-[2rem]">
+                  <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-[#002B5B]">Import Data eOperasi</h3>
+                  <p className="text-slate-500 font-medium">Muat naik fail PDF "Paparan Semakan Data" untuk mengisi profil secara automatik.</p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => eOperasiInputRef.current?.click()} 
+                disabled={isImporting}
+                className="w-full md:w-auto h-14 px-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-emerald-200 transition-all active:scale-[0.98]"
+              >
+                {isImporting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Plus className="w-5 h-5 mr-3" />}
+                {isImporting ? "Sedang Memproses..." : "Pilih Fail PDF"}
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white card-print">
             <div className="h-2 bg-[#002B5B] no-print"></div>
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8 print:py-0 print:px-0 print:border-none">
