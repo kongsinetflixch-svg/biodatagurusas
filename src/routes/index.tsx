@@ -206,21 +206,6 @@ const PRINT_STYLES = `
       font-size: 8pt !important;
     }
 
-    .card-print {
-      border: none !important;
-      padding: 0 !important;
-      margin-bottom: 3mm !important;
-      background: transparent !important;
-      box-shadow: none !important;
-    }
-
-    .preview-only {
-      display: none !important;
-    }
-    
-    .print-only {
-      display: block !important;
-    }
   }
 
   /* Print Preview Styles */
