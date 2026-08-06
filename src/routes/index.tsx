@@ -581,6 +581,151 @@ function GuruProfile() {
     window.print();
   };
 
+  const handleExportDocx = async () => {
+    if (!currentTeacher) return;
+    
+    const p = currentTeacher.profile as any;
+    const k = currentTeacher.kelulusan as any[] || [];
+    const s = currentTeacher.subjek as any[] || [];
+    const sj = currentTeacher.sejarah as any[] || [];
+    const school = p.sekolah || {};
+
+    const createHeaderCell = (text: string) => new DocxTableCell({
+      children: [new Paragraph({ children: [new TextRun({ text, bold: true, color: "FFFFFF" })], alignment: AlignmentType.CENTER })],
+      shading: { fill: "002B5B" },
+      verticalAlign: VerticalAlign.CENTER,
+    });
+
+    const createTextCell = (text: string) => new DocxTableCell({
+      children: [new Paragraph({ children: [new TextRun({ text: text || "-" })], spacing: { before: 100, after: 100 } })],
+      verticalAlign: VerticalAlign.CENTER,
+    });
+
+    const doc = new Document({
+      sections: [{
+        properties: {},
+        children: [
+          new Paragraph({
+            children: [
+              new TextRun({ text: "KEMENTERIAN PENDIDIKAN MALAYSIA", bold: true, size: 28, color: "002B5B" }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 200 },
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({ text: "PROFIL GURU PROFESIONAL 2026", bold: true, size: 36, color: "002B5B" }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 400 },
+          }),
+
+          new Paragraph({ text: "1. MAKLUMAT PERIBADI", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 200 } }),
+          new DocxTable({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new DocxTableRow({ children: [createTextCell("Nama Penuh:"), createTextCell(p.nama)] }),
+              new DocxTableRow({ children: [createTextCell("No. KP:"), createTextCell(p.kp)] }),
+              new DocxTableRow({ children: [createTextCell("No. Telefon:"), createTextCell(p.tel)] }),
+              new DocxTableRow({ children: [createTextCell("E-mel:"), createTextCell(p.email)] }),
+              new DocxTableRow({ children: [createTextCell("Alamat:"), createTextCell(p.alamat)] }),
+            ],
+          }),
+
+          new Paragraph({ text: "2. MAKLUMAT SEKOLAH", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 200 } }),
+          new DocxTable({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new DocxTableRow({ children: [createTextCell("Nama Sekolah:"), createTextCell(school.nama)] }),
+              new DocxTableRow({ children: [createTextCell("Kod Sekolah:"), createTextCell(school.kod)] }),
+              new DocxTableRow({ children: [createTextCell("Jawatan:"), createTextCell(school.jawatan)] }),
+              new DocxTableRow({ children: [createTextCell("Alamat Sekolah:"), createTextCell(school.alamat)] }),
+            ],
+          }),
+
+          new Paragraph({ text: "3. KELULUSAN AKADEMIK", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 200 } }),
+          new DocxTable({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new DocxTableRow({
+                children: [
+                  createHeaderCell("Kelayakan"),
+                  createHeaderCell("Institusi"),
+                  createHeaderCell("Bidang"),
+                  createHeaderCell("Tahun"),
+                ],
+              }),
+              ...k.map(row => new DocxTableRow({
+                children: [
+                  createTextCell(row.kelayakan),
+                  createTextCell(row.institusi),
+                  createTextCell(row.bidang),
+                  createTextCell(row.tahun),
+                ],
+              })),
+            ],
+          }),
+
+          new Paragraph({ text: "4. SUBJEK SEMASA", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 200 } }),
+          new DocxTable({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new DocxTableRow({
+                children: [
+                  createHeaderCell("Subjek"),
+                  createHeaderCell("Tahun/Tingkatan"),
+                  createHeaderCell("Bil. Murid"),
+                  createHeaderCell("TOV/ETR"),
+                ],
+              }),
+              ...s.map(row => new DocxTableRow({
+                children: [
+                  createTextCell(row.subjek),
+                  createTextCell(row.tahun),
+                  createTextCell(row.bilMurid),
+                  createTextCell(`${row.tov} / ${row.etr}`),
+                ],
+              })),
+            ],
+          }),
+
+          new Paragraph({ text: "5. SEJARAH PERKHIDMATAN", heading: HeadingLevel.HEADING_2, spacing: { before: 400, after: 200 } }),
+          new DocxTable({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new DocxTableRow({
+                children: [
+                  createHeaderCell("Institusi/Sekolah"),
+                  createHeaderCell("Tahun"),
+                  createHeaderCell("Subjek"),
+                ],
+              }),
+              ...sj.map(row => new DocxTableRow({
+                children: [
+                  createTextCell(row.sekolah),
+                  createTextCell(row.tahun),
+                  createTextCell(row.subjek),
+                ],
+              })),
+            ],
+          }),
+
+          new Paragraph({
+            children: [
+              new TextRun({ text: "\n\n\n\n__________________________", bold: true }),
+              new TextRun({ text: "\n(Tandatangan Guru)", size: 20 }),
+            ],
+            spacing: { before: 800 },
+          }),
+        ],
+      }],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `Profil_Guru_2026_${p.nama || "Templat"}.docx`);
+    toast.success("Fail Word berjaya dijana.");
+  };
+
   const handleSave = async () => {
     if (!activeTeacherId || !currentTeacher) return;
     
