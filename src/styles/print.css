@@ -3,14 +3,14 @@
   margin: 10mm;
 }
 
-@media print {
+@media print, .print-ready {
   /* Reset Styles */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  body {
+  body, .print-ready {
     background: white !important;
     color: black !important;
     font-family: "Inter", "Segoe UI", sans-serif !important;
@@ -56,11 +56,12 @@
     color: #002B5B !important;
   }
 
-  /* Grid System */
+  /* Grid System - 12 Column Editorial Grid */
   .info-grid {
     display: grid !important;
     grid-template-columns: repeat(12, 1fr) !important;
     gap: 1.5mm 3mm !important;
+    width: 100% !important;
   }
 
   .col-6 { grid-column: span 6 !important; }
@@ -193,5 +194,78 @@
   /* Avoid empty pages */
   body:after {
     content: none !important;
-  }
+}
+
+/* Screen Preview Overrides to ensure grid works outside of media print */
+.print-ready .info-grid {
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr) !important;
+  gap: 1.5mm 3mm !important;
+  width: 100% !important;
+}
+
+.print-ready .col-6 { grid-column: span 6 !important; }
+.print-ready .col-4 { grid-column: span 4 !important; }
+.print-ready .col-3 { grid-column: span 3 !important; }
+.print-ready .col-12 { grid-column: span 12 !important; }
+
+.print-ready .data-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5mm !important;
+}
+
+.print-ready .data-label {
+  font-size: 7pt !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  color: #555 !important;
+}
+
+.print-ready .data-value {
+  font-size: 9pt !important;
+  font-weight: 500 !important;
+  color: black !important;
+  min-height: 4mm !important;
+}
+
+.print-ready .section-title {
+  font-size: 9.5pt !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  border-bottom: 0.5pt solid #002B5B !important;
+  padding-bottom: 0.5mm !important;
+  margin-bottom: 1.5mm !important;
+  color: #002B5B !important;
+}
+
+.print-ready .official-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  border-bottom: 1.5pt solid #002B5B !important;
+  padding-bottom: 2mm !important;
+  margin-bottom: 4mm !important;
+}
+
+.print-ready .photo-frame {
+  width: 30mm !important;
+  height: 38mm !important;
+  border: 0.5pt solid #000 !important;
+  margin-left: 5mm !important;
+  overflow: hidden !important;
+}
+
+.print-ready table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin-bottom: 2mm !important;
+}
+
+.print-ready th, .print-ready td {
+  border: 0.5pt solid #ccc !important;
+  padding: 1mm 1.5mm !important;
+  text-align: left !important;
+  font-size: 8.5pt !important;
+}
 }
