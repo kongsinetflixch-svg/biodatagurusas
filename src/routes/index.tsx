@@ -766,10 +766,13 @@ function GuruProfile() {
                                   onClick={() => {
                                     const teacherIdx = SAS_TEACHERS.findIndex(st => st.kp === t.kp);
                                     if (teacherIdx !== -1) {
-                                      SAS_TEACHERS[teacherIdx].jabatan = role;
-                                      setRoleSearchTerm(prev => prev + " "); // Force re-render
-                                      setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
-                                      toast.success(`Peranan ${t.nama} dikemaskini ke ${role}`);
+                                      const teacher = SAS_TEACHERS[teacherIdx];
+                                      if (teacher) {
+                                        teacher.jabatan = role;
+                                        setRoleSearchTerm(prev => prev + " "); // Force re-render
+                                        setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
+                                        toast.success(`Peranan ${t.nama} dikemaskini ke ${role}`);
+                                      }
                                     }
                                   }}
                                   className={`h-7 px-2 text-[10px] rounded-lg font-black ${
