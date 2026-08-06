@@ -1863,6 +1863,29 @@ function GuruProfile() {
 
         {/* TWO COLUMNS DATA */}
         <div className="grid lg:grid-cols-3 gap-6">
+          <Card className="lg:col-span-3 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white no-print">
+            <div className="h-2 bg-emerald-500"></div>
+            <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="bg-emerald-100 p-4 rounded-[2rem]">
+                  <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-[#002B5B]">Import Data eOperasi</h3>
+                  <p className="text-slate-500 font-medium">Muat naik fail PDF "Paparan Semakan Data" untuk mengisi profil secara automatik.</p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => eOperasiInputRef.current?.click()} 
+                disabled={isImporting}
+                className="w-full md:w-auto h-14 px-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-emerald-200 transition-all active:scale-[0.98]"
+              >
+                {isImporting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Plus className="w-5 h-5 mr-3" />}
+                {isImporting ? "Sedang Memproses..." : "Pilih Fail PDF"}
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white card-print">
             <div className="h-2 bg-[#002B5B] no-print"></div>
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8 print:py-0 print:px-0 print:border-none">
