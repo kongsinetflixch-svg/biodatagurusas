@@ -1931,15 +1931,18 @@ function GuruProfile() {
               </div>
             </div>
           </div>
-          <div className="space-y-12">
-            <div className="space-y-4">
-              <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Disahkan Oleh</p>
-              <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center">
-                 <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
+          {isAdminMode && (
+            <div className="space-y-12 animate-in fade-in duration-700">
+              <div className="space-y-4">
+                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs">Disahkan Oleh</p>
+                <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center">
+                  <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
+                </div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Cap dan Tandatangan Pengetua / Guru Besar</p>
               </div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Cap dan Tandatangan Pengetua / Guru Besar</p>
             </div>
-          </div>
+          )}
+
         </div>
 
 
