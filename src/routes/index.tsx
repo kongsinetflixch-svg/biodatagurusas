@@ -95,8 +95,10 @@ function GuruProfile() {
         profileImage: t.profile_image,
       }));
       setTeachers(mappedData);
-      if (mappedData.length > 0 && !activeTeacherId) {
-        setActiveTeacherId(mappedData[0].id);
+      if (mappedData.length > 0) {
+        if (!activeTeacherId) {
+          setActiveTeacherId(mappedData[0].id);
+        }
       }
     }
     setIsLoading(false);
