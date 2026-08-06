@@ -178,7 +178,7 @@ th {
 }
 
 /* Preview-Specific Overrides (when .print-ready class is added) */
-.print-ready body {
+body.print-ready {
   background: white !important;
   color: black !important;
   font-family: "Inter", "Segoe UI", sans-serif !important;
