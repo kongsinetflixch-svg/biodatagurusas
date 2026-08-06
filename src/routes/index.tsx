@@ -1818,12 +1818,13 @@ function GuruProfile() {
           </Card>
 
           {/* SUBJEK DIAJAR */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white">
-            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center">
-              <h2 className="text-white text-lg font-black flex items-center gap-3">
-                <div className="bg-white/20 p-1.5 rounded-lg"><BookOpen className="w-5 h-5" /></div>
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+            <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+                <div className="bg-white/20 p-1.5 rounded-lg no-print"><BookOpen className="w-5 h-5" /></div>
                 Subjek Semasa Diajar
               </h2>
+
               {isEditMode && (
                 <Button 
                   size="sm" 
