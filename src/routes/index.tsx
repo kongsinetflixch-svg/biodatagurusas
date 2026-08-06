@@ -910,9 +910,10 @@ function GuruProfile() {
           setIsEditMode(true);
           toast.success("Data eOperasi berjaya diimport! Sila semak dan simpan.");
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Import error:", err);
-        toast.error("Gagal mengimport data. Sila pastikan fail PDF adalah betul.");
+        const errorMessage = err.message || "Gagal mengimport data.";
+        toast.error(`${errorMessage} Sila pastikan fail PDF adalah betul.`);
       } finally {
         setIsImporting(false);
       }
