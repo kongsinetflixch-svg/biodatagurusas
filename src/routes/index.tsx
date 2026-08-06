@@ -244,7 +244,7 @@ const PRINT_STYLES = `
 
 
 // Reusable Print Layout Component to ensure "pratonton" and "cetak" match perfectly
-const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isAdminMode: boolean }) => {
+const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeacher: any, isAdminMode: boolean, schoolLogo: string | null }) => {
   if (!currentTeacher) return null;
   const profile = currentTeacher.profile || {};
   
@@ -1546,7 +1546,7 @@ function GuruProfile() {
       <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
 
       <div className="print-only">
-        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} />
+        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
       </div>
 
       <div id="profile-container" className="max-w-6xl mx-auto print-container space-y-6 no-print">
@@ -2488,7 +2488,7 @@ function GuruProfile() {
           </div>
           
           <div className="print-preview-content animate-in zoom-in-95 duration-500 shadow-2xl rounded-sm">
-             <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} />
+             <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
           </div>
 
         </div>
