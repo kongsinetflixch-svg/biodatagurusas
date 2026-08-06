@@ -1030,6 +1030,20 @@ function GuruProfile() {
     }
   };
 
+  const handleSchoolLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setSchoolLogo(base64);
+        localStorage.setItem('school_logo', base64);
+        toast.success("Logo sekolah telah berjaya dikemaskini.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleLogout = async () => {
     setIsAdminMode(false);
     localStorage.removeItem('guru_ic_session');
