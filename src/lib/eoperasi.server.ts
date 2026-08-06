@@ -41,28 +41,35 @@ export async function parseEOperasiPDF(base64: string) {
     // Debug: Log the first 500 characters to see the structure
     console.log('PDF Preview:', text.substring(0, 500).replace(/\n/g, ' '));
 
-    // Name - search for patterns like "Nama : NAMA GURU" or "Nama NAMA GURU"
-    const nameMatch = text.match(/Nama\s*[:\s]\s*([^\n\r*]+)/i);
+    // Name - improved patterns for Malaysian names
+    const nameMatch = text.match(/Nama\s*[:\s]\s*([^\n\r*]{3,})/i) || 
+                      text.match(/NAMA\s*[:\s]\s*([^\n\r*]{3,})/i);
     if (nameMatch) profile.nama = nameMatch[1].trim();
 
-    // IC - improved regex to handle spaces and dashes
-    const icMatch = text.match(/No\.?\s*Kp\s*[:\s]\s*([\d\s-]+)/i) || text.match(/(\d{12})/);
+    // IC - improved regex to handle spaces, dashes and bare numbers
+    const icMatch = text.match(/No\.?\s*Kp\s*[:\s]\s*([\d\s-]+)/i) || 
+                    text.match(/NO\.?\s*KAD\s*PENGENALAN\s*[:\s]\s*([\d\s-]+)/i) ||
+                    text.match(/\b(\d{6}[-\s]?\d{2}[-\s]?\d{4})\b/);
     if (icMatch) profile.kp = icMatch[1].replace(/[\s-]/g, '').trim();
 
     // Phone
-    const phoneMatch = text.match(/No\s*Telefon\s*[:\s]\s*([\d-]+)/i);
+    const phoneMatch = text.match(/No\s*Telefon\s*[:\s]\s*([\d-]+)/i) ||
+                       text.match(/TEL\s*[:\s]\s*([\d-]+)/i);
     if (phoneMatch) profile.tel = phoneMatch[1].trim();
 
     // Email
-    const emailMatch = text.match(/E-mel\s*[:\s]\s*([^\s\n\r*]+)/i) || text.match(/Email\s*[:\s]\s*([^\s\n\r*]+)/i);
+    const emailMatch = text.match(/E-mel\s*[:\s]\s*([^\s\n\r*]+)/i) || 
+                       text.match(/Email\s*[:\s]\s*([^\s\n\r*]+)/i);
     if (emailMatch) profile.email = emailMatch[1].trim();
 
-    // Address - capture multiple lines if needed
-    const addressMatch = text.match(/Alamat\s*Tinggal\s*Semasa\s*[:\s]\s*([^\*]+?)(?=\s*Poskod|\s*No\s*Telefon|$)/i);
+    // Address - more robust address extraction
+    const addressMatch = text.match(/Alamat\s*Tinggal\s*Semasa\s*[:\s]\s*([^\*]+?)(?=\s*Poskod|\s*No\s*Telefon|$)/i) ||
+                         text.match(/ALAMAT\s*[:\s]\s*([^\*]+?)(?=\s*POSKOD|\s*TEL|$)/i);
     if (addressMatch) profile.alamat = addressMatch[1].replace(/\s+/g, ' ').trim();
 
     // Poskod
-    const poskodMatch = text.match(/Poskod\s*[:\s]\s*(\d{5})/i);
+    const poskodMatch = text.match(/Poskod\s*[:\s]\s*(\d{5})/i) ||
+                        text.match(/POSKOD\s*[:\s]\s*(\d{5})/i);
     if (poskodMatch) profile.poskod = poskodMatch[1].trim();
 
     // Gred - broader DG match
