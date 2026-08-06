@@ -1,30 +1,31 @@
 // @ts-nocheck
 import { PDFDocument } from 'pdf-lib';
+import pdf from 'pdf-parse';
 
 export async function parseEOperasiPDF(base64: string) {
   try {
     const buffer = Buffer.from(base64, 'base64');
     
-    // Attempt parsing with pdf-parse first as it has better text extraction
     let text = "";
     try {
-      const pdf = await import('pdf-parse');
-      const pdfParser = pdf.default || pdf;
-      const data = await pdfParser(buffer);
+      const data = await pdf(buffer);
       text = data.text;
       console.log('PDF text extracted length:', text?.length);
     } catch (e) {
       console.warn('pdf-parse failed:', e);
-      // Fallback to pdf-lib (though it doesn't do text extraction well)
-      const pdfDoc = await PDFDocument.load(buffer);
-      if (pdfDoc) {
-        throw new Error('Pustaka pemprosesan PDF (pdf-parse) menghadapi ralat. Sila pastikan fail PDF tidak dilindungi kata laluan.');
+      // Check if it's password protected using pdf-lib
+      try {
+        await PDFDocument.load(buffer);
+      } catch (pdfLibError) {
+        if (pdfLibError.message.includes('password')) {
+          throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
+        }
       }
-      throw new Error('Format fail PDF tidak dikenali.');
+      throw new Error(`Ralat memproses PDF: ${e.message}`);
     }
 
     if (!text || text.trim().length < 10) {
-      throw new Error('Gagal mengekstrak teks daripada PDF. Pastikan ia bukan fail imbasan (OCR diperlukan).');
+      throw new Error('Gagal mengekstrak teks daripada PDF. Pastikan ia adalah fail "Paparan Semakan Data" asli dari eOperasi dan bukan hasil imbasan (scan).');
     }
 
     // Mapping patterns for eOperasi PDF
