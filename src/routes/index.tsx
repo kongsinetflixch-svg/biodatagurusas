@@ -1747,7 +1747,7 @@ function GuruProfile() {
                                 const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, etr: e.target.value} : s);
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
-                              className="h-8 rounded-lg w-16 mx-auto text-center"
+                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
                             />
                           ) : (
                             <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span>
