@@ -220,20 +220,21 @@ function GuruProfile() {
       toast.error("Sila masukkan No. IC.");
       return;
     }
+    const cleanIc = icInput.trim().replace(/-/g, "");
     setIsLoggingIn(true);
-    console.log("Memulakan proses log masuk untuk IC:", icInput.trim());
+    console.log("Memulakan proses log masuk untuk IC:", cleanIc);
 
     // Validate if the IC exists in SAS_TEACHERS softcoded list
-    const sasTeacher = SAS_TEACHERS.find(t => t.kp === icInput.trim());
+    const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
     
-    if (!sasTeacher && icInput.trim() !== SUPERADMIN_IC) {
+    if (!sasTeacher && cleanIc !== SUPERADMIN_IC) {
       toast.error("Maaf, No. IC anda tiada dalam senarai Guru/Pentadbir SAS 2026.");
       setIsLoggingIn(false);
       return;
     }
 
     try {
-      if (icInput.trim() === SUPERADMIN_IC) {
+      if (cleanIc === SUPERADMIN_IC) {
         setIsAdminMode(true);
         toast.success("Selamat datang, Superadmin!");
       }
@@ -242,18 +243,18 @@ function GuruProfile() {
       const { data, error } = await supabase
         .from('teachers')
         .select('*')
-        .or(`ic_number.eq.${icInput},owner_id.eq.${icInput}`)
+        .or(`ic_number.eq.${cleanIc},owner_id.eq.${cleanIc}`)
         .maybeSingle();
 
       if (error) {
         console.error("Ralat Supabase:", error);
         toast.error(`Ralat semasa log masuk: ${error.message}`);
       } else {
-        localStorage.setItem('guru_ic_session', icInput);
-        setSession({ user: { ic: icInput, id: 'pseudo-user' } });
+        localStorage.setItem('guru_ic_session', cleanIc);
+        setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
         
         if (data) {
-          await fetchTeachersByIc(icInput);
+          await fetchTeachersByIc(cleanIc);
           const teacherName = (data.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
         } else {
