@@ -1508,8 +1508,9 @@ function GuruProfile() {
                 ))}
                 <div className="md:col-span-2 space-y-2 info-item">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm opacity-50">🏠</span>
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Alamat Kediaman</Label>
+                    <span className="text-sm opacity-50 no-print">🏠</span>
+                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Kediaman</Label>
+
                   </div>
                   {isEditMode ? (
                     <Textarea 
