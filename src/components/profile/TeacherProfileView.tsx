@@ -36,10 +36,10 @@ export const TeacherProfileView: React.FC<TeacherProfileViewProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-slate-100/50 print:bg-white pb-12 print:pb-0">
+    <div className="min-h-screen bg-slate-100/50 print:bg-white pb-12 print:pb-0 overflow-x-auto sm:overflow-x-visible">
       {/* Editorial Toolbar */}
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 no-print shadow-sm">
-        <div className="max-w-[210mm] mx-auto flex items-center justify-between">
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 no-print shadow-sm min-w-[320px]">
+        <div className="max-w-[210mm] mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-[#002B5B] rounded-lg flex items-center justify-center text-white text-xs font-black">KPM</div>
             <span className="text-sm font-bold text-[#002B5B] hidden sm:inline">PROFIL GURU 2026</span>
@@ -88,7 +88,7 @@ export const TeacherProfileView: React.FC<TeacherProfileViewProps> = ({
       </div>
 
       {/* A4 Document Container */}
-      <div className="max-w-[210mm] mx-auto mt-8 print:mt-0 shadow-2xl print:shadow-none bg-white min-h-[297mm]">
+      <div className="mx-auto mt-4 sm:mt-8 print:mt-0 shadow-2xl print:shadow-none bg-white min-h-[297mm] w-fit sm:w-[210mm]">
         <PrintableTeacherProfile teacher={teacher} isAdminMode={isAdminMode} />
       </div>
 

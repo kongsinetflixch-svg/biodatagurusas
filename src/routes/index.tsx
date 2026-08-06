@@ -204,7 +204,16 @@ function GuruProfilePage() {
 
   const currentTeacher = teachers.find(t => t.id === activeTeacherId);
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;
+  if (isLoading) return (
+    <div className="flex flex-col h-screen items-center justify-center bg-slate-50 space-y-6">
+      <div className="w-20 h-20 bg-[#002B5B] rounded-2xl flex items-center justify-center text-white font-black text-2xl animate-pulse">KPM</div>
+      <div className="flex items-center gap-2 text-slate-500 font-medium">
+        <Loader2 className="w-5 h-5 animate-spin" />
+        <span>Memuatkan Sistem...</span>
+      </div>
+      <Button onClick={handleLogout} variant="ghost" className="text-rose-500">Batal</Button>
+    </div>
+  );
 
   if (!session) return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">

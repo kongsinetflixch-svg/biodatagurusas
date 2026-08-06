@@ -56,11 +56,12 @@
     color: #002B5B !important;
   }
 
-  /* Grid System */
+  /* Grid System - 12 Column Editorial Grid */
   .info-grid {
     display: grid !important;
     grid-template-columns: repeat(12, 1fr) !important;
     gap: 1.5mm 3mm !important;
+    width: 100% !important;
   }
 
   .col-6 { grid-column: span 6 !important; }

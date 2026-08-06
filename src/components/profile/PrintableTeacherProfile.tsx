@@ -16,7 +16,7 @@ export const PrintableTeacherProfile: React.FC<PrintableTeacherProfileProps> = (
   if (!teacher) return null;
 
   return (
-    <div id="profile-container" className="profile-container bg-white">
+    <div id="profile-container" className="profile-container bg-white w-[210mm] min-h-[297mm] p-[10mm] box-border">
       <ProfileHeader 
         profile={teacher.profile} 
         profileImage={teacher.profileImage} 
