@@ -891,8 +891,8 @@ function GuruProfile() {
                   </div>
                   {isEditMode ? (
                     <Textarea 
-                      value={profile.alamat} 
-                      onChange={(e) => updateCurrentTeacher({ profile: {...profile, alamat: e.target.value}})}
+                      value={(profile as any).alamat} 
+                      onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), alamat: e.target.value}})}
                       className="min-h-[100px] rounded-xl border-slate-100"
                     />
                   ) : (
