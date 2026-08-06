@@ -1667,8 +1667,9 @@ function GuruProfile() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Negeri</Label>
+                <div className="space-y-2 info-item">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Negeri</Label>
+
                   {isEditMode ? (
                     <Select
                       value={(profile as any).sekolah?.negeri || ""}
