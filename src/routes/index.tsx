@@ -873,8 +873,8 @@ function GuruProfile() {
                     </div>
                     {isEditMode ? (
                       <Input 
-                        value={profile[item.key as keyof typeof profile] as string} 
-                        onChange={(e) => updateCurrentTeacher({ profile: {...profile, [item.key]: e.target.value}})}
+                        value={(profile as any)[item.key as keyof typeof profile] as string} 
+                        onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), [item.key]: e.target.value}})}
                         className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
                       />
                     ) : (
