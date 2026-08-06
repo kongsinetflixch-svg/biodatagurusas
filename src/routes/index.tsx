@@ -63,7 +63,7 @@ const MALAYSIAN_STATES = [
 const PRINT_STYLES = `
   @page {
     size: A4;
-    margin: 10mm 15mm;
+    margin: 10mm;
   }
 
   @media print {
@@ -72,7 +72,9 @@ const PRINT_STYLES = `
       color: black !important;
       font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
       font-size: 10pt !important;
-      line-height: 1.3 !important;
+      line-height: 1.2 !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
 
     .no-print {
@@ -84,109 +86,120 @@ const PRINT_STYLES = `
       margin: 0 !important;
       box-shadow: none !important;
       background: white !important;
+      border: none !important;
     }
 
     .print-header {
       display: flex !important;
-      align-items: flex-start !important;
-      justify-content: space-between !important;
-      border-bottom: 2px solid #002B5B !important;
-      padding-bottom: 5mm !important;
-      margin-bottom: 5mm !important;
-    }
-
-    .print-photo {
-      width: 32mm !important;
-      height: 40mm !important;
-      border: 1px solid #ddd !important;
-      object-fit: cover !important;
-    }
-
-    .section-title {
-      font-size: 11pt !important;
-      font-weight: bold !important;
-      text-transform: uppercase !important;
-      color: #002B5B !important;
-      border-bottom: 1px solid #eee !important;
-      padding-bottom: 2px !important;
-      margin: 4mm 0 2mm 0 !important;
-      display: flex !important;
       align-items: center !important;
-      gap: 5px !important;
-    }
-
-    .info-grid {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-      gap: 2mm 10mm !important;
-    }
-
-    .info-item {
-      display: flex !important;
-      flex-direction: column !important;
-    }
-
-    .info-label {
-      font-size: 8pt !important;
-      color: #666 !important;
-      text-transform: uppercase !important;
-      font-weight: bold !important;
-    }
-
-    .info-value {
-      font-size: 10pt !important;
-      font-weight: bold !important;
-    }
-
-    table {
-      width: 100% !important;
-      border-collapse: collapse !important;
-      margin-top: 2mm !important;
-    }
-
-    th {
-      background: #f8fafc !important;
-      font-size: 8pt !important;
-      text-transform: uppercase !important;
-      padding: 2mm !important;
-      border: 1px solid #e2e8f0 !important;
-      text-align: left !important;
-    }
-
-    td {
-      padding: 2mm !important;
-      border: 1px solid #e2e8f0 !important;
-      font-size: 9pt !important;
-    }
-
-    .signature-grid {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-      gap: 20mm !important;
-      margin-top: 10mm !important;
-      page-break-inside: avoid !important;
-    }
-
-    .sig-box {
-      border-top: 1px solid #000 !important;
-      margin-top: 20mm !important;
-      padding-top: 2mm !important;
-      text-align: center !important;
-      font-size: 9pt !important;
-      font-weight: bold !important;
+      justify-content: space-between !important;
+      border-bottom: 1.5pt solid #002B5B !important;
+      padding-bottom: 3mm !important;
+      margin-bottom: 4mm !important;
     }
 
     .kpm-logo-text {
       font-size: 18pt !important;
       font-weight: 900 !important;
       color: #002B5B !important;
+      letter-spacing: -1pt !important;
     }
 
-    /* Force compact layout */
+    .print-photo {
+      width: 30mm !important;
+      height: 38mm !important;
+      border: 0.5pt solid #000 !important;
+      object-fit: cover !important;
+    }
+
+    .section-title {
+      font-size: 10pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      color: #002B5B !important;
+      border-bottom: 0.5pt solid #002B5B !important;
+      padding-bottom: 1pt !important;
+      margin: 3mm 0 2mm 0 !important;
+      display: block !important;
+    }
+
+    .info-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 1.5mm 6mm !important;
+    }
+
+    .info-item {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: baseline !important;
+      gap: 2mm !important;
+    }
+
+    .info-label {
+      font-size: 8pt !important;
+      color: #333 !important;
+      text-transform: uppercase !important;
+      font-weight: bold !important;
+      min-width: 35mm !important;
+      flex-shrink: 0 !important;
+    }
+
+    .info-label::after {
+      content: ":" !important;
+    }
+
+    .info-value {
+      font-size: 9.5pt !important;
+      font-weight: normal !important;
+      color: black !important;
+    }
+
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-top: 2mm !important;
+      table-layout: auto !important;
+    }
+
+    th {
+      background: #eee !important;
+      font-size: 8pt !important;
+      text-transform: uppercase !important;
+      padding: 1mm 2mm !important;
+      border: 0.5pt solid #000 !important;
+      text-align: left !important;
+    }
+
+    td {
+      padding: 1mm 2mm !important;
+      border: 0.5pt solid #000 !important;
+      font-size: 9pt !important;
+      vertical-align: top !important;
+    }
+
+    .signature-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 15mm !important;
+      margin-top: 8mm !important;
+      page-break-inside: avoid !important;
+    }
+
+    .sig-box {
+      border-top: 0.5pt solid #000 !important;
+      margin-top: 15mm !important;
+      padding-top: 1mm !important;
+      text-align: center !important;
+      font-size: 8pt !important;
+    }
+
     .card-print {
       border: none !important;
       padding: 0 !important;
-      margin-bottom: 4mm !important;
+      margin-bottom: 3mm !important;
+      background: transparent !important;
+      box-shadow: none !important;
     }
   }
 `;
@@ -1254,7 +1267,7 @@ function GuruProfile() {
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
       <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
 
-      <div className="max-w-6xl mx-auto print-container space-y-6">
+      <div id="profile-container" className="max-w-6xl mx-auto print-container space-y-6">
         
         {/* PANITIA SELECTOR / TABS */}
         {isAdminMode && (
@@ -1315,14 +1328,14 @@ function GuruProfile() {
           <div className="flex items-start gap-8">
             <div className="flex flex-col">
               <span className="kpm-logo-text">KPM</span>
-              <h1 className="text-2xl font-black text-[#002B5B] uppercase leading-tight mt-2">
-                {(profile as any)?.nama || "PROFIL GURU"}
-              </h1>
               <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
                 Profil Guru Profesional 2026
               </div>
-              <div className="text-slate-500 font-bold text-sm mt-1">
-                SMK Sultan Ahmad Shah
+              <h1 className="text-xl font-black text-[#002B5B] uppercase leading-tight mt-2">
+                REKOD PERIBADI PENJAWAT AWAM
+              </h1>
+              <div className="text-slate-600 font-bold text-sm mt-1">
+                SMK Sultan Ahmad Shah (SAS)
               </div>
             </div>
           </div>
@@ -1501,7 +1514,7 @@ function GuruProfile() {
                       )
                     ) : (
                       <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:min-h-0 print:p-0 print:bg-transparent print:border-none">
-                        <p className="font-bold text-slate-700 info-value">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
+                        <p className="text-slate-700 info-value">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
                       </div>
 
                     )}
@@ -1521,7 +1534,7 @@ function GuruProfile() {
                     />
                   ) : (
                     <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:p-0 print:bg-transparent print:border-none">
-                      <p className="font-bold text-slate-700 leading-relaxed info-value">{(profile as any).alamat || "-"}</p>
+                      <p className="text-slate-700 leading-relaxed info-value">{(profile as any).alamat || "-"}</p>
                     </div>
 
                   )}
@@ -1564,7 +1577,7 @@ function GuruProfile() {
 
                       />
                     ) : (
-                      <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.[item.key] || "-"}</p>
+                      <p className="text-slate-700 info-value">{(profile as any).sekolah?.[item.key] || "-"}</p>
                     )}
                   </div>
                 ))}
@@ -1595,7 +1608,7 @@ function GuruProfile() {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
+                    <p className="text-slate-700 info-value">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
                   )}
                 </div>
 
@@ -1642,7 +1655,7 @@ function GuruProfile() {
 
                       />
                     ) : (
-                      <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.poskod || "-"}</p>
+                      <p className="text-slate-700 info-value">{(profile as any).sekolah?.poskod || "-"}</p>
                     )}
                   </div>
                   <div className="space-y-2 info-item">
@@ -1663,7 +1676,7 @@ function GuruProfile() {
                         className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
                       />
                     ) : (
-                      <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.daerah || "-"}</p>
+                      <p className="text-slate-700 info-value">{(profile as any).sekolah?.daerah || "-"}</p>
                     )}
                   </div>
                 </div>
@@ -1694,7 +1707,7 @@ function GuruProfile() {
                       </SelectContent>
                     </Select>
                   ) : (
-                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.negeri || "-"}</p>
+                    <p className="text-slate-700 info-value">{(profile as any).sekolah?.negeri || "-"}</p>
                   )}
                 </div>
               </CardContent>
@@ -1746,7 +1759,7 @@ function GuruProfile() {
                       </TableRow>
                     ) : (kelulusan as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="px-8 font-bold text-slate-700">
+                        <TableCell className="px-8 font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.kelayakan} 
@@ -1785,7 +1798,7 @@ function GuruProfile() {
                             />
                           ) : row.bidang}
                         </TableCell>
-                        <TableCell className="font-bold text-[#002B5B]">
+                        <TableCell className="font-medium text-[#002B5B]">
                           {isEditMode ? (
                             <Input 
                               value={row.tahun} 
@@ -1862,7 +1875,7 @@ function GuruProfile() {
                     ) : (subjek as any[]).map((row, idx) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
                         <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
-                        <TableCell className="font-bold text-slate-700">
+                        <TableCell className="font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.nama} 
@@ -1887,7 +1900,7 @@ function GuruProfile() {
                             />
                           ) : row.kelas}
                         </TableCell>
-                        <TableCell className="font-bold text-slate-700">
+                        <TableCell className="font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.murid} 
@@ -2001,7 +2014,7 @@ function GuruProfile() {
 
                             />
                           ) : (
-                            <p className="font-bold text-slate-700">{row.sekolah}</p>
+                            <p className="font-medium text-slate-700">{row.sekolah}</p>
                           )}
                         </TableCell>
                         <TableCell className="text-center">
@@ -2100,7 +2113,7 @@ function GuruProfile() {
 
               <div className="flex flex-col sm:flex-row justify-between gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-2 print:flex-row print:justify-between">
                 <div className="flex-1 border-b border-slate-100 pb-1 sig-box">
-                  Nama: <span className="text-[#002B5B] ml-2">{(currentTeacher?.profile as any)?.nama || "________________________"}</span>
+                  Nama: <span className="text-[#002B5B] ml-2 font-medium">{(currentTeacher?.profile as any)?.nama || "________________________"}</span>
                 </div>
                 <div className="w-full sm:w-32 border-b border-slate-100 pb-1">
                   Tarikh: <span className="text-[#002B5B] ml-2">{new Date().toLocaleDateString('ms-MY')}</span>
