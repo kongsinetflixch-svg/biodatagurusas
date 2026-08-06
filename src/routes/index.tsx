@@ -1309,7 +1309,32 @@ function GuruProfile() {
         )}
 
 
-        {/* HEADER */}
+        {/* PRINT ONLY HEADER */}
+        <div className="hidden print:block print-header">
+          <div className="flex items-start gap-8">
+            <div className="flex flex-col">
+              <span className="kpm-logo-text">KPM</span>
+              <h1 className="text-2xl font-black text-[#002B5B] uppercase leading-tight mt-2">
+                {(profile as any)?.nama || "PROFIL GURU"}
+              </h1>
+              <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
+                Profil Guru Profesional 2026
+              </div>
+              <div className="text-slate-500 font-bold text-sm mt-1">
+                SMK Sultan Ahmad Shah
+              </div>
+            </div>
+          </div>
+          <Avatar className="print-photo rounded-none">
+            <AvatarImage src={profileImage || ""} />
+            <AvatarFallback className="bg-slate-100 text-[#002B5B] text-xl font-bold">
+              {(profile as any)?.nama?.charAt(0) || "G"}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+
+        {/* SCREEN HEADER */}
+
         <header className="flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-2xl border-b-8 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
           {/* Decorative elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-110 duration-1000" />
