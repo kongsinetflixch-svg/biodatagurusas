@@ -201,8 +201,130 @@ const PRINT_STYLES = `
       background: transparent !important;
       box-shadow: none !important;
     }
+
+    .preview-only {
+      display: none !important;
+    }
+    
+    .print-only {
+      display: block !important;
+    }
+  }
+
+  /* Print Preview Styles */
+  .print-preview-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+
+  .print-preview-content {
+    background: white;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 10mm;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    transform-origin: top center;
+    margin-bottom: 2rem;
+    color: black;
+    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+  }
+
+  .print-preview-content * {
+    color: black !important;
+  }
+  
+  .print-preview-content .no-print {
+    display: none !important;
+  }
+
+  .print-preview-content .section-title {
+    font-size: 10pt !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    color: #002B5B !important;
+    border-bottom: 0.5pt solid #002B5B !important;
+    padding-bottom: 1pt !important;
+    margin: 3mm 0 2mm 0 !important;
+    display: block !important;
+  }
+
+  .print-preview-content .info-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.5mm 6mm !important;
+  }
+
+  .print-preview-content .info-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: baseline !important;
+    gap: 2mm !important;
+  }
+
+  .print-preview-content .info-label {
+    font-size: 8pt !important;
+    color: #333 !important;
+    text-transform: uppercase !important;
+    font-weight: bold !important;
+    min-width: 35mm !important;
+    flex-shrink: 0 !important;
+  }
+
+  .print-preview-content .info-label::after {
+    content: ":" !important;
+  }
+
+  .print-preview-content .info-value {
+    font-size: 9.5pt !important;
+    font-weight: normal !important;
+    color: black !important;
+  }
+
+  .print-preview-content table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 2mm !important;
+  }
+
+  .print-preview-content th {
+    background: #eee !important;
+    font-size: 8pt !important;
+    text-transform: uppercase !important;
+    padding: 1mm 2mm !important;
+    border: 0.5pt solid #000 !important;
+    text-align: left !important;
+  }
+
+  .print-preview-content td {
+    padding: 1mm 2mm !important;
+    border: 0.5pt solid #000 !important;
+    font-size: 9pt !important;
+    vertical-align: top !important;
+  }
+  
+  .print-preview-content .signature-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 15mm !important;
+    margin-top: 8mm !important;
+  }
+  
+  .print-preview-content .sig-box {
+    border-top: 0.5pt solid #000 !important;
+    margin-top: 15mm !important;
+    padding-top: 1mm !important;
+    text-align: center !important;
+    font-size: 8pt !important;
   }
 `;
+
 
 
 // Hardcoded teachers data from SAS 2026 List
