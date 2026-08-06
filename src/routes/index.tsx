@@ -897,7 +897,7 @@ function GuruProfile() {
                     />
                   ) : (
                     <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all">
-                      <p className="font-bold text-slate-700 leading-relaxed">{profile.alamat || "-"}</p>
+                      <p className="font-bold text-slate-700 leading-relaxed">{(profile as any).alamat || "-"}</p>
                     </div>
                   )}
                 </div>
