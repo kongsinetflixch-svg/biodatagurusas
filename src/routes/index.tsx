@@ -261,13 +261,19 @@ const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isA
             <p className="text-[8pt] font-bold text-slate-500 uppercase tracking-widest">Kementerian Pendidikan Malaysia</p>
           </div>
         </div>
-        {currentTeacher.profile_image && (
-          <img 
-            src={currentTeacher.profile_image} 
-            alt="Profil" 
-            className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
-          />
-        )}
+        <div className="print-photo-container">
+          {currentTeacher.profile_image ? (
+            <img 
+              src={currentTeacher.profile_image} 
+              alt="Profil" 
+              className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
+            />
+          ) : (
+            <div className="w-[30mm] h-[38mm] border-[0.5pt] border-slate-300 flex items-center justify-center bg-slate-50 text-[8pt] text-slate-400 text-center px-4">
+              GAMBAR PROFIL
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Personal Info */}
