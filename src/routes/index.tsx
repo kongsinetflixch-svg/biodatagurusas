@@ -1155,9 +1155,13 @@ function GuruProfile() {
             <div className="text-center md:text-left">
               <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">{(profile as any)?.nama || "PROFIL GURU"}</h1>
               <p className="text-blue-100/80 font-medium text-lg mt-1 flex items-center justify-center md:justify-start gap-2">
-                <FileText className="w-5 h-5 text-[#D4AF37]" />
-                Borang Profil Guru 2026
-              </p>
+                  <MapPin className="w-5 h-5 text-[#D4AF37]" />
+                  SMK Sultan Ahmad Shah
+                </p>
+                <p className="text-blue-100/60 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">
+                  <FileText className="w-4 h-4 text-[#D4AF37]" />
+                  Borang Profil Guru 2026
+                </p>
             </div>
           </div>
           
