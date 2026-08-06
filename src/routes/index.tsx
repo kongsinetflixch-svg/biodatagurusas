@@ -381,10 +381,74 @@ function GuruProfile() {
       };
       setTeachers([newTeacher]);
       setActiveTeacherId(teacher.id as string);
+      
+      // Update teachers state
+      const mappedTeacher = {
+        ...teacher,
+        profileImage: teacher.profile_image
+      };
+      setTeachers([mappedTeacher]);
+      
       setIsEditMode(false);
       setIsLoading(false);
       console.log("Auto-creation complete for IC:", ic);
       toast.success("Profil digital anda telah dijanakan secara automatik.");
+    }
+  };
+
+  const handleManualCreateTeacher = async (ic: string, name: string, jabatan: string) => {
+    setIsLoading(true);
+    const newTeacherData = {
+      profile: {
+        nama: name,
+        kp: ic,
+        tel: "",
+        email: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        gred: "",
+        mengajarOpsyen: "",
+        alamat: "",
+        sekolah: {
+          nama: "SMK Sultan Ahmad Shah",
+          alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
+          kod: "CEB1003",
+          tel: "05-4911018",
+          faks: "05-4914922",
+          jawatan: jabatan,
+          guruKhas: "",
+          pemeriksaSPM: "",
+          lain: ""
+        }
+      },
+      kelulusan: [],
+      subjek: [],
+      sejarah: [],
+      ic_number: ic,
+      profile_image: null
+    } as any;
+
+    const { data, error } = await supabase
+      .from('teachers')
+      .insert([newTeacherData])
+      .select();
+
+    if (error) {
+      toast.error(`Gagal menjana profil: ${error.message}`);
+      setIsLoading(false);
+    } else if (data && data[0]) {
+      const teacher = data[0];
+      const newTeacher = {
+        ...teacher,
+        profileImage: teacher.profile_image
+      };
+      setTeachers(prev => [...prev, newTeacher]);
+      setActiveTeacherId(teacher.id as string);
+      setIsEditMode(true);
+      setIsLoading(false);
+      toast.success(`Profil untuk ${name} telah dijanakan.`);
     }
   };
 
