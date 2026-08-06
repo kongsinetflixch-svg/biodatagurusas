@@ -244,7 +244,7 @@ const PRINT_STYLES = `
 
 
 // Reusable Print Layout Component to ensure "pratonton" and "cetak" match perfectly
-const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isAdminMode: boolean }) => {
+const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeacher: any, isAdminMode: boolean, schoolLogo: string | null }) => {
   if (!currentTeacher) return null;
   const profile = currentTeacher.profile || {};
   
@@ -253,8 +253,12 @@ const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isA
       {/* Header */}
       <div className="print-header flex items-center justify-between border-b-[1.5pt] border-[#002B5B] pb-3 mb-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-[#002B5B] rounded-lg flex items-center justify-center p-2">
-             <span className="text-[10px] font-black text-white">KPM</span>
+          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1 border border-slate-100 overflow-hidden">
+             {(schoolLogo || (currentTeacher?.profile as any)?.schoolLogo) ? (
+               <img src={schoolLogo || (currentTeacher?.profile as any)?.schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             ) : (
+               <span className="text-[10px] font-black text-[#002B5B]">KPM</span>
+             )}
           </div>
           <div>
             <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">Profile Guru</h1>
@@ -541,6 +545,9 @@ function GuruProfile() {
   const [showRoleManager, setShowRoleManager] = useState(false);
   const [roleSearchTerm, setRoleSearchTerm] = useState("");
   const [showPrintPreview, setShowPrintPreview] = useState(false);
+  const [schoolLogo, setSchoolLogo] = useState<string | null>(localStorage.getItem('school_logo'));
+  const [showSettings, setShowSettings] = useState(false);
+  const schoolLogoInputRef = useRef<HTMLInputElement>(null);
 
   
   // Teachers state for multi-profile support
@@ -1023,6 +1030,20 @@ function GuruProfile() {
     }
   };
 
+  const handleSchoolLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setSchoolLogo(base64);
+        localStorage.setItem('school_logo', base64);
+        toast.success("Logo sekolah telah berjaya dikemaskini.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleLogout = async () => {
     setIsAdminMode(false);
     localStorage.removeItem('guru_ic_session');
@@ -1109,14 +1130,48 @@ function GuruProfile() {
             >
               <LogOut className="w-4 h-4 mr-1" /> Log Keluar
             </Button>
-            <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
-              <Settings className="w-4 h-4 text-slate-300" />
-            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setShowSettings(!showSettings)}
+              className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center p-0"
+            >
+              <Settings className={`w-4 h-4 ${showSettings ? 'text-[#002B5B]' : 'text-slate-300'}`} />
+            </Button>
           </div>
 
-          <div className="w-20 h-20 bg-[#002B5B] rounded-2xl mx-auto flex items-center justify-center p-3 shadow-xl transform rotate-3">
-             <span className="text-xl font-black text-white">KPM</span>
+          <div 
+            className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
+            onClick={() => schoolLogoInputRef.current?.click()}
+          >
+             {schoolLogo ? (
+               <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             ) : (
+               <span className="text-xl font-black text-[#002B5B]">KPM</span>
+             )}
           </div>
+          <input 
+            type="file" 
+            ref={schoolLogoInputRef} 
+            onChange={handleSchoolLogoUpload} 
+            accept="image/*" 
+            className="hidden" 
+          />
+
+          {showSettings && (
+            <div className="bg-slate-50 p-4 rounded-2xl text-left animate-in slide-in-from-top-2 duration-300">
+              <Label className="text-[10px] font-black uppercase text-slate-500 mb-2 block">Tetapan Portal</Label>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full justify-start text-xs font-bold rounded-xl h-9 border-slate-200"
+                onClick={() => schoolLogoInputRef.current?.click()}
+              >
+                <ImageIcon className="w-3.5 h-3.5 mr-2 text-blue-500" />
+                Muat Naik Logo Sekolah
+              </Button>
+            </div>
+          )}
           
           <div className="space-y-2">
             <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profile Guru</h3>
@@ -1138,8 +1193,12 @@ function GuruProfile() {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0">
-             <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden">
+             {schoolLogo ? (
+               <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
+             ) : (
+               <span className="text-2xl sm:text-3xl font-black text-[#002B5B] tracking-tighter">KPM</span>
+             )}
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
@@ -1211,8 +1270,12 @@ function GuruProfile() {
               <Settings className="w-5 h-5" />
             </Button>
           </div>
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3">
-             <span className="text-2xl sm:text-3xl font-black text-white tracking-tighter">KPM</span>
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 overflow-hidden">
+             {schoolLogo ? (
+               <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
+             ) : (
+               <span className="text-2xl sm:text-3xl font-black text-[#002B5B] tracking-tighter">KPM</span>
+             )}
           </div>
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
@@ -1497,7 +1560,7 @@ function GuruProfile() {
       <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
 
       <div className="print-only">
-        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} />
+        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
       </div>
 
       <div id="profile-container" className="max-w-6xl mx-auto print-container space-y-6 no-print">
@@ -1639,8 +1702,12 @@ function GuruProfile() {
               
               <div className="text-center md:text-left space-y-3">
                 <div className="flex flex-col md:flex-row items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 hidden sm:flex">
-                     <span className="text-xs font-black text-[#002B5B]">KPM</span>
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 hidden sm:flex border border-slate-100 overflow-hidden">
+                     {schoolLogo ? (
+                       <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
+                     ) : (
+                       <span className="text-xs font-black text-[#002B5B]">KPM</span>
+                     )}
                   </div>
                   <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight drop-shadow-lg">
                     {(profile as any)?.nama || "SILA ISI NAMA GURU"}
@@ -2435,7 +2502,7 @@ function GuruProfile() {
           </div>
           
           <div className="print-preview-content animate-in zoom-in-95 duration-500 shadow-2xl rounded-sm">
-             <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} />
+             <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
           </div>
 
         </div>
