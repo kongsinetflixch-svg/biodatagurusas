@@ -692,43 +692,12 @@ function GuruProfile() {
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-black text-[#002B5B]">PROFIL GURU</h1>
-            <p className="text-slate-500 font-medium">Sila isi maklumat anda atau akses paparan admin panitia.</p>
+            <p className="text-slate-500 font-medium text-sm">
+              Sila tunggu sebentar sementara kami memuatkan maklumat anda...
+            </p>
           </div>
-          <div className="space-y-4 pt-4">
-            {localStorage.getItem('guru_profile_draft') && (
-              <Button 
-                onClick={() => {
-                  const draft = JSON.parse(localStorage.getItem('guru_profile_draft') || '{}');
-                  if (draft && draft.id) {
-                    setActiveTeacherId(draft.id);
-                    setIsEditMode(true);
-                    toast.success("Draft terakhir telah dimuatkan.");
-                  }
-                }}
-                className="w-full h-14 bg-amber-500 hover:bg-amber-600 rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95 text-white"
-              >
-                <Clock className="w-6 h-6 mr-2" /> Sambung Draft Terakhir
-              </Button>
-            )}
-
-            <Button onClick={handleAddTeacher} className="w-full h-14 bg-[#002B5B] hover:bg-[#003B7B] rounded-2xl text-lg font-bold shadow-lg transition-all hover:scale-[1.02] active:scale-95">
-              <Plus className="w-6 h-6 mr-2" /> Guru Isi & Simpan
-            </Button>
-            
-            <div className="flex items-center gap-4 py-2">
-              <div className="h-[1px] flex-1 bg-slate-100"></div>
-              <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Atau</span>
-              <div className="h-[1px] flex-1 bg-slate-100"></div>
-            </div>
-
-            <div className="space-y-2">
-              <Button variant="outline" onClick={() => { setIsAdminMode(true); setShowAdminDashboard(true); }} className="w-full h-14 rounded-2xl text-lg font-bold border-2 border-slate-100 hover:border-[#002B5B] hover:bg-slate-50 text-slate-600 transition-all">
-                <ShieldCheck className="w-6 h-6 mr-2" /> Paparan Admin Panitia
-              </Button>
-              <p className="text-[10px] text-slate-400 font-medium">
-                Paparan Admin membolehkan anda menguruskan berbilang profil guru dalam satu panitia.
-              </p>
-            </div>
+          <div className="flex justify-center py-4">
+            <Loader2 className="w-8 h-8 text-[#002B5B] animate-spin" />
           </div>
         </Card>
       </div>
