@@ -1514,7 +1514,7 @@ function GuruProfile() {
                       )
                     ) : (
                       <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:min-h-0 print:p-0 print:bg-transparent print:border-none">
-                        <p className="font-bold text-slate-700 info-value">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
+                        <p className="text-slate-700 info-value">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
                       </div>
 
                     )}
