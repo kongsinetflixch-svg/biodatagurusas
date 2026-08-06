@@ -31,33 +31,35 @@ export async function parseEOperasiPDF(base64: string) {
     // Mapping patterns for eOperasi PDF
     const profile: any = {};
     
-    // Name
-    const nameMatch = text.match(/Nama\s*:\s*([^\n\r*]+)/i);
+    // Debug: Log the first 500 characters to see the structure
+    console.log('PDF Preview:', text.substring(0, 500).replace(/\n/g, ' '));
+
+    // Name - search for patterns like "Nama : NAMA GURU" or "Nama NAMA GURU"
+    const nameMatch = text.match(/Nama\s*[:\s]\s*([^\n\r*]+)/i);
     if (nameMatch) profile.nama = nameMatch[1].trim();
 
     // IC - improved regex to handle spaces and dashes
-    const icMatch = text.match(/No\.?\s*Kp\s*:\s*([\d\s-]+)/i);
+    const icMatch = text.match(/No\.?\s*Kp\s*[:\s]\s*([\d\s-]+)/i) || text.match(/(\d{12})/);
     if (icMatch) profile.kp = icMatch[1].replace(/[\s-]/g, '').trim();
 
     // Phone
-    const phoneMatch = text.match(/No\s*Telefon\s*:\s*([\d-]+)/i);
+    const phoneMatch = text.match(/No\s*Telefon\s*[:\s]\s*([\d-]+)/i);
     if (phoneMatch) profile.tel = phoneMatch[1].trim();
 
     // Email
-    const emailMatch = text.match(/E-mel\s*:\s*([^\s\n\r*]+)/i) || text.match(/Email\s*:\s*([^\s\n\r*]+)/i);
+    const emailMatch = text.match(/E-mel\s*[:\s]\s*([^\s\n\r*]+)/i) || text.match(/Email\s*[:\s]\s*([^\s\n\r*]+)/i);
     if (emailMatch) profile.email = emailMatch[1].trim();
 
-    // Address
-    const addressMatch = text.match(/Alamat\s*Tinggal\s*Semasa\s*:\s*([^\n\r*]+)/i);
-    if (addressMatch) profile.alamat = addressMatch[1].trim();
+    // Address - capture multiple lines if needed
+    const addressMatch = text.match(/Alamat\s*Tinggal\s*Semasa\s*[:\s]\s*([^\*]+?)(?=\s*Poskod|\s*No\s*Telefon|$)/i);
+    if (addressMatch) profile.alamat = addressMatch[1].replace(/\s+/g, ' ').trim();
 
     // Poskod
-    const poskodMatch = text.match(/Poskod\s*:\s*(\d{5})/i);
+    const poskodMatch = text.match(/Poskod\s*[:\s]\s*(\d{5})/i);
     if (poskodMatch) profile.poskod = poskodMatch[1].trim();
 
     // Gred - broader DG match
-    const gredMatch = text.match(/Gred\s*Jawatan\s*Semasa\s*:\s*(DG\d+)/i) || 
-                      text.match(/Gred\s*Jawatan\s*:\s*(DG\d+)/i) ||
+    const gredMatch = text.match(/Gred\s*Jawatan\s*(?:Semasa)?\s*[:\s]\s*(DG\d+)/i) || 
                       text.match(/\b(DG\d+)\b/i);
     if (gredMatch) profile.gred = gredMatch[1].toUpperCase().trim();
 
