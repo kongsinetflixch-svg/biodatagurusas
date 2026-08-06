@@ -1211,8 +1211,6 @@ function GuruProfile() {
             { title: "Bidang Opsyen", value: (profile as any).opsyen || "-", icon: BookOpen, color: "text-[#D4AF37]", bg: "bg-white" },
             { title: "Kelayakan", value: (kelulusan && (kelulusan as any[]).length > 0) ? (kelulusan as any[])[0].kelayakan : "-", icon: GraduationCap, color: "text-[#D4AF37]", bg: "bg-white" },
           ].map((item, i) => (
-
-          ].map((item, i) => (
             <Card key={i} className="border-none shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 animate-in slide-up duration-500 rounded-2xl overflow-hidden" style={{ animationDelay: `${i * 100}ms` }}>
               <CardContent className="p-0 flex items-stretch h-full">
                 <div className={`w-2 ${i % 2 === 0 ? 'bg-[#002B5B]' : 'bg-[#D4AF37]'}`}></div>
