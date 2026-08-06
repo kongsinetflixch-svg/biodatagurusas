@@ -1332,7 +1332,7 @@ function GuruProfile() {
                             const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
                             updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
                           }}
-                          className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B]"
+                          className="h-12 sm:h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-base"
                         />
                       )
                     ) : (
