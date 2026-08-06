@@ -166,6 +166,8 @@ function GuruProfile() {
   const [isSaving, setIsSaving] = useState(false);
   const [icInput, setIcInput] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showRoleManager, setShowRoleManager] = useState(false);
+  const [roleSearchTerm, setRoleSearchTerm] = useState("");
   
   // Teachers state for multi-profile support
   const [teachers, setTeachers] = useState<any[]>([]);
