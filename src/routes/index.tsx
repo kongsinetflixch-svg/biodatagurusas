@@ -1580,7 +1580,8 @@ function GuruProfile() {
                                 const newKelulusan = (kelulusan as any[]).map(k => k.id === row.id ? {...k, kelayakan: e.target.value} : k);
                                 updateCurrentTeacher({ kelulusan: newKelulusan });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.kelayakan}
                         </TableCell>
