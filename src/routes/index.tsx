@@ -894,8 +894,8 @@ function GuruProfile() {
               // Ensure we don't overwrite crucial metadata
               kp: currentTeacher.profile.kp, 
             },
-            kelulusan: importedData.kelulusan?.length > 0 ? importedData.kelulusan : currentTeacher.kelulusan,
-            sejarah: importedData.sejarah?.length > 0 ? importedData.sejarah : currentTeacher.sejarah,
+            kelulusan: (importedData.kelulusan && importedData.kelulusan.length > 0) ? [...currentTeacher.kelulusan, ...importedData.kelulusan] : currentTeacher.kelulusan,
+            sejarah: (importedData.sejarah && importedData.sejarah.length > 0) ? [...currentTeacher.sejarah, ...importedData.sejarah] : currentTeacher.sejarah,
           };
 
           // Update state
