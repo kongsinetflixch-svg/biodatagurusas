@@ -1621,7 +1621,7 @@ function GuruProfile() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 print:grid-cols-1 print:gap-2">
                   <div className="space-y-2">
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Poskod</Label>
                     {isEditMode ? (
