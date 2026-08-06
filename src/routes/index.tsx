@@ -663,13 +663,16 @@ function GuruProfile() {
         alamat: "",
         sekolah: {
           nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah, 39000 Tanah Rata, Cameron Highlands, Pahang Darul Makmur",
+          alamat: "Persiaran Dayang Endah",
+          poskod: "39000",
+          daerah: "Tanah Rata",
+          negeri: "Pahang",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
           jawatan: sasTeacher?.jabatan || "",
           guruKhas: "",
-          pemeriksaSPM: "",
+          pemeriksaSPM: "Tidak",
           lain: ""
         }
       },
@@ -1613,7 +1616,7 @@ function GuruProfile() {
                 </div>
 
                 <div className="space-y-2 info-item">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Jalan Sekolah</Label>
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Sekolah</Label>
 
                   {isEditMode ? (
                     <Input 
