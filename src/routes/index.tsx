@@ -1328,14 +1328,14 @@ function GuruProfile() {
           <div className="flex items-start gap-8">
             <div className="flex flex-col">
               <span className="kpm-logo-text">KPM</span>
-              <h1 className="text-2xl font-black text-[#002B5B] uppercase leading-tight mt-2">
-                {(profile as any)?.nama || "PROFIL GURU"}
-              </h1>
               <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
                 Profil Guru Profesional 2026
               </div>
-              <div className="text-slate-500 font-bold text-sm mt-1">
-                SMK Sultan Ahmad Shah
+              <h1 className="text-xl font-black text-[#002B5B] uppercase leading-tight mt-2">
+                REKOD PERIBADI PENJAWAT AWAM
+              </h1>
+              <div className="text-slate-600 font-bold text-sm mt-1">
+                SMK Sultan Ahmad Shah (SAS)
               </div>
             </div>
           </div>
