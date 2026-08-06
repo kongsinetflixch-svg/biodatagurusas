@@ -207,9 +207,17 @@ function GuruProfile() {
         profileImage: t.profile_image,
       }));
       setTeachers(mappedData);
+      
+      // Auto-select the first profile if not already set
       if (mappedData.length > 0) {
         if (!activeTeacherId) {
           setActiveTeacherId(mappedData[0].id);
+        }
+        
+        // If not admin, ensure we land on the profile view directly
+        if (cleanIc !== SUPERADMIN_IC) {
+          setShowAdminDashboard(false);
+          setIsAdminMode(false);
         }
       }
     }
