@@ -928,7 +928,8 @@ function GuruProfile() {
                                   onClick={async () => {
                                     const teacherIdx = SAS_TEACHERS.findIndex(st => st.kp === t.kp);
                                     if (teacherIdx !== -1) {
-                                      SAS_TEACHERS[teacherIdx].jabatan = role;
+                                      const currentSAS = SAS_TEACHERS[teacherIdx];
+                                      if (currentSAS) currentSAS.jabatan = role;
                                       setRoleSearchTerm(prev => prev + " ");
                                       setTimeout(() => setRoleSearchTerm(prev => prev.trim()), 0);
                                       
