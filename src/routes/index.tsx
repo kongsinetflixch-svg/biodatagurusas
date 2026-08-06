@@ -1530,7 +1530,7 @@ function GuruProfile() {
           </Card>
 
           <div className="space-y-6">
-            <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white">
+            <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white card-print">
               <div className="h-2 bg-[#D4AF37]"></div>
               <CardHeader className="py-6 px-8 border-b border-slate-50">
                 <CardTitle className="text-lg font-black text-[#002B5B] flex items-center gap-3">
