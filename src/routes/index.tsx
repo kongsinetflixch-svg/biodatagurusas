@@ -80,7 +80,7 @@ function GuruProfilePage() {
     setTeachers(mapped);
     
     if (mapped.length > 0 && !activeTeacherId) {
-      setActiveTeacherId(mapped[0].id);
+      setActiveTeacherId(mapped[0]?.id || null);
     }
     
     if (cleanIc === SUPERADMIN_IC) {
@@ -134,7 +134,7 @@ function GuruProfilePage() {
         sejarah: current.sejarah,
         profile_image: current.profileImage
       })
-      .eq('id', activeTeacherId);
+      .eq('id', activeTeacherId as string);
 
     setIsSaving(false);
     if (!error && activeTeacherId) {
