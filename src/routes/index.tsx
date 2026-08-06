@@ -1682,24 +1682,7 @@ function GuruProfile() {
           </div>
         )}
 
-        {/* PRINT BUTTONS (Visible in Web UI) */}
-        {!isEditMode && currentTeacher && (
-          <div className="no-print flex justify-end gap-3 mb-4">
-            <Button 
-              onClick={() => setShowPrintPreview(true)}
-              className="bg-white text-[#002B5B] hover:bg-slate-50 border border-slate-200 font-bold rounded-2xl px-6 h-12 shadow-sm"
-            >
-              <FileText className="w-4 h-4 mr-2 text-[#D4AF37]" /> Pratonton Cetak
-            </Button>
-            <Button 
-              onClick={handlePrint}
-              className="bg-[#002B5B] hover:bg-[#003B7B] text-white font-bold rounded-2xl px-6 h-12 shadow-lg"
-            >
-              <Printer className="w-4 h-4 mr-2 text-[#D4AF37]" /> Simpan PDF / Cetak
-            </Button>
-
-          </div>
-        )}
+        {/* Removed print buttons from profile header as requested */}
 
 
 
@@ -1834,33 +1817,23 @@ function GuruProfile() {
               onClick={() => eOperasiInputRef.current?.click()} 
               disabled={isImporting}
               variant="outline"
-              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-emerald-100 font-black text-xs uppercase tracking-wider hover:bg-emerald-50 transition-all text-emerald-700"
+              className="h-12 flex-1 sm:flex-none sm:px-8 rounded-xl sm:rounded-2xl border-2 border-emerald-100 font-black text-xs uppercase tracking-wider hover:bg-emerald-50 transition-all text-emerald-700"
             >
               {isImporting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <><FileSpreadsheet className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Import eOperasi</span></>
+                <>
+                  <FileSpreadsheet className="w-5 h-5 mr-2" /> 
+                  <span>Import eOperasi</span>
+                </>
               )}
             </Button>
             <Button 
-              onClick={() => setShowPrintPreview(true)} 
-              variant="outline"
-              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-slate-100 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all text-[#002B5B]"
-            >
-              <FileText className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Pratonton Cetak</span>
-            </Button>
-            <Button 
               onClick={handlePrint} 
-              variant="outline"
-              className="h-12 w-12 sm:w-auto sm:px-6 rounded-xl sm:rounded-2xl border-2 border-slate-100 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all"
+              className="h-12 flex-1 sm:flex-none sm:px-8 bg-[#002B5B] hover:bg-[#003B7B] text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
             >
-              <Printer className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">Cetak</span>
-            </Button>
-            <Button 
-              onClick={handlePrint}
-              className="h-12 w-12 sm:w-auto sm:px-8 bg-[#002B5B] hover:bg-[#003B7B] text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
-            >
-              <Download className="w-5 h-5 sm:mr-3" /> <span className="hidden sm:inline">PDF</span>
+              <Printer className="w-5 h-5 mr-2" /> 
+              <span>Cetak / PDF</span>
             </Button>
           </div>
 
