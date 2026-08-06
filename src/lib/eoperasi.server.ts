@@ -1,5 +1,4 @@
-// @ts-nocheck
-import pdf from 'pdf-parse';
+import * as pdf from 'pdf-parse';
 
 
 
