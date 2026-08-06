@@ -935,7 +935,7 @@ function GuruProfile() {
             <Button 
               variant="ghost"
               onClick={handleLogout}
-              className="h-12 px-4 rounded-2xl text-slate-400 hover:text-rose-500"
+              className="h-12 px-4 rounded-2xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 font-bold"
             >
               <LogOut className="w-4 h-4 mr-2" /> Log Keluar
             </Button>
