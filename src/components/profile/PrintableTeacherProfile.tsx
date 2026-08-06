@@ -9,7 +9,7 @@ import { SignatureSection } from "./SignatureSection";
 
 interface PrintableTeacherProfileProps {
   teacher: any;
-  isAdminMode?: boolean;
+  isAdminMode?: boolean | undefined;
 }
 
 export const PrintableTeacherProfile: React.FC<PrintableTeacherProfileProps> = ({ teacher, isAdminMode }) => {
