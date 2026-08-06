@@ -1641,7 +1641,7 @@ function GuruProfile() {
 
                       />
                     ) : (
-                      <p className="font-bold text-slate-700">{(profile as any).sekolah?.poskod || "-"}</p>
+                      <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.poskod || "-"}</p>
                     )}
                   </div>
                   <div className="space-y-2">
