@@ -542,8 +542,15 @@ function GuruProfile() {
   const [showRoleManager, setShowRoleManager] = useState(false);
   const [roleSearchTerm, setRoleSearchTerm] = useState("");
   const [showPrintPreview, setShowPrintPreview] = useState(false);
-  const [schoolLogo, setSchoolLogo] = useState<string | null>(localStorage.getItem('school_logo'));
+  const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedLogo = localStorage.getItem('school_logo');
+      if (savedLogo) setSchoolLogo(savedLogo);
+    }
+  }, []);
   const schoolLogoInputRef = useRef<HTMLInputElement>(null);
 
   
@@ -894,8 +901,8 @@ function GuruProfile() {
               // Ensure we don't overwrite crucial metadata
               kp: currentTeacher.profile.kp, 
             },
-            kelulusan: importedData.kelulusan?.length > 0 ? importedData.kelulusan : currentTeacher.kelulusan,
-            sejarah: importedData.sejarah?.length > 0 ? importedData.sejarah : currentTeacher.sejarah,
+            kelulusan: (importedData.kelulusan && importedData.kelulusan.length > 0) ? [...currentTeacher.kelulusan, ...importedData.kelulusan] : currentTeacher.kelulusan,
+            sejarah: (importedData.sejarah && importedData.sejarah.length > 0) ? [...currentTeacher.sejarah, ...importedData.sejarah] : currentTeacher.sejarah,
           };
 
           // Update state
