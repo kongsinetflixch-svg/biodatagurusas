@@ -122,7 +122,8 @@ function GuruProfile() {
       localStorage.setItem('guru_ic_session', icInput);
       setSession({ user: { ic: icInput, id: 'pseudo-user' } });
       await fetchTeachersByIc(icInput);
-      toast.success(`Selamat kembali, ${data.profile.nama || 'Cikgu'}`);
+      const teacherName = (data.profile as any)?.nama || 'Cikgu';
+      toast.success(`Selamat kembali, ${teacherName}`);
     } else {
       // If doesn't exist, we'll allow creating one for this IC if they want
       toast.info("No. IC tidak dijumpai. Anda boleh mula mengisi profil baru.");
