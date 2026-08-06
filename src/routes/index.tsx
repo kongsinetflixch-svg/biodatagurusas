@@ -1707,7 +1707,8 @@ function GuruProfile() {
                                 const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, kelas: e.target.value} : s);
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
-                              className="h-8 rounded-lg"
+                              className="h-12 sm:h-8 rounded-lg text-base"
+
                             />
                           ) : row.kelas}
                         </TableCell>
