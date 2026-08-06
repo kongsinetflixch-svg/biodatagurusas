@@ -249,6 +249,7 @@ function GuruProfile() {
     try {
       if (cleanIc === SUPERADMIN_IC) {
         setIsAdminMode(true);
+        setShowAdminDashboard(true);
         toast.success("Selamat datang, Superadmin!");
       }
       
