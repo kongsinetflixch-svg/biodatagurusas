@@ -1,11 +1,12 @@
-import * as pdf from 'pdf-parse';
-
-
+// @ts-nocheck
+import pdf from 'pdf-parse/lib/pdf-parse';
 
 export async function parseEOperasiPDF(base64: string) {
   try {
     const buffer = Buffer.from(base64, 'base64');
-    const data = await pdf(buffer);
+    // Using default export if it exists, or just calling it
+    const pdfParser = typeof pdf === 'function' ? pdf : (pdf.default || pdf);
+    const data = await pdfParser(buffer);
     const text = data.text;
 
     // Mapping patterns for eOperasi PDF
