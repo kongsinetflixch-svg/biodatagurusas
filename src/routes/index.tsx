@@ -189,13 +189,13 @@ function GuruProfile() {
   }, []);
 
   const fetchTeachersByIc = async (ic: string) => {
+    const cleanIc = ic.replace(/-/g, "");
     setIsLoading(true);
-    // In "IC Mode", if it's admin, we might want to see all, but for now we follow user's request
-    // which implies personal access by IC.
+    // In "IC Mode", we query by ic_number (TEXT) to avoid UUID errors
     const { data, error } = await supabase
       .from('teachers')
       .select('*')
-      .or(`ic_number.eq.${ic},owner_id.eq.${ic}`)
+      .eq('ic_number', cleanIc)
       .order('created_at', { ascending: true });
 
     if (error) {
@@ -241,10 +241,12 @@ function GuruProfile() {
       }
       
       // Check if teacher profile already exists in DB
+      // Note: ic_number is TEXT but owner_id is UUID. 
+      // We only compare cleanIc with ic_number to avoid UUID syntax errors.
       const { data, error } = await supabase
         .from('teachers')
         .select('*')
-        .or(`ic_number.eq.${cleanIc},owner_id.eq.${cleanIc}`)
+        .eq('ic_number', cleanIc)
         .maybeSingle();
 
       if (error) {
@@ -280,7 +282,7 @@ function GuruProfile() {
     const { data, error } = await supabase
       .from('teachers')
       .select('*')
-      .eq('owner_id', userId)
+      .eq('ic_number', userId.replace(/-/g, ""))
       .order('created_at', { ascending: true });
 
     if (error) {
