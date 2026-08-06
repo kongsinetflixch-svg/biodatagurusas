@@ -325,6 +325,162 @@ const PRINT_STYLES = `
   }
 `;
 
+// Reusable Print Layout Component to ensure "pratonton" and "cetak" match perfectly
+const PrintLayout = ({ currentTeacher, isAdminMode }: { currentTeacher: any, isAdminMode: boolean }) => {
+  if (!currentTeacher) return null;
+  const profile = currentTeacher.profile || {};
+  
+  return (
+    <div className="print-layout-container">
+      {/* Header */}
+      <div className="print-header flex items-center justify-between border-b-[1.5pt] border-[#002B5B] pb-3 mb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-[#002B5B] rounded-lg flex items-center justify-center p-2">
+             <span className="text-[10px] font-black text-white">KPM</span>
+          </div>
+          <div>
+            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">PROFIL GURU PROFESIONAL 2026</h1>
+            <p className="text-[8pt] font-bold text-slate-500 uppercase tracking-widest">Kementerian Pendidikan Malaysia</p>
+          </div>
+        </div>
+        {currentTeacher.profile_image && (
+          <img 
+            src={currentTeacher.profile_image} 
+            alt="Profil" 
+            className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
+          />
+        )}
+      </div>
+
+      {/* Personal Info */}
+      <span className="section-title">Maklumat Peribadi</span>
+      <div className="info-grid">
+        {[
+          { label: "Nama Penuh", value: (profile as any)?.nama },
+          { label: "No. Kad Pengenalan", value: (profile as any)?.kp },
+          { label: "No. Telefon", value: (profile as any)?.tel },
+          { label: "E-mel", value: (profile as any)?.email },
+          { label: "Pengalaman Mengajar", value: (profile as any)?.pengalaman },
+          { label: "Tempoh Sekolah Semasa", value: (profile as any)?.tempohSemasa },
+          { label: "Tarikh Berkhidmat", value: (profile as any)?.tarikhMula },
+          { label: "Gred Jawatan", value: (profile as any)?.gred },
+        ].map((item) => (
+          <div key={item.label} className="info-item">
+            <span className="info-label">{item.label}</span>
+            <span className="info-value">{item.value || "-"}</span>
+          </div>
+        ))}
+      </div>
+      <div className="info-item mt-1">
+        <span className="info-label">Alamat Kediaman</span>
+        <span className="info-value">{(profile as any)?.alamat || "-"}</span>
+      </div>
+
+      {/* School Info */}
+      <span className="section-title">Maklumat Sekolah</span>
+      <div className="info-grid">
+        <div className="info-item"><span className="info-label">Nama Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.nama || "-"}</span></div>
+        <div className="info-item"><span className="info-label">Kod Sekolah</span><span className="info-value">{(profile as any)?.sekolah?.kod || "-"}</span></div>
+        <div className="info-item"><span className="info-label">Jawatan</span><span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span></div>
+        <div className="info-item"><span className="info-label">Pemeriksa SPM</span><span className="info-value">{(profile as any)?.sekolah?.pemeriksaSPM || "-"}</span></div>
+      </div>
+      
+      <div className="info-item mt-1">
+        <span className="info-label">Alamat Sekolah</span>
+        <span className="info-value">
+          {(profile as any)?.sekolah?.alamat}, {(profile as any)?.sekolah?.poskod} {(profile as any)?.sekolah?.daerah}, {(profile as any)?.sekolah?.negeri}
+        </span>
+      </div>
+
+      {/* Academic */}
+      <span className="section-title">Kelulusan Akademik</span>
+      <table>
+        <thead>
+          <tr>
+            <th>Tahap Kelulusan</th>
+            <th>Bidang / Pengkhususan</th>
+            <th>Institusi / Universiti</th>
+            <th>Tahun</th>
+          </tr>
+        </thead>
+        <tbody>
+          {((currentTeacher.kelulusan || []) as any[]).map((row: any) => (
+            <tr key={row.id}>
+              <td>{row.kelayakan}</td>
+              <td>{row.bidang}</td>
+              <td>{row.institusi}</td>
+              <td>{row.tahun}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Subjects */}
+      <span className="section-title">Subjek yang Diajar</span>
+      <table>
+        <thead>
+          <tr>
+            <th>Subjek</th>
+            <th>Tingkatan / Tahun</th>
+            <th>Bil. Murid</th>
+            <th>TOV</th>
+            <th>ETR</th>
+          </tr>
+        </thead>
+        <tbody>
+          {((currentTeacher.subjek || []) as any[]).map((row: any) => (
+            <tr key={row.id}>
+              <td>{row.nama}</td>
+              <td>{row.kelas}</td>
+              <td>{row.murid}</td>
+              <td>{row.tov}</td>
+              <td>{row.etr}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Service History */}
+      <span className="section-title">Sejarah Perkhidmatan</span>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama dan Alamat Sekolah</th>
+            <th>Tahun</th>
+            <th>Subjek yang Diajar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {((currentTeacher.sejarah || []) as any[]).map((row: any) => (
+            <tr key={row.id}>
+              <td>{row.sekolah}</td>
+              <td>{row.tahun}</td>
+              <td>{row.subjek}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Signatures */}
+      <div className="signature-grid">
+        <div>
+          <span className="info-label block mb-10">Tandatangan Guru</span>
+          <div className="sig-box">
+            Nama: {(profile as any)?.nama}
+          </div>
+        </div>
+        {isAdminMode && (
+          <div>
+            <span className="info-label block mb-10">Disahkan Oleh</span>
+            <div className="sig-box">
+              Cap dan Tandatangan Pengetua
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 
 // Hardcoded teachers data from SAS 2026 List
