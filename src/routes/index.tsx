@@ -697,7 +697,7 @@ function GuruProfile() {
                       <AvatarImage src={t.profileImage || ""} />
                       <AvatarFallback className="text-[8px]">{(t.profile as any)?.nama?.charAt(0) || "G"}</AvatarFallback>
                     </Avatar>
-                    {t.profile.nama || "Tanpa Nama"}
+                    {(t.profile as any)?.nama || "Tanpa Nama"}
                   </div>
                 </Button>
                 {teachers.length > 1 && (
