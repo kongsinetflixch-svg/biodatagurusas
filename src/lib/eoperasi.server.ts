@@ -12,13 +12,15 @@ export async function parseEOperasiPDF(base64: string) {
       const pdfParser = pdf.default || pdf;
       const data = await pdfParser(buffer);
       text = data.text;
+      console.log('PDF text extracted length:', text?.length);
     } catch (e) {
-      console.warn('pdf-parse failed, falling back to pdf-lib (text extraction limited):', e);
-      // Fallback to pdf-lib just to see if we can at least open it
+      console.warn('pdf-parse failed:', e);
+      // Fallback to pdf-lib (though it doesn't do text extraction well)
       const pdfDoc = await PDFDocument.load(buffer);
-      // pdf-lib doesn't have a built-in text extractor, it's for manipulation.
-      // If we are here, we might be in trouble for full extraction, but we'll try to report a specific error.
-      throw new Error('Format fail PDF tidak disokong oleh parser utama.');
+      if (pdfDoc) {
+        throw new Error('Pustaka pemprosesan PDF (pdf-parse) menghadapi ralat. Sila pastikan fail PDF tidak dilindungi kata laluan.');
+      }
+      throw new Error('Format fail PDF tidak dikenali.');
     }
 
     if (!text || text.trim().length < 10) {
@@ -32,16 +34,16 @@ export async function parseEOperasiPDF(base64: string) {
     const nameMatch = text.match(/Nama\s*:\s*([^\n\r*]+)/i);
     if (nameMatch) profile.nama = nameMatch[1].trim();
 
-    // IC
-    const icMatch = text.match(/No\.?\s*Kp\s*:\s*(\d+)/i);
-    if (icMatch) profile.kp = icMatch[1].trim();
+    // IC - improved regex to handle spaces and dashes
+    const icMatch = text.match(/No\.?\s*Kp\s*:\s*([\d\s-]+)/i);
+    if (icMatch) profile.kp = icMatch[1].replace(/[\s-]/g, '').trim();
 
     // Phone
-    const phoneMatch = text.match(/No\s*Telefon\s*:\s*(\d+)/i);
+    const phoneMatch = text.match(/No\s*Telefon\s*:\s*([\d-]+)/i);
     if (phoneMatch) profile.tel = phoneMatch[1].trim();
 
     // Email
-    const emailMatch = text.match(/E-mel\s*:\s*([^\s\n\r]+)/i) || text.match(/Email\s*:\s*([^\s\n\r]+)/i);
+    const emailMatch = text.match(/E-mel\s*:\s*([^\s\n\r*]+)/i) || text.match(/Email\s*:\s*([^\s\n\r*]+)/i);
     if (emailMatch) profile.email = emailMatch[1].trim();
 
     // Address
@@ -52,14 +54,17 @@ export async function parseEOperasiPDF(base64: string) {
     const poskodMatch = text.match(/Poskod\s*:\s*(\d{5})/i);
     if (poskodMatch) profile.poskod = poskodMatch[1].trim();
 
-    // Gred
-    const gredMatch = text.match(/Gred\s*Jawatan\s*Semasa\s*:\s*(DG\d+)/i) || text.match(/Gred\s*Jawatan\s*:\s*(DG\d+)/i);
-    if (gredMatch) profile.gred = gredMatch[1].trim();
+    // Gred - broader DG match
+    const gredMatch = text.match(/Gred\s*Jawatan\s*Semasa\s*:\s*(DG\d+)/i) || 
+                      text.match(/Gred\s*Jawatan\s*:\s*(DG\d+)/i) ||
+                      text.match(/\b(DG\d+)\b/i);
+    if (gredMatch) profile.gred = gredMatch[1].toUpperCase().trim();
 
     // Kelulusan (Basic extraction)
+    // Looking for lines with years (20XX) and degrees
     const academicMatch = text.match(/Nama\s*Institusi\s*:\s*([^\n\r*]+)/i);
     const yearMatch = text.match(/Tahun\s*:\s*(\d{4})/i);
-    const degreeMatch = text.match(/Peringkat\s*Akademik\s*1\s*:\s*([^\n\r*]+)/i);
+    const degreeMatch = text.match(/Peringkat\s*Akademik\s*1\s*:\s*([^\n\r*]+)/i) || text.match(/Kelulusan\s*Tertinggi\s*:\s*([^\n\r*]+)/i);
     
     const kelulusan = [];
     if (academicMatch || degreeMatch) {
