@@ -1321,57 +1321,70 @@ function GuruProfile() {
     if (!activeTeacherId || !currentTeacher) return;
     
     setIsSaving(true);
-    toast.info("Sedang menyimpan maklumat...");
+    const saveToast = toast.loading("Menyimpan maklumat...");
 
-    // Check if we have unsaved canvas signature
-    let finalSignatureUrl = currentTeacher.signatureUrl;
-    if (hasSignature && canvasRef.current) {
-      try {
-        const signatureBase64 = canvasRef.current.toDataURL('image/png');
-        const blob = await (await fetch(signatureBase64)).blob();
-        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/signature_${Date.now()}.png`;
-        
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from(STORAGE_BUCKET)
-          .upload(fileName, blob, { upsert: true });
+    try {
+      // Check if we have unsaved canvas signature
+      let finalSignatureUrl = currentTeacher.signature_url || currentTeacher.signatureUrl;
+      
+      if (hasSignature && canvasRef.current) {
+        try {
+          const signatureBase64 = canvasRef.current.toDataURL('image/png');
+          const res = await fetch(signatureBase64);
+          const blob = await res.blob();
+          const fileName = `signatures/${activeTeacherId}_${Date.now()}.png`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(STORAGE_BUCKET)
+            .upload(fileName, blob, { upsert: true });
 
-        if (uploadError) throw uploadError;
-        
-        const { data: { publicUrl } } = supabase.storage
-          .from(STORAGE_BUCKET)
-          .getPublicUrl(uploadData.path);
-        
-        finalSignatureUrl = publicUrl;
-      } catch (err) {
-        console.error("Error saving signature:", err);
-        toast.error("Gagal menyimpan tandatangan.");
+          if (uploadError) throw uploadError;
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from(STORAGE_BUCKET)
+            .getPublicUrl(uploadData.path);
+          
+          finalSignatureUrl = publicUrl;
+        } catch (err) {
+          console.error("Error saving signature:", err);
+          toast.error("Gagal menyimpan tandatangan.");
+        }
       }
-    }
 
-    const { error } = await supabase
-      .from('teachers')
-      .update({
-        profile: currentTeacher.profile,
-        kelulusan: currentTeacher.kelulusan,
-        subjek: currentTeacher.subjek,
-        sejarah: currentTeacher.sejarah,
-        profile_image_url: currentTeacher.profileImage, // Now stores URL
-        signature_url: finalSignatureUrl,
-        school_logo_url: schoolLogo,
-        ic_number: (currentTeacher.profile as any)?.kp
-      })
-      .eq('id', activeTeacherId);
+      const { error } = await supabase
+        .from('teachers')
+        .update({
+          profile: currentTeacher.profile,
+          kelulusan: currentTeacher.kelulusan,
+          subjek: currentTeacher.subjek,
+          sejarah: currentTeacher.sejarah,
+          profile_image_url: currentTeacher.profileImage, 
+          signature_url: finalSignatureUrl,
+          school_logo_url: schoolLogo,
+          ic_number: (currentTeacher.profile as any)?.kp
+        })
+        .eq('id', activeTeacherId);
 
-    setIsSaving(false);
-    if (error) {
-      toast.error(`Gagal menyimpan: ${error.message}`);
-      console.error(error);
-    } else {
+      if (error) throw error;
+
       setIsEditMode(false);
       localStorage.removeItem('guru_profile_draft');
-      toast.success("Maklumat telah berjaya disimpan kekal.");
-      // Refresh current teacher state with new URLs
-      updateCurrentTeacher({ signatureUrl: finalSignatureUrl });
+      toast.success("Berjaya disimpan", { id: saveToast });
+      
+      // Update local state to ensure it matches DB state exactly
+      setTeachers(prev => prev.map(t => 
+        t.id === activeTeacherId ? { 
+          ...t, 
+          signature_url: finalSignatureUrl, 
+          signatureUrl: finalSignatureUrl,
+          school_logo_url: schoolLogo 
+        } : t
+      ));
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`Gagal menyimpan: ${error.message || "Ralat tidak dijangka"}`, { id: saveToast });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -1384,12 +1397,12 @@ function GuruProfile() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && activeTeacherId) {
+      const uploadToast = toast.loading("Menyimpan...");
       try {
         setIsSaving(true);
-        toast.info("Sedang memuat naik gambar...");
         
         const fileExt = file.name.split('.').pop();
-        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/profile_${Date.now()}.${fileExt}`;
+        const fileName = `profiles/${activeTeacherId}/profile_${Date.now()}.${fileExt}`;
         
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
@@ -1401,11 +1414,19 @@ function GuruProfile() {
           .from(STORAGE_BUCKET)
           .getPublicUrl(data.path);
 
+        // Update the teacher record immediately in DB too to ensure persistence
+        const { error: updateError } = await supabase
+          .from('teachers')
+          .update({ profile_image_url: publicUrl })
+          .eq('id', activeTeacherId);
+          
+        if (updateError) throw updateError;
+
         updateCurrentTeacher({ profileImage: publicUrl });
-        toast.success("Gambar profil berjaya dimuat naik.");
+        toast.success("Berjaya disimpan", { id: uploadToast });
       } catch (err: any) {
         console.error("Upload error:", err);
-        toast.error(`Gagal memuat naik gambar: ${err.message}`);
+        toast.error(`Gagal memuat naik gambar: ${err.message}`, { id: uploadToast });
       } finally {
         setIsSaving(false);
       }
@@ -1441,16 +1462,15 @@ function GuruProfile() {
   const confirmLogoUpload = async () => {
     if (!pendingLogo) return;
     
+    const uploadToast = toast.loading("Menyimpan...");
     try {
       setIsSaving(true);
-      toast.info("Sedang memuat naik logo sekolah...");
       
       // Convert base64 to blob for storage upload
       const response = await fetch(pendingLogo);
       const blob = await response.blob();
       
-      const fileExt = "png"; // Standardize or extract from original if needed
-      const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
+      const fileName = `school/logo_${Date.now()}.png`;
       
       const { data, error } = await supabase.storage
         .from(STORAGE_BUCKET)
@@ -1464,12 +1484,21 @@ function GuruProfile() {
 
       setSchoolLogo(publicUrl);
       localStorage.setItem('school_logo', publicUrl);
-      toast.success("Logo sekolah telah berjaya dikemaskini di seluruh aplikasi.");
+      
+      // Also update current active teacher if exists
+      if (activeTeacherId) {
+        await supabase
+          .from('teachers')
+          .update({ school_logo_url: publicUrl })
+          .eq('id', activeTeacherId);
+      }
+
+      toast.success("Berjaya disimpan", { id: uploadToast });
       setShowLogoConfirmation(false);
       setPendingLogo(null);
     } catch (err: any) {
       console.error("Logo upload error:", err);
-      toast.error(`Gagal memuat naik logo: ${err.message}`);
+      toast.error(`Gagal memuat naik logo: ${err.message}`, { id: uploadToast });
     } finally {
       setIsSaving(false);
     }
