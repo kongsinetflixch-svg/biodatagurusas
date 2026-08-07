@@ -402,8 +402,8 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   if (!currentTeacher) return null;
   const profile = currentTeacher.profile || {};
   
-  // School logo import from asset
-  const schoolLogoAssetUrl = schoolLogoAsset.url;
+  // School logo logic: use uploaded logo first, then asset
+  const displayedLogo = schoolLogo || schoolLogoAsset.url;
   
   return (
     <div className="print-layout-container">
@@ -411,7 +411,7 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <div className="print-header flex items-center justify-between border-b-2 border-black pb-4 mb-6">
         <div className="flex items-center gap-6">
           <div className="w-20 h-20 bg-white flex items-center justify-center p-0 overflow-hidden">
-             <img src={schoolLogoAssetUrl} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             <img src={displayedLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
 
           <div>
@@ -1554,7 +1554,7 @@ function GuruProfile() {
             className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
             onClick={() => schoolLogoInputRef.current?.click()}
           >
-             <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
           <input 
             type="file" 
@@ -1600,7 +1600,7 @@ function GuruProfile() {
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden">
-             <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
           </div>
           
           <div className="space-y-2">
@@ -1684,7 +1684,7 @@ function GuruProfile() {
             </Button>
           </div>
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 overflow-hidden">
-             <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
           </div>
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
@@ -1723,7 +1723,7 @@ function GuruProfile() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 overflow-hidden">
-                   <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+                   <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
                 </div>
                 <div className="text-center md:text-left">
                   <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight">Dashboard Admin</h1>
@@ -1783,7 +1783,7 @@ function GuruProfile() {
             <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 border-l-4 border-[#D4AF37]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white border border-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
-                   <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-1" />
+                   <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-1" />
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-800 text-sm sm:text-base">Status Portal</h3>
@@ -2050,7 +2050,7 @@ function GuruProfile() {
         <header className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
           <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center p-1 shadow-lg">
-                <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+                <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
              </div>
           </div>
 
