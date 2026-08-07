@@ -315,7 +315,7 @@ const PRINT_STYLES = `
     }
 
     /* Remove UI elements and backgrounds from all components during print */
-    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md, .shadow-xl {
+    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md, .shadow-xl, .bg-slate-50, .bg-slate-50\/50, .bg-emerald-600, .bg-[#D4AF37], .bg-blue-500\/20 {
       border-radius: 0 !important;
       background: #ffffff !important;
       background-color: #ffffff !important;
@@ -323,7 +323,9 @@ const PRINT_STYLES = `
       box-shadow: none !important;
       padding: 0 !important;
       margin: 0 !important;
+      color: black !important;
     }
+
 
     /* Force plain white background for the specific signature modal elements if they leak */
     .signature-pad-container, .bg-slate-50, .border-slate-100 {
