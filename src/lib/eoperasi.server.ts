@@ -26,7 +26,7 @@ export async function parseEOperasiPDF(base64: string) {
 
     let text = "";
     try {
-      const data = await pdf(buffer);
+      const data = await pdfParser(buffer);
       text = data.text;
       console.log('PDF text extracted length:', text?.length);
     } catch (e) {
