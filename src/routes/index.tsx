@@ -76,7 +76,7 @@ const MALAYSIAN_STATES = [
 const PRINT_STYLES = `
   @page {
     size: A4 portrait;
-    margin: 10mm;
+    margin: 8mm 10mm;
   }
 
   @media screen {
@@ -102,6 +102,8 @@ const PRINT_STYLES = `
       color: black !important;
       padding: 0 !important;
       margin: 0 !important;
+      width: 100% !important;
+      height: auto !important;
     }
 
     body {
@@ -110,44 +112,96 @@ const PRINT_STYLES = `
       line-height: 1.2 !important;
     }
 
-
-    /* Hide everything by default during print */
+    /* Hide everything web-related */
     #root > div:not(.print-only),
     .no-print,
     .no-print-section,
-    .dashboard-container,
-    header,
-    footer,
-    nav,
-    aside,
-    button,
-    .badge,
-    [role="button"],
-    .print-preview-modal > div:not(.print-preview-content) {
+    .print-preview-modal > div:not(.print-preview-content),
+    .toaster,
+    [role="status"],
+    header, footer, nav, button, .badge, .lucide {
       display: none !important;
     }
 
-    /* Show only the print layout */
+    /* Authority on layout */
     .print-only {
       display: block !important;
       width: 100% !important;
-      background: #ffffff !important;
-      padding: 0 !important;
-      margin: 0 !important;
+      position: static !important;
+      background: white !important;
     }
 
     .print-layout-container {
+      background: white !important;
+      color: black !important;
+      width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-      background: #ffffff !important;
-      width: 100% !important;
-      min-height: auto !important;
-      box-shadow: none !important;
     }
 
-    .print-header {
+    .section-title {
+      font-size: 10pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      background-color: #f0f0f0 !important;
+      border: 0.5pt solid black !important;
+      padding: 1.5mm 2mm !important;
+      margin: 4mm 0 2mm 0 !important;
+      display: block !important;
+    }
+
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-bottom: 4mm !important;
+      table-layout: fixed !important;
+    }
+
+    th, td {
+      border: 0.5pt solid black !important;
+      padding: 1.5mm 2mm !important;
+      font-size: 9pt !important;
+      text-align: left !important;
+      word-wrap: break-word !important;
+      overflow: hidden !important;
+    }
+
+    th {
+      background-color: #f0f0f0 !important;
+      font-weight: bold !important;
+    }
+
+    .info-grid {
+      display: grid !important;
+      grid-template-cols: repeat(2, 1fr) !important;
+      gap: 0 !important;
+      border-left: 0.5pt solid black !important;
+      border-top: 0.5pt solid black !important;
+      margin-bottom: 4mm !important;
+    }
+
+    .info-item {
       display: flex !important;
+      border-right: 0.5pt solid black !important;
+      border-bottom: 0.5pt solid black !important;
+      padding: 1.5mm 2mm !important;
+      min-height: 8mm !important;
       align-items: center !important;
+    }
+
+    .info-label {
+      font-weight: bold !important;
+      font-size: 8.5pt !important;
+      width: 40% !important;
+      flex-shrink: 0 !important;
+    }
+
+    .info-value {
+      font-size: 9pt !important;
+      padding-left: 2mm !important;
+    }
+  }
+
       justify-content: space-between !important;
       border-bottom: 1.5pt solid black !important;
       padding-bottom: 3mm !important;
@@ -358,15 +412,13 @@ const PRINT_STYLES = `
     font-family: 'Arial', sans-serif;
   }
 
-  /* Apply print rules to preview */
   .print-preview-content .section-title {
     font-size: 10pt;
     font-weight: bold;
     text-transform: uppercase;
     color: black;
-    background-color: #f3f4f6;
-    border-top: 0.5pt solid black;
-    border-bottom: 0.5pt solid black;
+    background-color: #f0f0f0;
+    border: 0.5pt solid black;
     padding: 1.5mm 2mm;
     margin: 4mm 0 2mm 0;
     display: block;
@@ -376,21 +428,56 @@ const PRINT_STYLES = `
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 4mm;
+    table-layout: fixed;
   }
 
   .print-preview-content th {
-    background: #f3f4f6;
+    background: #f0f0f0;
     font-size: 8.5pt;
     padding: 1.5mm 2mm;
     border: 0.5pt solid black;
     text-align: left;
+    font-weight: bold;
   }
 
   .print-preview-content td {
     padding: 1.5mm 2mm;
     border: 0.5pt solid black;
     font-size: 9pt;
+    word-wrap: break-word;
+    overflow: hidden;
   }
+
+  .print-preview-content .info-grid {
+    display: grid;
+    grid-template-cols: repeat(2, 1fr);
+    gap: 0;
+    border-left: 0.5pt solid black;
+    border-top: 0.5pt solid black;
+    margin-bottom: 4mm;
+  }
+
+  .print-preview-content .info-item {
+    display: flex;
+    border-right: 0.5pt solid black;
+    border-bottom: 0.5pt solid black;
+    padding: 1.5mm 2mm;
+    min-height: 8mm;
+    align-items: center;
+  }
+
+  .print-preview-content .info-label {
+    font-weight: bold;
+    font-size: 8.5pt;
+    width: 40%;
+    flex-shrink: 0;
+  }
+
+  .print-preview-content .info-value {
+    font-size: 9pt;
+    padding-left: 2mm;
+  }
+
 `;
 
 
@@ -410,16 +497,16 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   return (
     <div className="print-layout-container">
       {/* Header */}
-      <div className="print-header flex items-center justify-between border-b-2 border-black pb-4 mb-6">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 bg-white flex items-center justify-center p-0 overflow-hidden">
-             <img src={displayedLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
+      <div className="flex items-center justify-between border-b border-black pb-2 mb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-white flex items-center justify-center p-0 overflow-hidden">
+             <img src={displayedLogo} alt="Logo" className="max-w-full max-h-full object-contain" />
           </div>
 
           <div>
-            <h1 className="text-xl font-black text-black uppercase leading-tight">Biodata Guru</h1>
-            <p className="text-base font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
-            <p className="text-sm font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
+            <h1 className="text-lg font-black text-black uppercase leading-tight">Biodata Guru</h1>
+            <p className="text-sm font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
+            <p className="text-[9pt] font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
           </div>
         </div>
 
@@ -428,16 +515,15 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             <img 
               src={currentTeacher.profileImage} 
               alt="Profil" 
-              className="print-photo w-[30mm] h-[38mm] border border-black object-cover"
+              className="w-[28mm] h-[36mm] border border-black object-cover"
             />
           ) : (
-            <div className="w-[30mm] h-[38mm] border border-black flex items-center justify-center bg-white text-[8pt] text-black text-center px-4">
+            <div className="w-[28mm] h-[36mm] border border-black flex items-center justify-center bg-white text-[8pt] text-black text-center px-4">
               GAMBAR PROFIL
             </div>
           )}
         </div>
       </div>
-
 
       {/* Personal Info */}
       <span className="section-title">Maklumat Peribadi</span>
@@ -458,13 +544,17 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
         ))}
       </div>
-      <div className="info-grid mt-1">
-        <div className="info-item">
-          <span className="info-label">Alamat Kediaman</span>
+
+      <div className="info-grid" style={{ marginTop: '-4mm' }}>
+        <div className="info-item" style={{ width: '100%' }}>
+          <span className="info-label" style={{ width: '20%' }}>Alamat Kediaman</span>
           <span className="info-value">{(profile as any)?.alamat || "-"}</span>
         </div>
-        <div className="info-item">
-          <span className="info-label">Jawatan</span>
+      </div>
+      
+      <div className="info-grid" style={{ marginTop: '-4mm' }}>
+        <div className="info-item" style={{ width: '100%' }}>
+          <span className="info-label" style={{ width: '20%' }}>Jawatan</span>
           <span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span>
         </div>
       </div>
@@ -493,7 +583,7 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             ))
           ) : (
             <tr>
-              <td colSpan={4} className="text-center italic text-slate-400">Tiada rekod kelulusan akademik</td>
+              <td colSpan={4} className="text-center italic text-black">Tiada rekod.</td>
             </tr>
           )}
         </tbody>
@@ -520,7 +610,7 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             ))
           ) : (
             <tr>
-              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
+              <td colSpan={3} className="text-center italic text-black">Tiada rekod.</td>
             </tr>
           )}
         </tbody>
@@ -547,35 +637,30 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             ))
           ) : (
             <tr>
-              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod sejarah perkhidmatan</td>
+              <td colSpan={3} className="text-center italic text-black">Tiada rekod.</td>
             </tr>
           )}
         </tbody>
       </table>
 
-      {/* Signatures */}
-      <div className="signature-grid">
-        <div className="sig-column">
-          <span className="sig-label">TANDATANGAN GURU:</span>
-          <div className="sig-space">
-            {currentTeacher.signatureUrl ? (
-              <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="sig-image" />
-            ) : (
-              <span className="text-[7pt] text-slate-400 italic mb-4">(Belum ditandatangani)</span>
+      {/* Signature Section */}
+      <div style={{ marginTop: '10mm', display: 'flex', justifyContent: 'flex-start' }}>
+        <div style={{ width: '60mm' }}>
+          <p style={{ fontSize: '9pt', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '15mm' }}>Tandatangan Guru:</p>
+          
+          <div style={{ borderBottom: '0.5pt solid black', marginBottom: '2mm', minHeight: '15mm', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+            {currentTeacher.signatureUrl && (
+              <img src={currentTeacher.signatureUrl} alt="Signature" style={{ maxHeight: '15mm', objectFit: 'contain' }} />
             )}
-            <div className="sig-line">
-              <span className="sig-name">NAMA: {(profile as any)?.nama}</span>
-            </div>
           </div>
-        </div>
-        <div className="sig-column">
+          
+          <p style={{ fontSize: '9pt', fontWeight: 'bold' }}>NAMA: {(profile as any)?.nama || ""}</p>
         </div>
       </div>
-
-
     </div>
   );
 };
+
 
 
 // Hardcoded teachers data from SAS 2026 List
