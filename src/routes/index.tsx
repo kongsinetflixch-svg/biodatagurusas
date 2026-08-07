@@ -242,18 +242,54 @@ const PRINT_STYLES = `
       gap: 15mm !important;
       margin-top: 8mm !important;
       page-break-inside: avoid !important;
+      width: 100% !important;
     }
 
-    .sig-box {
-      border-top: 0.5pt solid #000 !important;
-      margin-top: 15mm !important;
-      padding-top: 2mm !important;
-      text-align: left !important;
+    .sig-column {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+    }
+
+    .sig-label {
+      font-size: 9pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      margin-bottom: 2mm !important;
+      color: black !important;
+    }
+
+    .sig-space {
+      min-height: 15mm !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-end !important;
+      align-items: center !important;
+      width: 100% !important;
+    }
+
+    .sig-image {
+      max-height: 12mm !important;
+      object-contain: contain !important;
+      margin-bottom: 1mm !important;
+    }
+
+    .sig-line {
+      width: 100% !important;
+      border-top: 0.5pt solid black !important;
+      margin-top: 1mm !important;
+      padding-top: 1mm !important;
+    }
+
+    .sig-name {
       font-size: 8.5pt !important;
+      font-weight: bold !important;
+      text-align: left !important;
+      width: 100% !important;
     }
 
     /* Remove rounded corners and backgrounds from components during print */
-    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B] {
+    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md {
       border-radius: 0 !important;
       background: transparent !important;
       border: none !important;
@@ -261,6 +297,15 @@ const PRINT_STYLES = `
       padding: 0 !important;
       margin: 0 !important;
     }
+
+    /* Ensure specific sections don't duplicate or show UI during print */
+    .dashboard-container canvas, 
+    .dashboard-container .signature-grid.sm\:grid.hidden,
+    .dashboard-container button,
+    .dashboard-container .no-print {
+      display: none !important;
+    }
+
   }
 
   /* Print Preview Styles */
