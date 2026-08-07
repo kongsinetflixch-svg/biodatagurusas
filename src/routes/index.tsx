@@ -401,7 +401,7 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   const profile = currentTeacher.profile || {};
   
   // School logo import from asset
-  const schoolLogoAssetUrl = "/school-logo.png"; // Fallback to public if needed, but we'll use the one we just created via lovable-assets
+  const schoolLogoAssetUrl = schoolLogoAsset.url;
   
   return (
     <div className="print-layout-container">
@@ -409,8 +409,9 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <div className="print-header flex items-center justify-between border-b-2 border-black pb-4 mb-6">
         <div className="flex items-center gap-6">
           <div className="w-20 h-20 bg-white flex items-center justify-center p-0 overflow-hidden">
-             <img src="/school-logo.png" alt="Logo Sekolah" className="w-full h-full object-contain" />
+             <img src={schoolLogoAssetUrl} alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
+
           <div>
             <h1 className="text-xl font-black text-black uppercase leading-tight">Profile Guru</h1>
             <p className="text-base font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
