@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { PDFDocument } from 'pdf-lib';
 
 /**
