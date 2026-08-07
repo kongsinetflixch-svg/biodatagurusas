@@ -1840,95 +1840,79 @@ function GuruProfile() {
 
         {/* SCREEN HEADER */}
 
-        <header className="no-print flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-2xl border-b-8 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-110 duration-1000" />
-          
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 relative z-10">
-            <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8">
-              <div className="relative group/avatar">
-                <div className="absolute inset-0 bg-[#D4AF37] rounded-[2rem] blur-xl opacity-20 group-hover/avatar:opacity-40 transition-opacity"></div>
-                <Avatar className="w-24 h-24 sm:w-36 sm:h-36 border-4 border-white shadow-2xl rounded-[2rem] overflow-hidden transition-all group-hover/avatar:scale-105 group-hover/avatar:rotate-2 duration-500">
-                  <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} className="object-cover" />
-                  <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-black">
-                    {(profile as any)?.nama?.charAt(0) || "G"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="absolute -bottom-2 -right-2 no-print">
-                  <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    onChange={handleImageUpload} 
-                    accept="image/*" 
-                    className="hidden" 
-                  />
-                  <Button 
-                    size="icon" 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-10 h-10 sm:w-12 sm:h-12 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl flex items-center justify-center cursor-pointer shadow-xl transition-all hover:scale-110 active:scale-95 border-4 border-white"
-                  >
-                    <Camera className="w-5 h-5" />
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="text-center md:text-left space-y-3">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 hidden sm:flex border border-slate-100 overflow-hidden">
-                     {schoolLogo ? (
-                       <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
-                     ) : (
-                       <span className="text-xs font-black text-[#002B5B]">KPM</span>
-                     )}
+        <header className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 relative z-10 w-full">
+            <div className="relative group/avatar">
+              <div 
+                className="w-24 h-32 sm:w-36 sm:h-48 bg-white/10 rounded-xl sm:rounded-[2rem] border-2 border-white/20 overflow-hidden shadow-2xl transition-all group-hover/avatar:border-white/50 cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {profileImage ? (
+                  <img src={profileImage} alt="Profil" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-white/40 space-y-2">
+                    <Camera className="w-8 h-8" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter">Muat Naik</span>
                   </div>
-                  <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight drop-shadow-lg">
-                    {(profile as any)?.nama || "SILA ISI NAMA GURU"}
-                  </h1>
-                </div>
-                
-                <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 mt-2">
-                  <div className="text-[#D4AF37] font-black text-[10px] sm:text-xs flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10 uppercase tracking-[0.1em]">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Profile Guru SMK Sultan Ahmad Shah
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full md:w-auto mt-4 md:mt-2">
-              <div className="flex flex-col sm:flex-row items-center gap-3 no-print">
-                <Button 
-                  onClick={() => setIsEditMode(!isEditMode)} 
-                  variant={isEditMode ? "destructive" : "secondary"}
-                  className={`w-full sm:w-auto h-12 px-8 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${!isEditMode && 'bg-white text-[#002B5B] hover:bg-blue-50'}`}
-                >
-                  {isEditMode ? <><X className="w-5 h-5 mr-3" /> Batal</> : <><Edit2 className="w-5 h-5 mr-3" /> Edit Maklumat</>}
-                </Button>
-                {isEditMode && (
-                  <Button 
-                    onClick={handleSave} 
-                    disabled={isSaving}
-                    className="w-full sm:w-auto h-12 px-10 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-[#D4AF37]/20 transition-all animate-in zoom-in"
-                  >
-                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Save className="w-5 h-5 mr-3" /> Simpan Profil</>}
-                  </Button>
                 )}
               </div>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleImageUpload} 
+                accept="image/*" 
+                className="hidden" 
+              />
+              {isEditMode && (
+                 <div className="absolute -bottom-2 -right-2 bg-[#D4AF37] p-2 rounded-lg shadow-lg border border-white/20 animate-in zoom-in duration-300">
+                    <Camera className="w-4 h-4 text-white" />
+                 </div>
+              )}
+            </div>
+            
+            <div className="text-center sm:text-left flex-1 space-y-2">
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-1">
+                <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-400/30 text-blue-200 text-[9px] font-black rounded uppercase tracking-wider">
+                  {(profile as any)?.gred || "SSPA"}
+                </span>
+                <span className="px-2 py-0.5 bg-white/10 border border-white/10 text-blue-100 text-[9px] font-black rounded uppercase tracking-wider flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-[#D4AF37]" /> {(profile as any)?.sekolah?.jawatan || "GURU"}
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-4xl font-black text-white tracking-tight leading-tight drop-shadow-sm uppercase">
+                {(profile as any)?.nama || "NAMA GURU"}
+              </h1>
+              <div className="flex items-center justify-center sm:justify-start gap-2 text-blue-200/60 font-bold text-xs sm:text-sm">
+                <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>SMK SULTAN AHMAD SHAH, CAMERON HIGHLANDS</span>
+              </div>
+              
+              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 rounded-full text-[10px] font-bold text-blue-100/80">
+                 <div className={`w-1.5 h-1.5 rounded-full ${isSaving ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
+                 {isSaving ? "Sedang menyimpan..." : "Semua perubahan disimpan"}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+              <Button 
+                onClick={() => setIsEditMode(!isEditMode)} 
+                className={`h-11 sm:h-12 px-6 ${isEditMode ? 'bg-[#D4AF37] text-white' : 'bg-white text-[#002B5B]'} font-black rounded-xl shadow-lg transition-all text-xs uppercase tracking-widest min-h-[44px]`}
+              >
+                {isEditMode ? <><X className="w-4 h-4 mr-2" /> Batal</> : <><Edit2 className="w-4 h-4 mr-2" /> Edit Profil</>}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="h-11 sm:h-12 bg-rose-600 text-white hover:bg-rose-700 border-none font-black rounded-xl shadow-lg text-xs uppercase tracking-widest min-h-[44px]"
+              >
+                <LogOut className="w-4 h-4 mr-2" /> Log Keluar
+              </Button>
             </div>
           </div>
+          
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32" />
         </header>
 
-        {/* LOGOUT BUTTON - MOBILE & DESKTOP */}
-        <div className="no-print flex justify-end px-2 mb-4 animate-in slide-in-from-right duration-700">
-          <Button 
-            onClick={handleLogout}
-            variant="destructive"
-            className="h-12 px-8 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl shadow-xl shadow-rose-900/20 transition-all active:scale-[0.98] uppercase tracking-wider text-sm flex items-center gap-3"
-          >
-            <LogOut className="w-5 h-5 stroke-[3px]" />
-            Log Keluar
-          </Button>
-        </div>
 
         {/* SEARCH & ACTIONS */}
         <div className="flex flex-col md:flex-row gap-4 no-print sticky top-4 z-50 animate-in slide-in-from-top duration-1000">
