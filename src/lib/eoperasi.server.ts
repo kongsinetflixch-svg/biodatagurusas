@@ -3,7 +3,8 @@ import { PDFDocument } from 'pdf-lib';
 
 // Use dynamic import for pdf-parse to avoid ESM/CJS build issues in TanStack Start
 const getPdfParser = async () => {
-  const pdf = await import('pdf-parse/lib/pdf-parse.js');
+  // Use the standard entry point but through a dynamic import
+  const pdf = await import('pdf-parse');
   return pdf.default || pdf;
 };
 
