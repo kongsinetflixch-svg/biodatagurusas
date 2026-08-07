@@ -798,6 +798,8 @@ function GuruProfile() {
   const [showPrintPreview, setShowPrintPreview] = useState(false);
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
+
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -814,7 +816,7 @@ function GuruProfile() {
         .limit(1);
       
       if (!error && data && data.length > 0) {
-        const dbLogo = data[0].school_logo_url;
+        const dbLogo = data[0]?.school_logo_url;
         setSchoolLogo(dbLogo);
         localStorage.setItem('school_logo', dbLogo);
       }
@@ -842,7 +844,7 @@ function GuruProfile() {
         setSession(supabaseSession);
         // If we have a real session, we might want to fetch by owner_id or IC
         // For now, prioritize IC as requested in previous turns
-        const userIc = supabaseSession.user.user_metadata?.ic || localStorage.getItem('guru_ic_session');
+        const userIc = supabaseSession.user.user_metadata?.['ic'] || localStorage.getItem('guru_ic_session');
         if (userIc) {
           fetchTeachersByIc(userIc);
           if (userIc === SUPERADMIN_IC) {
@@ -972,7 +974,7 @@ function GuruProfile() {
       if (data && data.length > 0) {
         // Enforce strict single-profile mapping: use the first record
         setTeachers([data[0]]);
-        setActiveTeacherId(data[0].id);
+        setActiveTeacherId(data[0]?.id || null);
         setIsEditMode(false);
         
         if (cleanIc === SUPERADMIN_IC) {
@@ -982,7 +984,7 @@ function GuruProfile() {
         } else {
           setIsAdminMode(false);
           setShowAdminDashboard(false);
-          const teacherName = (data[0].profile as any)?.nama || 'Cikgu';
+          const teacherName = (data[0]?.profile as any)?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
         }
       } else {
@@ -1049,7 +1051,7 @@ function GuruProfile() {
 
     if (existing && existing.length > 0) {
       console.log("Profile already exists, redirecting...");
-      setActiveTeacherId(existing[0].id);
+      setActiveTeacherId(existing[0]?.id || null);
       setIsEditMode(false);
       setIsLoading(false);
       return;
@@ -1137,14 +1139,9 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
-        tel: "",
-        pengalaman: "",
-        tempohSemasa: "",
-        tarikhMula: "",
-        opsyen: "",
-        alamat: "",
         mengajarOpsyen: "YA",
         alamat: "KUWATERS GURU, TANAH RATA",
+
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
@@ -1287,13 +1284,9 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
-        tel: "",
-        pengalaman: "",
-        tempohSemasa: "",
-        tarikhMula: "",
-        opsyen: "",
         mengajarOpsyen: "YA",
         alamat: "",
+
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
