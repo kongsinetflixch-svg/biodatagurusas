@@ -2669,14 +2669,12 @@ function GuruProfile() {
 
         </div>
 
-
         {/* FOOTER */}
         <footer className="no-print text-center py-12 space-y-2">
           <p className="text-[#002B5B] font-black text-sm">Profile Guru SMK Sultan Ahmad Shah © 2026</p>
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
-      </div>
 
       {/* PRINT PREVIEW MODAL */}
       {showPrintPreview && (
