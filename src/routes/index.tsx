@@ -1569,19 +1569,24 @@ function GuruProfile() {
             </Button>
           </div>
 
-          <div 
-            className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
-            onClick={() => schoolLogoInputRef.current?.click()}
-          >
-             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
-          </div>
           <input 
             type="file" 
             ref={schoolLogoInputRef} 
             onChange={handleSchoolLogoUpload} 
             accept="image/*" 
             className="hidden" 
+            style={{ display: 'none' }}
           />
+
+          <div 
+            className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
+            onClick={() => {
+              console.log("Loading logo click");
+              schoolLogoInputRef.current?.click();
+            }}
+          >
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+          </div>
 
           {showSettings && (
             <div className="bg-slate-50 p-4 rounded-2xl text-left animate-in slide-in-from-top-2 duration-300">
