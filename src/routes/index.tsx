@@ -2669,6 +2669,8 @@ function GuruProfile() {
 
         </div>
       </div>
+    </div>
+
 
 
         {/* FOOTER */}
