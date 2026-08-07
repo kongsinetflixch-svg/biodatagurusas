@@ -2411,7 +2411,7 @@ function GuruProfile() {
           </Card>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 mt-2">
+        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 mt-2 px-4 sm:px-0">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
@@ -2445,6 +2445,7 @@ function GuruProfile() {
             </Button>
           </div>
         </div>
+
 
 
 
