@@ -1423,35 +1423,52 @@ function GuruProfile() {
     }
   };
 
-  const handleSchoolLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSchoolLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-        setIsSaving(true);
-        toast.info("Sedang memuat naik logo sekolah...");
-        
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
-        
-        const { data, error } = await supabase.storage
-          .from(STORAGE_BUCKET)
-          .upload(fileName, file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPendingLogo(event.target?.result as string);
+        setShowLogoConfirmation(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-        if (error) throw error;
+  const confirmLogoUpload = async () => {
+    if (!pendingLogo) return;
+    
+    try {
+      setIsSaving(true);
+      toast.info("Sedang memuat naik logo sekolah...");
+      
+      // Convert base64 to blob for storage upload
+      const response = await fetch(pendingLogo);
+      const blob = await response.blob();
+      
+      const fileExt = "png"; // Standardize or extract from original if needed
+      const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .upload(fileName, blob);
 
-        const { data: { publicUrl } } = supabase.storage
-          .from(STORAGE_BUCKET)
-          .getPublicUrl(data.path);
+      if (error) throw error;
 
-        setSchoolLogo(publicUrl);
-        localStorage.setItem('school_logo', publicUrl);
-        toast.success("Logo sekolah telah berjaya dikemaskini.");
-      } catch (err: any) {
-        console.error("Logo upload error:", err);
-        toast.error(`Gagal memuat naik logo: ${err.message}`);
-      } finally {
-        setIsSaving(false);
-      }
+      const { data: { publicUrl } } = supabase.storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(data.path);
+
+      setSchoolLogo(publicUrl);
+      localStorage.setItem('school_logo', publicUrl);
+      toast.success("Logo sekolah telah berjaya dikemaskini di seluruh aplikasi.");
+      setShowLogoConfirmation(false);
+      setPendingLogo(null);
+    } catch (err: any) {
+      console.error("Logo upload error:", err);
+      toast.error(`Gagal memuat naik logo: ${err.message}`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
