@@ -242,18 +242,54 @@ const PRINT_STYLES = `
       gap: 15mm !important;
       margin-top: 8mm !important;
       page-break-inside: avoid !important;
+      width: 100% !important;
     }
 
-    .sig-box {
-      border-top: 0.5pt solid #000 !important;
-      margin-top: 15mm !important;
-      padding-top: 2mm !important;
-      text-align: left !important;
+    .sig-column {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+    }
+
+    .sig-label {
+      font-size: 9pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      margin-bottom: 2mm !important;
+      color: black !important;
+    }
+
+    .sig-space {
+      min-height: 15mm !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-end !important;
+      align-items: center !important;
+      width: 100% !important;
+    }
+
+    .sig-image {
+      max-height: 12mm !important;
+      object-contain: contain !important;
+      margin-bottom: 1mm !important;
+    }
+
+    .sig-line {
+      width: 100% !important;
+      border-top: 0.5pt solid black !important;
+      margin-top: 1mm !important;
+      padding-top: 1mm !important;
+    }
+
+    .sig-name {
       font-size: 8.5pt !important;
+      font-weight: bold !important;
+      text-align: left !important;
+      width: 100% !important;
     }
 
     /* Remove rounded corners and backgrounds from components during print */
-    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B] {
+    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md {
       border-radius: 0 !important;
       background: transparent !important;
       border: none !important;
@@ -261,6 +297,15 @@ const PRINT_STYLES = `
       padding: 0 !important;
       margin: 0 !important;
     }
+
+    /* Ensure specific sections don't duplicate or show UI during print */
+    .dashboard-container canvas, 
+    .dashboard-container .signature-grid.sm\:grid.hidden,
+    .dashboard-container button,
+    .dashboard-container .no-print {
+      display: none !important;
+    }
+
   }
 
   /* Print Preview Styles */
@@ -478,31 +523,32 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
 
       {/* Signatures */}
       <div className="signature-grid">
-        <div>
-          <span className="info-label block mb-2">Tandatangan Guru</span>
-          <div className="sig-box min-h-[15mm] flex flex-col items-center justify-end">
+        <div className="sig-column">
+          <span className="sig-label">TANDATANGAN GURU:</span>
+          <div className="sig-space">
             {currentTeacher.signatureUrl ? (
-              <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="max-h-[12mm] object-contain mb-1" />
+              <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="sig-image" />
             ) : (
-              <div className="mb-4 text-[7pt] text-slate-300 italic">(Belum ditandatangani)</div>
+              <span className="text-[7pt] text-slate-400 italic mb-4">(Belum ditandatangani)</span>
             )}
-            <div className="w-full border-t border-black pt-1">
-              Nama: {(profile as any)?.nama}
+            <div className="sig-line">
+              <span className="sig-name">NAMA: {(profile as any)?.nama}</span>
             </div>
           </div>
         </div>
-        {isAdminMode && (
-          <div>
-            <span className="info-label block mb-2">Disahkan Oleh</span>
-            <div className="sig-box min-h-[15mm] flex flex-col items-center justify-end">
-              <div className="mb-4 text-[7pt] text-slate-300 italic">(Cap dan Tandatangan)</div>
-              <div className="w-full border-t border-black pt-1">
-                Cap dan Tandatangan Pengetua
-              </div>
+        <div className="sig-column">
+          <span className="sig-label">DISAHKAN OLEH:</span>
+          <div className="sig-space">
+            <span className="text-[7pt] text-slate-400 italic mb-4 text-center">
+              (Belum disahkan / Tiada perakuan)
+            </span>
+            <div className="sig-line">
+              <span className="sig-name text-center block">Cap dan Tandatangan Pengetua / Guru Besar</span>
             </div>
           </div>
-        )}
+        </div>
       </div>
+
 
     </div>
   );
@@ -2853,7 +2899,7 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:py-0 print:px-0 print:border-none print:shadow-none print:grid-cols-2 sm:grid hidden">
+        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:hidden sm:grid hidden no-print-section">
 
           <div className="space-y-6">
             <div className="space-y-4">
