@@ -1922,8 +1922,150 @@ function GuruProfile() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32" />
         </header>
 
+        {/* MOBILE VIEW CONTENT */}
+        <div className="sm:hidden block w-full px-2 mt-4 space-y-4">
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="p-4 border-b border-slate-50">
+              <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Maklumat Peribadi
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
+              {[
+                { label: "Nama Penuh", key: "nama" },
+                { label: "No. Kad Pengenalan", key: "kp" },
+                { label: "No. Telefon", key: "tel" },
+                { label: "E-mel", key: "email" },
+                { label: "Gred Jawatan", key: "gred" },
+              ].map((item) => (
+                <div key={item.key} className="space-y-1">
+                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-wider">{item.label}</Label>
+                  {isEditMode ? (
+                    item.key === 'gred' ? (
+                      <Select
+                        value={(profile as any)[item.key] || ""}
+                        onValueChange={(val) => updateCurrentTeacher({ profile: { ...(profile as any), [item.key]: val } })}
+                      >
+                        <SelectTrigger className="h-10 rounded-xl border-slate-100 text-sm font-bold">
+                          <SelectValue placeholder="Pilih Gred" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SSPA_GRADES.map(grade => (
+                            <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input 
+                        value={(profile as any)[item.key]} 
+                        onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), [item.key]: e.target.value}})}
+                        className="h-10 rounded-xl border-slate-100 text-sm font-bold"
+                      />
+                    )
+                  ) : (
+                    <p className="text-[#002B5B] font-bold text-sm">{(profile as any)[item.key] || "-"}</p>
+                  )}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
 
-        {/* SEARCH & ACTIONS */}
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="p-4 border-b border-slate-50">
+              <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                <Briefcase className="w-4 h-4" />
+                Sekolah
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 space-y-3">
+              <div className="bg-slate-50 p-3 rounded-xl">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Jawatan</p>
+                <p className="text-sm font-bold text-[#002B5B]">{(profile as any).sekolah?.jawatan || "-"}</p>
+              </div>
+              <div className="bg-[#002B5B]/5 p-3 rounded-xl border border-[#002B5B]/10">
+                 <p className="text-[10px] font-black text-[#002B5B]/40 uppercase tracking-wider mb-1">Alamat Sekolah</p>
+                 <p className="text-sm font-bold text-[#002B5B]">{(profile as any).sekolah?.alamat}, {(profile as any).sekolah?.poskod} {(profile as any).sekolah?.daerah}, {(profile as any).sekolah?.negeri}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="p-4 border-b border-slate-50">
+              <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                <GraduationCap className="w-4 h-4" />
+                Akademik
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Accordion type="single" collapsible className="w-full">
+                {kelulusan?.map((item: any, idx: number) => (
+                  <AccordionItem key={item.id || idx} value={`acad-mob-${idx}`} className="border-b border-slate-50 last:border-none">
+                    <AccordionTrigger className="px-4 py-3 text-left">
+                      <div>
+                        <p className="text-sm font-black text-[#002B5B]">{item.kelayakan || "Kelayakan"}</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">{item.tahun || "-"}</p>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 bg-slate-50/30">
+                      <p className="text-xs font-bold text-[#002B5B]">{item.institusi}</p>
+                      <p className="text-[10px] text-slate-500">{item.bidang}</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="p-4 border-b border-slate-50">
+              <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                <History className="w-4 h-4" />
+                Perkhidmatan
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Accordion type="single" collapsible className="w-full">
+                {sejarah?.map((item: any, idx: number) => (
+                  <AccordionItem key={item.id || idx} value={`hist-mob-${idx}`} className="border-b border-slate-50 last:border-none">
+                    <AccordionTrigger className="px-4 py-3 text-left">
+                      <div>
+                        <p className="text-sm font-black text-[#002B5B]">{item.sekolah || "Sekolah"}</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">{item.tahun || "-"}</p>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 bg-slate-50/30">
+                      <p className="text-xs font-bold text-[#002B5B]">{item.subjek}</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="p-4 border-b border-slate-50">
+              <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                <PenTool className="w-4 h-4" />
+                Tandatangan
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 flex justify-center">
+              {currentTeacher?.signatureUrl ? (
+                <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="max-h-20" />
+              ) : (
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowSignatureModal(true)}
+                  className="w-full h-10 border-dashed border-2 text-[10px] uppercase font-black"
+                >
+                  Tandatangan Sekarang
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
         <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 px-2 sm:px-0 mt-2">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
