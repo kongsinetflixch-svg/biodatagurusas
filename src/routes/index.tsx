@@ -2042,28 +2042,27 @@ function GuruProfile() {
 
 
         {/* PRINT ONLY HEADER */}
-        <div className="hidden print:block print-header">
-          <div className="flex items-start gap-8">
-            <div className="flex flex-col">
-              <span className="kpm-logo-text">KPM</span>
-              <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
-                Profile Guru SMK Sultan Ahmad Shah
+        <div className="hidden print:block print-header border-b-2 border-black pb-4 mb-6">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 bg-white flex items-center justify-center">
+                <img src="/school-logo.png" alt="Logo Sekolah" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-xl font-black text-[#002B5B] uppercase leading-tight mt-2">
-                REKOD PERIBADI PENJAWAT AWAM
-              </h1>
-              <div className="text-slate-600 font-bold text-sm mt-1">
-                SMK Sultan Ahmad Shah (SAS)
+              <div className="flex flex-col">
+                <h1 className="text-xl font-black text-black uppercase leading-tight">
+                  REKOD PERIBADI PENJAWAT AWAM
+                </h1>
+                <div className="text-black font-bold text-base mt-1">
+                  SMK SULTAN AHMAD SHAH, CAMERON HIGHLANDS
+                </div>
               </div>
             </div>
+            {profileImage && (
+              <img src={profileImage} alt="Profil" className="w-[30mm] h-[38mm] border border-black object-cover" />
+            )}
           </div>
-          <Avatar className="print-photo rounded-none">
-            <AvatarImage src={profileImage || ""} />
-            <AvatarFallback className="bg-slate-100 text-[#002B5B] text-xl font-bold">
-              {(profile as any)?.nama?.charAt(0) || "G"}
-            </AvatarFallback>
-          </Avatar>
         </div>
+
 
         {/* SCREEN HEADER */}
 
