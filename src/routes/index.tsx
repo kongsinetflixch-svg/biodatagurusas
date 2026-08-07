@@ -719,6 +719,9 @@ function GuruProfile() {
     }
   }, []);
   const schoolLogoInputRef = useRef<HTMLInputElement>(null);
+  const adminSchoolLogoInputRef = useRef<HTMLInputElement>(null);
+  const loadingSchoolLogoInputRef = useRef<HTMLInputElement>(null);
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
 
   
   // Teachers state for multi-profile support
