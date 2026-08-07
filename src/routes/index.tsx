@@ -2685,38 +2685,9 @@ function GuruProfile() {
 
           </div>
         </div>
-      </div>
 
-      {/* Floating Save Bar for Mobile Edit Mode */}
-      {isEditMode && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] z-[100] no-print animate-in slide-in-from-bottom duration-500">
-           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-              <div className="flex flex-col">
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mod Edit</p>
-                 <p className="text-xs font-bold text-[#002B5B]">{isSaving ? "Sedang menyimpan..." : "Perubahan belum disimpan"}</p>
-              </div>
-              <div className="flex gap-2">
-                 <Button 
-                   variant="outline"
-                   onClick={() => setIsEditMode(false)}
-                   className="h-11 px-4 border-slate-200 text-slate-600 font-black text-xs uppercase"
-                 >
-                   Batal
-                 </Button>
-                 <Button 
-                   onClick={handleSave}
-                   disabled={isSaving}
-                   className="h-11 px-8 bg-[#D4AF37] hover:bg-[#B8860B] text-white font-black text-xs uppercase shadow-lg shadow-[#D4AF37]/20"
-                 >
-                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Simpan"}
-                 </Button>
-              </div>
-           </div>
-        </div>
-      )}
-      <div id="profile-details-container" className="space-y-6 sm:block hidden">
         {/* TABLES SECTION */}
-        <div className="space-y-6 animate-in slide-up duration-500 delay-400 sm:block hidden">
+        <div className="flex flex-col gap-6 no-print px-4 sm:px-0">
           
           {/* KELULUSAN ACADEMIK */}
           <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print no-print">
@@ -2725,6 +2696,7 @@ function GuruProfile() {
                 <div className="bg-white/20 p-1.5 rounded-lg no-print"><GraduationCap className="w-5 h-5" /></div>
                 Kelulusan Akademik & Ikhtisas
               </h2>
+
 
               {isEditMode && (
                 <Button 
