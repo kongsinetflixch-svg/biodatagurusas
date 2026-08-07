@@ -1778,8 +1778,8 @@ function GuruProfile() {
 
             <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 border-l-4 border-[#D4AF37]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 text-[#002B5B] rounded-xl flex items-center justify-center font-black text-xs">
-                  KPM
+                <div className="w-10 h-10 bg-white border border-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
+                   <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-1" />
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-800 text-sm sm:text-base">Status Portal</h3>
