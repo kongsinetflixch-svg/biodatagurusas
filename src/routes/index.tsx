@@ -1810,7 +1810,7 @@ function GuruProfile() {
                 <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow>
-                      <TableHead>Nama Guru (Senarai KPM)</TableHead>
+                      <TableHead>Nama Guru (Senarai Profil)</TableHead>
                       <TableHead>No. KP</TableHead>
                       <TableHead>Peranan Semasa</TableHead>
                       <TableHead className="text-right">Kemaskini Peranan</TableHead>
