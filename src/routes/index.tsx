@@ -1624,6 +1624,7 @@ function GuruProfile() {
           />
 
           <div 
+            id="loading-logo-trigger"
             className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
             onClick={() => {
               console.log("Loading logo click");
@@ -2139,7 +2140,7 @@ function GuruProfile() {
 
         {/* SCREEN HEADER */}
 
-        <header className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+        <header id="profile-header" className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
           <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center p-1 shadow-lg">
                 <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
