@@ -1075,6 +1075,8 @@ function GuruProfile() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
+  const [pendingLogo, setPendingLogo] = useState<string | null>(null);
+  const [showLogoConfirmation, setShowLogoConfirmation] = useState(false);
 
   const handleEOperasiImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1421,35 +1423,52 @@ function GuruProfile() {
     }
   };
 
-  const handleSchoolLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSchoolLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-        setIsSaving(true);
-        toast.info("Sedang memuat naik logo sekolah...");
-        
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
-        
-        const { data, error } = await supabase.storage
-          .from(STORAGE_BUCKET)
-          .upload(fileName, file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPendingLogo(event.target?.result as string);
+        setShowLogoConfirmation(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-        if (error) throw error;
+  const confirmLogoUpload = async () => {
+    if (!pendingLogo) return;
+    
+    try {
+      setIsSaving(true);
+      toast.info("Sedang memuat naik logo sekolah...");
+      
+      // Convert base64 to blob for storage upload
+      const response = await fetch(pendingLogo);
+      const blob = await response.blob();
+      
+      const fileExt = "png"; // Standardize or extract from original if needed
+      const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .upload(fileName, blob);
 
-        const { data: { publicUrl } } = supabase.storage
-          .from(STORAGE_BUCKET)
-          .getPublicUrl(data.path);
+      if (error) throw error;
 
-        setSchoolLogo(publicUrl);
-        localStorage.setItem('school_logo', publicUrl);
-        toast.success("Logo sekolah telah berjaya dikemaskini.");
-      } catch (err: any) {
-        console.error("Logo upload error:", err);
-        toast.error(`Gagal memuat naik logo: ${err.message}`);
-      } finally {
-        setIsSaving(false);
-      }
+      const { data: { publicUrl } } = supabase.storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(data.path);
+
+      setSchoolLogo(publicUrl);
+      localStorage.setItem('school_logo', publicUrl);
+      toast.success("Logo sekolah telah berjaya dikemaskini di seluruh aplikasi.");
+      setShowLogoConfirmation(false);
+      setPendingLogo(null);
+    } catch (err: any) {
+      console.error("Logo upload error:", err);
+      toast.error(`Gagal memuat naik logo: ${err.message}`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -2992,6 +3011,58 @@ function GuruProfile() {
 
         </div>
       )}
+      
+      {/* LOGO CONFIRMATION MODAL */}
+      {showLogoConfirmation && pendingLogo && (
+        <div className="fixed inset-0 z-[10000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
+          <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] bg-white p-8 text-center space-y-6 animate-in zoom-in duration-300">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Pratonton Logo Baru</h2>
+              <p className="text-slate-500 font-bold text-sm">Adakah anda pasti mahu menggantikan logo sekolah di seluruh aplikasi?</p>
+            </div>
+
+            <div className="flex justify-center gap-8 py-4">
+              <div className="space-y-2">
+                <p className="text-[10px] font-black uppercase text-slate-400 text-center">Logo Sedia Ada</p>
+                <div className="w-24 h-24 bg-slate-50 border-2 border-slate-100 rounded-2xl flex items-center justify-center p-2 mx-auto">
+                  <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Lama" className="max-w-full max-h-full object-contain opacity-50" />
+                </div>
+              </div>
+
+              <div className="flex items-center text-slate-300">
+                <Plus className="w-6 h-6 rotate-45" />
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-[10px] font-black uppercase text-[#D4AF37] text-center">Logo Baru</p>
+                <div className="w-24 h-24 bg-white border-4 border-[#D4AF37]/20 rounded-2xl flex items-center justify-center p-2 shadow-xl animate-pulse mx-auto">
+                  <img src={pendingLogo} alt="Logo Baru" className="max-w-full max-h-full object-contain" />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 pt-2">
+              <Button 
+                onClick={confirmLogoUpload}
+                disabled={isSaving}
+                className="h-14 bg-[#002B5B] hover:bg-[#003B7B] text-white font-black rounded-2xl shadow-xl transition-all active:scale-95"
+              >
+                {isSaving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <ShieldCheck className="w-5 h-5 mr-2" />}
+                SAHKAN & KEMASKINI SEMUA
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => { setShowLogoConfirmation(false); setPendingLogo(null); }}
+                disabled={isSaving}
+                className="h-12 text-slate-400 hover:text-rose-500 font-black rounded-xl uppercase text-xs tracking-widest"
+              >
+                Batal
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
       <Toaster position="top-center" richColors />
     </div>
   );
