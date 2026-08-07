@@ -2686,14 +2686,10 @@ function GuruProfile() {
             </Card>
           </div>
         </div>
-      </div>
-
-        {/* TABLES SECTION */}
-        <div className="space-y-6 animate-in slide-up duration-500 delay-400 sm:block hidden">
-
 
         {/* TABLES SECTION */}
         <div className="flex flex-col gap-6 no-print px-4 sm:px-0">
+
           
           {/* KELULUSAN ACADEMIK */}
           <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print no-print">
