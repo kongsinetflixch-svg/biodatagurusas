@@ -2110,7 +2110,7 @@ function GuruProfile() {
                 className="w-24 h-32 sm:w-36 sm:h-48 bg-white/10 rounded-xl sm:rounded-[2rem] border-2 border-white/20 overflow-hidden shadow-2xl transition-all group-hover/avatar:border-white/50 cursor-pointer"
                 onClick={() => {
                   console.log("Profile avatar click");
-                  fileInputRef.current?.click();
+                  profileImageInputRef.current?.click();
                 }}
               >
                 {profileImage ? (
@@ -2124,7 +2124,7 @@ function GuruProfile() {
               </div>
               <input 
                 type="file" 
-                ref={fileInputRef} 
+                ref={profileImageInputRef} 
                 onChange={handleImageUpload} 
                 accept="image/*" 
                 className="hidden" 
