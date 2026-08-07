@@ -166,19 +166,20 @@ const PRINT_STYLES = `
     }
 
     .section-title {
-      font-size: 10pt !important;
+      font-size: 11pt !important;
       font-weight: bold !important;
       text-transform: uppercase !important;
       color: black !important;
-      background-color: #f3f4f6 !important;
-      border-top: 0.5pt solid black !important;
-      border-bottom: 0.5pt solid black !important;
-      padding: 1.5mm 2mm !important;
-      margin: 4mm 0 2mm 0 !important;
+      background-color: transparent !important;
+      border-top: 1pt solid black !important;
+      border-bottom: 1pt solid black !important;
+      padding: 1.5mm 0 !important;
+      margin: 6mm 0 3mm 0 !important;
       display: block !important;
       width: 100% !important;
       page-break-after: avoid !important;
     }
+
 
     .info-grid {
       display: grid !important;
