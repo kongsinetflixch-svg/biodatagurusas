@@ -427,29 +427,23 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <table>
         <thead>
           <tr>
-            <th style={{ width: '5%' }}>No.</th>
-            <th style={{ width: '35%' }}>Subjek</th>
-            <th style={{ width: '20%' }}>Tahun / Tingkatan</th>
-            <th style={{ width: '15%' }}>Bil. Murid</th>
-            <th style={{ width: '12.5%' }}>TOV</th>
-            <th style={{ width: '12.5%' }}>ETR</th>
+            <th style={{ width: '40%' }}>Subjek</th>
+            <th style={{ width: '30%' }}>Tahun / Tingkatan</th>
+            <th style={{ width: '30%' }}>Bil. Murid</th>
           </tr>
         </thead>
         <tbody>
           {currentTeacher.subjek && (currentTeacher.subjek as any[]).length > 0 ? (
-            (currentTeacher.subjek as any[]).map((row: any, idx: number) => (
+            (currentTeacher.subjek as any[]).map((row: any) => (
               <tr key={row.id}>
-                <td className="text-center">{idx + 1}</td>
                 <td>{row.nama}</td>
                 <td>{row.kelas}</td>
                 <td>{row.murid}</td>
-                <td>{row.tov}</td>
-                <td>{row.etr}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={6} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
+              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
             </tr>
           )}
         </tbody>
