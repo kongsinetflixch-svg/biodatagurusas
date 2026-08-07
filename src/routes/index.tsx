@@ -96,6 +96,7 @@ const PRINT_STYLES = `
       text-shadow: none !important;
       border-radius: 0 !important;
       background-image: none !important;
+      background-color: transparent !important;
     }
 
     html, body, #root, [data-reactroot] {
@@ -108,9 +109,10 @@ const PRINT_STYLES = `
 
     body {
       font-family: 'Arial', sans-serif !important;
-      font-size: 9pt !important;
+      font-size: 10pt !important;
       line-height: 1.2 !important;
     }
+
 
     /* Hide everything by default during print */
     #root > div:not(.print-only),
@@ -164,19 +166,20 @@ const PRINT_STYLES = `
     }
 
     .section-title {
-      font-size: 10pt !important;
+      font-size: 11pt !important;
       font-weight: bold !important;
       text-transform: uppercase !important;
       color: black !important;
-      background-color: #f3f4f6 !important;
-      border-top: 0.5pt solid black !important;
-      border-bottom: 0.5pt solid black !important;
-      padding: 1.5mm 2mm !important;
-      margin: 4mm 0 2mm 0 !important;
+      background-color: transparent !important;
+      border-top: 1pt solid black !important;
+      border-bottom: 1pt solid black !important;
+      padding: 1.5mm 0 !important;
+      margin: 6mm 0 3mm 0 !important;
       display: block !important;
       width: 100% !important;
       page-break-after: avoid !important;
     }
+
 
     .info-grid {
       display: grid !important;
@@ -234,8 +237,8 @@ const PRINT_STYLES = `
     }
 
     th {
-      background: #f3f4f6 !important;
-      font-size: 8.5pt !important;
+      background: transparent !important;
+      font-size: 9pt !important;
       text-transform: uppercase !important;
       padding: 1.5mm 2mm !important;
       border: 0.5pt solid #000 !important;
@@ -251,8 +254,9 @@ const PRINT_STYLES = `
       vertical-align: top !important;
       color: black !important;
       overflow-wrap: break-word !important;
-      background: #ffffff !important;
+      background: transparent !important;
     }
+
 
     .signature-grid {
       display: grid !important;
@@ -311,7 +315,7 @@ const PRINT_STYLES = `
     }
 
     /* Remove UI elements and backgrounds from all components during print */
-    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md, .shadow-xl {
+    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md, .shadow-xl, .bg-slate-50, .bg-slate-50\/50, .bg-emerald-600, .bg-[#D4AF37], .bg-blue-500\/20 {
       border-radius: 0 !important;
       background: #ffffff !important;
       background-color: #ffffff !important;
@@ -319,13 +323,17 @@ const PRINT_STYLES = `
       box-shadow: none !important;
       padding: 0 !important;
       margin: 0 !important;
+      color: black !important;
     }
 
+
     /* Force plain white background for the specific signature modal elements if they leak */
-    .signature-pad-container, .bg-slate-50, .border-slate-100 {
+    .signature-pad-container, .bg-slate-50, .border-slate-100, .bg-white\/10, .bg-black\/20 {
       background: #ffffff !important;
+      background-color: #ffffff !important;
       border-color: black !important;
     }
+
   }
 
   /* Print Preview Styles */
@@ -389,43 +397,47 @@ const PRINT_STYLES = `
 
 
 // Reusable Print Layout Component to ensure "pratonton" and "cetak" match perfectly
+import schoolLogoAsset from "@/assets/school-logo.png.asset.json";
+
 const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeacher: any, isAdminMode: boolean, schoolLogo: string | null }) => {
+
   if (!currentTeacher) return null;
   const profile = currentTeacher.profile || {};
+  
+  // School logo import from asset
+  const schoolLogoAssetUrl = schoolLogoAsset.url;
   
   return (
     <div className="print-layout-container">
       {/* Header */}
-      <div className="print-header flex items-center justify-between border-b-[1.5pt] border-[#002B5B] pb-3 mb-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1 border border-slate-100 overflow-hidden">
-             {(schoolLogo || (currentTeacher?.profile as any)?.schoolLogo) ? (
-               <img src={schoolLogo || (currentTeacher?.profile as any)?.schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
-             ) : (
-               <span className="text-[10px] font-black text-[#002B5B]">KPM</span>
-             )}
+      <div className="print-header flex items-center justify-between border-b-2 border-black pb-4 mb-6">
+        <div className="flex items-center gap-6">
+          <div className="w-20 h-20 bg-white flex items-center justify-center p-0 overflow-hidden">
+             <img src={schoolLogoAssetUrl} alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
+
           <div>
-            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">Profile Guru</h1>
-            <p className="text-sm font-bold text-[#002B5B] uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
-            <p className="text-xs font-bold text-[#002B5B] uppercase leading-tight">CAMERON HIGHLANDS</p>
-            
+            <h1 className="text-xl font-black text-black uppercase leading-tight">Profile Guru</h1>
+            <p className="text-base font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
+            <p className="text-sm font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
           </div>
         </div>
+
         <div className="print-photo-container">
           {currentTeacher.profileImage ? (
             <img 
               src={currentTeacher.profileImage} 
               alt="Profil" 
-              className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
+              className="print-photo w-[30mm] h-[38mm] border border-black object-cover"
             />
           ) : (
-            <div className="w-[30mm] h-[38mm] border-[0.5pt] border-slate-300 flex items-center justify-center bg-slate-50 text-[8pt] text-slate-400 text-center px-4">
+            <div className="w-[30mm] h-[38mm] border border-black flex items-center justify-center bg-white text-[8pt] text-black text-center px-4">
               GAMBAR PROFIL
             </div>
           )}
         </div>
       </div>
+
 
       {/* Personal Info */}
       <span className="section-title">Maklumat Peribadi</span>
@@ -2039,32 +2051,38 @@ function GuruProfile() {
 
 
         {/* PRINT ONLY HEADER */}
-        <div className="hidden print:block print-header">
-          <div className="flex items-start gap-8">
-            <div className="flex flex-col">
-              <span className="kpm-logo-text">KPM</span>
-              <div className="text-[#D4AF37] font-bold text-xs uppercase tracking-widest mt-1">
-                Profile Guru SMK Sultan Ahmad Shah
+        <div className="hidden print:block print-header border-b-2 border-black pb-4 mb-6">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 bg-white flex items-center justify-center">
+                <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-xl font-black text-[#002B5B] uppercase leading-tight mt-2">
-                REKOD PERIBADI PENJAWAT AWAM
-              </h1>
-              <div className="text-slate-600 font-bold text-sm mt-1">
-                SMK Sultan Ahmad Shah (SAS)
+
+              <div className="flex flex-col">
+                <h1 className="text-xl font-black text-black uppercase leading-tight">
+                  REKOD PERIBADI PENJAWAT AWAM
+                </h1>
+                <div className="text-black font-bold text-base mt-1">
+                  SMK SULTAN AHMAD SHAH, CAMERON HIGHLANDS
+                </div>
               </div>
             </div>
+            {profileImage && (
+              <img src={profileImage} alt="Profil" className="w-[30mm] h-[38mm] border border-black object-cover" />
+            )}
           </div>
-          <Avatar className="print-photo rounded-none">
-            <AvatarImage src={profileImage || ""} />
-            <AvatarFallback className="bg-slate-100 text-[#002B5B] text-xl font-bold">
-              {(profile as any)?.nama?.charAt(0) || "G"}
-            </AvatarFallback>
-          </Avatar>
         </div>
+
 
         {/* SCREEN HEADER */}
 
         <header className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+          <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
+             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center p-1 shadow-lg">
+                <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 relative z-10 w-full">
             <div className="relative group/avatar">
               <div 
