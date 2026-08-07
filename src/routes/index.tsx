@@ -796,50 +796,55 @@ function GuruProfile() {
 
 
   const fetchTeachersByIc = async (ic: string) => {
-    const cleanIc = ic.replace(/-/g, "");
+    const cleanIc = ic.replace(/[-\s]/g, "");
     setIsLoading(true);
     console.log("Fetching profile for IC:", cleanIc);
-    // In "IC Mode", we query by ic_number (TEXT) to avoid UUID errors
-    const { data, error } = await supabase
-      .from('teachers')
-      .select('*')
-      .eq('ic_number', cleanIc)
-      .order('created_at', { ascending: true });
+    
+    try {
+      const { data, error } = await supabase
+        .from('teachers')
+        .select('*')
+        .eq('ic_number', cleanIc)
+        .order('created_at', { ascending: true });
 
-    if (error) {
-      toast.error("Gagal memuat profil guru.");
-      console.error(error);
-    } else if (data) {
-      const mappedData = data.map((t: any) => ({
-        ...t,
-        profileImage: t.profile_image_url || t.profile_image,
-        signatureUrl: t.signature_url,
-        schoolLogoUrl: t.school_logo_url,
-      }));
-      setTeachers(mappedData);
-      
-      // Auto-set school logo from profile if available
-      const firstWithLogo = mappedData.find(t => (t.profile as any)?.schoolLogo || t.school_logo_url);
-      if (firstWithLogo) {
-        setSchoolLogo(firstWithLogo.school_logo_url || (firstWithLogo.profile as any).schoolLogo);
-      }
-
-      
-      // Auto-select the first profile if not already set
-      if (mappedData.length > 0) {
-        if (!activeTeacherId) {
-          setActiveTeacherId(mappedData[0].id);
+      if (error) {
+        toast.error("Gagal memuat profil guru.");
+        console.error(error);
+      } else if (data && data.length > 0) {
+        const mappedData = data.map((t: any) => ({
+          ...t,
+          profileImage: t.profile_image_url || t.profile_image,
+          signatureUrl: t.signature_url,
+          schoolLogoUrl: t.school_logo_url,
+        }));
+        setTeachers(mappedData);
+        
+        // Auto-set school logo if available
+        const profileWithLogo = mappedData.find(t => t.school_logo_url);
+        if (profileWithLogo) {
+          setSchoolLogo(profileWithLogo.school_logo_url);
         }
         
-        // If not admin, ensure we land on the profile view directly
+        if (!activeTeacherId || !mappedData.find(t => t.id === activeTeacherId)) {
+          setActiveTeacherId(mappedData[0].id);
+        }
+
         if (cleanIc !== SUPERADMIN_IC) {
           setShowAdminDashboard(false);
           setIsAdminMode(false);
         }
+      } else {
+        if (ic !== SUPERADMIN_IC) {
+          console.warn("No profile found for active session IC:", ic);
+          handleLogout();
+        }
       }
+    } catch (err) {
+      console.error("Unexpected error in fetchTeachersByIc:", err);
+    } finally {
+      setIsLoading(false);
+      console.log("Fetch complete for IC:", cleanIc);
     }
-    setIsLoading(false);
-    console.log("Fetch complete for IC:", cleanIc);
   };
 
   const handleIcLogin = async () => {
