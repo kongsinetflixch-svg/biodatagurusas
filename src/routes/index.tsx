@@ -1590,7 +1590,10 @@ function GuruProfile() {
                 variant="outline" 
                 size="sm" 
                 className="w-full justify-start text-xs font-bold rounded-xl h-9 border-slate-200"
-                onClick={() => schoolLogoInputRef.current?.click()}
+                onClick={() => {
+                  console.log("Setting logo input click");
+                  schoolLogoInputRef.current?.click();
+                }}
               >
                 <ImageIcon className="w-3.5 h-3.5 mr-2 text-blue-500" />
                 Muat Naik Logo Sekolah
@@ -1598,6 +1601,15 @@ function GuruProfile() {
             </div>
           )}
           
+          <input 
+            type="file" 
+            ref={schoolLogoInputRef} 
+            onChange={handleSchoolLogoUpload} 
+            accept="image/*" 
+            className="hidden" 
+            style={{ display: 'none' }}
+          />
+
           <div className="space-y-2">
             <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profile Guru</h3>
             <p className="text-sm font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
