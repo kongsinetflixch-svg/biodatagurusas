@@ -2728,9 +2728,9 @@ function GuruProfile() {
 
 
           {/* SEJARAH PERKHIDMATAN */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print no-print">
             <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
-              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title-app">
                 <div className="bg-white/20 p-1.5 rounded-lg no-print"><Clock className="w-5 h-5" /></div>
                 Sejarah Perkhidmatan
               </h2>
