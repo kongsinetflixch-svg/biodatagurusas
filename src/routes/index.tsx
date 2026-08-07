@@ -791,11 +791,18 @@ function GuruProfile() {
   };
 
   const handleIcLogin = async () => {
-    if (!icInput.trim()) {
-      toast.error("Sila masukkan No. IC.");
+    const cleanIc = icInput.trim().replace(/[-\s]/g, "");
+    
+    if (!cleanIc) {
+      toast.error("Sila masukkan nombor kad pengenalan.");
       return;
     }
-    const cleanIc = icInput.trim().replace(/-/g, "");
+
+    if (cleanIc.length !== 12) {
+      toast.error("No. kad pengenalan mestilah 12 digit tanpa tanda sempang.");
+      return;
+    }
+
     setIsLoggingIn(true);
     console.log("Memulakan proses log masuk untuk IC:", cleanIc);
 
@@ -803,7 +810,7 @@ function GuruProfile() {
     const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
     
     if (!sasTeacher && cleanIc !== SUPERADMIN_IC) {
-      toast.error("Maaf, No. IC anda tiada dalam senarai Guru/Pentadbir SAS 2026.");
+      toast.error("Profil guru tidak ditemui.");
       setIsLoggingIn(false);
       return;
     }
@@ -816,8 +823,6 @@ function GuruProfile() {
       }
       
       // Check if teacher profile already exists in DB
-      // Note: ic_number is TEXT but owner_id is UUID. 
-      // We only compare cleanIc with ic_number to avoid UUID syntax errors.
       const { data, error } = await supabase
         .from('teachers')
         .select('*')
@@ -837,19 +842,15 @@ function GuruProfile() {
           const teacherName = (firstTeacher?.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
           
-          // If not superadmin and profile exists, jump straight to the first profile
           if (cleanIc !== SUPERADMIN_IC && firstTeacher) {
              setActiveTeacherId(firstTeacher.id);
              setIsEditMode(false);
           }
         } else {
-          // If profile doesn't exist in DB, start fresh for this user from the list
           if (cleanIc !== SUPERADMIN_IC) {
-            // Automatically trigger creation if not superadmin
             toast.info("Menjana profil baru anda...", { duration: 2000 });
             await handleAutoCreateTeacher(cleanIc, sasTeacher);
           } else {
-
             toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
             setTeachers([]);
             setIsLoading(false);
@@ -1570,7 +1571,7 @@ function GuruProfile() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8">
+      <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden">
              {schoolLogo ? (
@@ -1579,12 +1580,18 @@ function GuruProfile() {
                <span className="text-2xl sm:text-3xl font-black text-[#002B5B] tracking-tighter">KPM</span>
              )}
           </div>
+          
           <div className="space-y-2">
-            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
+            <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight uppercase">Profile Guru</h1>
             <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
-            <p className="text-slate-500 font-semibold text-sm sm:text-base px-2">Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.</p>
+            <div className="pt-2">
+              <p className="text-slate-500 font-semibold text-sm sm:text-base leading-relaxed">
+                Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.
+              </p>
+            </div>
           </div>
-          <div className="space-y-4 pt-4 sm:pt-6">
+
+          <div className="space-y-6 pt-2">
             <div className="space-y-3 text-left">
               <Label htmlFor="ic-login" className="text-slate-500 font-black ml-1 text-[10px] uppercase tracking-[0.2em]">No. Kad Pengenalan</Label>
               <div className="relative group">
@@ -1595,31 +1602,36 @@ function GuruProfile() {
                   placeholder="Contoh: 770613035750" 
                   className="h-14 sm:h-16 rounded-[1.25rem] border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg sm:text-xl font-bold transition-all px-6 bg-slate-50/50 group-hover:bg-white"
                   value={icInput}
-                  onChange={(e) => setIcInput(e.target.value)}
+                  onChange={(e) => setIcInput(e.target.value.replace(/[^0-9]/g, ""))}
                   onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
+                  maxLength={12}
                 />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-20">
+                <div className="absolute right-5 top-1/2 -translate-y-1/2 opacity-20 pointer-events-none">
                   <User className="w-6 h-6 text-[#002B5B]" />
                 </div>
               </div>
             </div>
-            <Button 
-              onClick={handleIcLogin} 
-              disabled={isLoggingIn}
-              className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 mt-2"
-            >
-              {isLoggingIn ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
-              ) : (
-                <>
-                  <LogIn className="w-6 h-6 mr-3 stroke-[3px]" /> Masuk Profil
-                </>
-              )}
-            </Button>
-            <div className="pt-2">
-              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider bg-slate-50 py-2 rounded-lg inline-block px-4">
-                Tanpa tanda sempang <span className="text-[#002B5B] font-black mx-1">(-)</span>
-              </p>
+
+            <div className="space-y-4">
+              <Button 
+                onClick={handleIcLogin} 
+                disabled={isLoggingIn}
+                className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+              >
+                {isLoggingIn ? (
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                ) : (
+                  <>
+                    Masuk Profil
+                  </>
+                )}
+              </Button>
+              
+              <div className="flex justify-center">
+                <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest bg-slate-50 py-2.5 px-5 rounded-xl border border-slate-100/50">
+                  Tanpa tanda sempang <span className="text-[#002B5B] font-black mx-1">(-)</span>
+                </p>
+              </div>
             </div>
           </div>
         </Card>
