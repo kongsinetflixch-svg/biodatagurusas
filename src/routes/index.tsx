@@ -537,15 +537,6 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
         </div>
         <div className="sig-column">
-          <span className="sig-label">DISAHKAN OLEH:</span>
-          <div className="sig-space">
-            <span className="text-[7pt] text-slate-400 italic mb-4 text-center">
-              (Belum disahkan / Tiada perakuan)
-            </span>
-            <div className="sig-line">
-              <span className="sig-name text-center block">Cap dan Tandatangan Pengetua / Guru Besar</span>
-            </div>
-          </div>
         </div>
       </div>
 
