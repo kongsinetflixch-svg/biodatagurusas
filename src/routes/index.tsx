@@ -2087,11 +2087,17 @@ function GuruProfile() {
                     ) : (
                       <Input 
                         value={(profile as any)[item.key]} 
-                        onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), [item.key]: e.target.value}})}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
+                          const finalVal = exclude.includes(item.key) ? val : val.toUpperCase();
+                          updateCurrentTeacher({ profile: {...(profile as any), [item.key]: finalVal}});
+                        }}
                         className="h-10 rounded-xl border-slate-100 text-sm font-bold"
                       />
                     )
                   ) : (
+
                     <p className="text-[#002B5B] font-bold text-sm">{(profile as any)[item.key] || "-"}</p>
                   )}
                 </div>
