@@ -1083,6 +1083,33 @@ function GuruProfile() {
     if (!activeTeacherId || !currentTeacher) return;
     
     setIsSaving(true);
+    toast.info("Sedang menyimpan maklumat...");
+
+    // Check if we have unsaved canvas signature
+    let finalSignatureUrl = currentTeacher.signatureUrl;
+    if (hasSignature && canvasRef.current) {
+      try {
+        const signatureBase64 = canvasRef.current.toDataURL('image/png');
+        const blob = await (await fetch(signatureBase64)).blob();
+        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/signature_${Date.now()}.png`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(fileName, blob, { upsert: true });
+
+        if (uploadError) throw uploadError;
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(uploadData.path);
+        
+        finalSignatureUrl = publicUrl;
+      } catch (err) {
+        console.error("Error saving signature:", err);
+        toast.error("Gagal menyimpan tandatangan.");
+      }
+    }
+
     const { error } = await supabase
       .from('teachers')
       .update({
@@ -1090,19 +1117,23 @@ function GuruProfile() {
         kelulusan: currentTeacher.kelulusan,
         subjek: currentTeacher.subjek,
         sejarah: currentTeacher.sejarah,
-        profile_image: currentTeacher.profileImage,
-        ic_number: (currentTeacher.profile as any)?.kp // Ensure IC number is synced
+        profile_image_url: currentTeacher.profileImage, // Now stores URL
+        signature_url: finalSignatureUrl,
+        school_logo_url: schoolLogo,
+        ic_number: (currentTeacher.profile as any)?.kp
       })
       .eq('id', activeTeacherId);
 
     setIsSaving(false);
     if (error) {
-      toast.error("Gagal menyimpan maklumat.");
+      toast.error(`Gagal menyimpan: ${error.message}`);
       console.error(error);
     } else {
       setIsEditMode(false);
       localStorage.removeItem('guru_profile_draft');
-      toast.success("Maklumat telah berjaya disimpan.");
+      toast.success("Maklumat telah berjaya disimpan kekal.");
+      // Refresh current teacher state with new URLs
+      updateCurrentTeacher({ signatureUrl: finalSignatureUrl });
     }
   };
 
@@ -1112,17 +1143,37 @@ function GuruProfile() {
     }
   }, [isEditMode, activeTeacherId]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && activeTeacherId) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        updateCurrentTeacher({ profileImage: reader.result as string });
-        toast.success("Gambar profil berjaya dikemaskini. Sila simpan untuk mengekalkan perubahan.");
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsSaving(true);
+        toast.info("Sedang memuat naik gambar...");
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/profile_${Date.now()}.${fileExt}`;
+        
+        const { data, error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(fileName, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(data.path);
+
+        updateCurrentTeacher({ profileImage: publicUrl });
+        toast.success("Gambar profil berjaya dimuat naik.");
+      } catch (err: any) {
+        console.error("Upload error:", err);
+        toast.error(`Gagal memuat naik gambar: ${err.message}`);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
+
 
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
