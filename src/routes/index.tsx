@@ -237,8 +237,8 @@ const PRINT_STYLES = `
     }
 
     th {
-      background: #f3f4f6 !important;
-      font-size: 8.5pt !important;
+      background: transparent !important;
+      font-size: 9pt !important;
       text-transform: uppercase !important;
       padding: 1.5mm 2mm !important;
       border: 0.5pt solid #000 !important;
@@ -254,8 +254,9 @@ const PRINT_STYLES = `
       vertical-align: top !important;
       color: black !important;
       overflow-wrap: break-word !important;
-      background: #ffffff !important;
+      background: transparent !important;
     }
+
 
     .signature-grid {
       display: grid !important;
