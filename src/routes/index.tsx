@@ -2104,16 +2104,16 @@ function GuruProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0F2F5] p-0 sm:p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
+    <>
+      <div className="min-h-screen bg-[#F0F2F5] p-0 sm:p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
+        <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
 
+        <div className="print-only">
+          <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
+        </div>
 
-      <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
+        <div id="profile-container" className="w-full max-w-[1180px] mx-auto sm:px-6 lg:px-8 print-container space-y-6 no-print">
 
-      <div className="print-only">
-        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
-      </div>
-
-      <div id="profile-container" className="w-full max-w-[1180px] mx-auto sm:px-6 lg:px-8 print-container space-y-6 no-print">
 
 
 
