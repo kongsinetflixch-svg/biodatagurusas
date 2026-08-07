@@ -2710,7 +2710,8 @@ function GuruProfile() {
         </div>
       )}
       <Toaster position="top-center" richColors />
-    </div>
+    </>
   );
 }
+
 
