@@ -3008,7 +3008,7 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:hidden sm:grid hidden no-print-section">
+        <div className="flex flex-col gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:hidden sm:flex hidden no-print-section max-w-2xl mx-auto">
 
           <div className="space-y-6">
             <div className="space-y-4">
