@@ -2073,6 +2073,12 @@ function GuruProfile() {
         {/* SCREEN HEADER */}
 
         <header className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+          <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
+             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center p-1 shadow-lg">
+                <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 relative z-10 w-full">
             <div className="relative group/avatar">
               <div 
