@@ -403,7 +403,9 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   const profile = currentTeacher.profile || {};
   
   // School logo logic: use uploaded logo first, then asset
+  // Logo logic: always prefer the uploaded schoolLogo which is the official crest
   const displayedLogo = schoolLogo || schoolLogoAsset.url;
+
   
   return (
     <div className="print-layout-container">
@@ -1699,7 +1701,7 @@ function GuruProfile() {
 
           <div className="space-y-2">
             <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profile Guru</h3>
-            <p className="text-sm font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
+            <p className="text-sm font-bold text-[#002B5B] uppercase">Portal Biodata Guru SAS</p>
             <p className="text-slate-500 text-sm font-medium px-4">
               Sila tunggu sebentar sementara kami memuatkan maklumat anda...
             </p>
@@ -1723,7 +1725,7 @@ function GuruProfile() {
           
           <div className="space-y-2">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight uppercase">Profile Guru</h1>
-            <p className="text-lg font-bold text-[#D4AF37] uppercase">SMK Sultan Ahmad Shah</p>
+            <p className="text-lg font-bold text-[#D4AF37] uppercase">Portal Biodata Guru SAS</p>
             <div className="pt-2">
               <p className="text-slate-500 font-semibold text-sm sm:text-base leading-relaxed">
                 Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.
@@ -1808,7 +1810,7 @@ function GuruProfile() {
           </div>
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
-            <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
+            <p className="text-lg font-bold text-[#002B5B] uppercase">Portal Biodata Guru SAS</p>
             <div className="bg-blue-50/50 py-3 px-4 rounded-2xl">
               <p className="text-[#002B5B] font-bold text-sm sm:text-base">
                 Memuatkan maklumat anda...
@@ -2237,6 +2239,7 @@ function GuruProfile() {
               <div className="flex items-center justify-center sm:justify-start gap-2 text-blue-200/60 font-bold text-xs sm:text-sm">
                 <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>SMK SULTAN AHMAD SHAH, CAMERON HIGHLANDS</span>
+
               </div>
               
               <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 rounded-full text-[10px] font-bold text-blue-100/80">
