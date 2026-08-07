@@ -1798,7 +1798,7 @@ function GuruProfile() {
               <div className="relative w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input 
-                  placeholder={showRoleManager ? "Cari dalam senarai KPM..." : "Cari profil..."} 
+                  placeholder={showRoleManager ? "Cari dalam senarai..." : "Cari profil..."} 
                   value={showRoleManager ? roleSearchTerm : searchTerm}
                   onChange={(e) => showRoleManager ? setRoleSearchTerm(e.target.value) : setSearchTerm(e.target.value)}
                   className="pl-10 h-10 bg-slate-50 border-none rounded-xl text-sm"
