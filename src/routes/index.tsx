@@ -2341,14 +2341,14 @@ function GuruProfile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 flex flex-col items-center">
-                {signatureUrl ? (
+                {(currentTeacher as any)?.signatureUrl ? (
                   <div className="relative group">
-                    <img src={signatureUrl} alt="Tandatangan" className="max-h-20 bg-slate-50 rounded-lg p-2" />
+                    <img src={(currentTeacher as any).signatureUrl} alt="Tandatangan" className="max-h-20 bg-slate-50 rounded-lg p-2" />
                     {isEditMode && (
                       <Button 
                         size="icon"
                         variant="destructive"
-                        onClick={() => setSignatureUrl(null)}
+                        onClick={() => updateCurrentTeacher({ signatureUrl: null })}
                         className="absolute -top-2 -right-2 w-6 h-6 rounded-full"
                       >
                         <X className="w-3 h-3" />
