@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { PDFDocument } from 'pdf-lib';
-import * as pdf from 'pdf-parse';
+import pdf from 'pdf-parse';
 
 const pdfParser = (pdf.default || pdf) as any;
 
