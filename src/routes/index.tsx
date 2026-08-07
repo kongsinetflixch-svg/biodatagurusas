@@ -2062,92 +2062,190 @@ function GuruProfile() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white card-print">
-              <div className="h-2 bg-[#D4AF37] no-print"></div>
-              <CardHeader className="py-6 px-8 border-b border-slate-50 print:py-0 print:px-0 print:border-none">
-                <CardTitle className="text-lg font-black text-[#002B5B] flex items-center gap-3 section-title">
-                  <div className="bg-[#D4AF37] p-2 rounded-lg no-print"><Briefcase className="w-5 h-5 text-white" /></div>
-                  Sekolah
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  Kelayakan Akademik ({profile?.academic?.length || 0})
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-8 space-y-6 print:p-0 print:space-y-2">
-                {[
-                  { label: "Nama Sekolah", key: "nama" },
-                  { label: "Kod Sekolah", key: "kod" },
-                  { label: "Jawatan", key: "jawatan" },
-                ].map((item) => (
-                  <div key={item.key} className="space-y-2 info-item">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
-                    {isEditMode ? (
-                      <Input 
-                        value={(profile as any).sekolah?.[item.key] || ""} 
-                        onChange={(e) => updateCurrentTeacher({ 
-                          profile: {
-                            ...(profile as any), 
-                            sekolah: {
-                              ...((profile as any).sekolah || {}), 
-                              [item.key]: e.target.value
-                            }
-                          } 
-                        })}
-                        className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-                      />
-                    ) : (
-                      <p className="text-slate-700 info-value">{(profile as any).sekolah?.[item.key] || "-"}</p>
+              <CardContent className="p-0">
+                <Accordion type="single" collapsible className="w-full">
+                  {profile?.academic?.map((item: any, idx: number) => (
+                    <AccordionItem key={idx} value={`item-${idx}`} className="border-b border-slate-50 last:border-none">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-slate-50/50">
+                        <div className="text-left">
+                          <p className="text-sm font-black text-[#002B5B] leading-tight">{item.tahap || "Peringkat"}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase truncate max-w-[200px]">{item.bidang || "Bidang"}</p>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 space-y-3 bg-slate-50/30">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-white p-2 rounded-lg border border-slate-100">
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Tahun</p>
+                             <p className="text-xs font-bold text-[#002B5B]">{item.tahun || "-"}</p>
+                          </div>
+                          <div className="bg-white p-2 rounded-lg border border-slate-100 col-span-2">
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Institusi</p>
+                             <p className="text-xs font-bold text-[#002B5B]">{item.institusi || "-"}</p>
+                          </div>
+                        </div>
+                        {isEditMode && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              const newAcademic = [...(profile?.academic || [])];
+                              newAcademic.splice(idx, 1);
+                              updateCurrentTeacher({ profile: { ...profile, academic: newAcademic } });
+                            }}
+                            className="w-full h-8 text-rose-500 font-bold text-[10px] uppercase"
+                          >
+                            Padam Rekod
+                          </Button>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+                {isEditMode && (
+                  <div className="p-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        const newAcademic = [...(profile?.academic || []), { tahap: "", bidang: "", institusi: "", tahun: "" }];
+                        updateCurrentTeacher({ profile: { ...profile, academic: newAcademic } });
+                      }}
+                      className="w-full h-10 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-[10px] uppercase"
+                    >
+                      Tambah Rekod Akademik
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <History className="w-4 h-4" />
+                  Sejarah Perkhidmatan ({profile?.history?.length || 0})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Accordion type="single" collapsible className="w-full">
+                  {profile?.history?.map((item: any, idx: number) => (
+                    <AccordionItem key={idx} value={`history-${idx}`} className="border-b border-slate-50 last:border-none">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-slate-50/50">
+                        <div className="text-left">
+                          <p className="text-sm font-black text-[#002B5B] leading-tight">{item.tempat || "Tempat Perkhidmatan"}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase">{item.tahun || "Tahun"}</p>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 space-y-3 bg-slate-50/30">
+                        <div className="bg-white p-2 rounded-lg border border-slate-100">
+                           <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Jawatan</p>
+                           <p className="text-xs font-bold text-[#002B5B]">{item.jawatan || "-"}</p>
+                        </div>
+                        {isEditMode && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              const newHistory = [...(profile?.history || [])];
+                              newHistory.splice(idx, 1);
+                              updateCurrentTeacher({ profile: { ...profile, history: newHistory } });
+                            }}
+                            className="w-full h-8 text-rose-500 font-bold text-[10px] uppercase"
+                          >
+                            Padam Rekod
+                          </Button>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+                {isEditMode && (
+                   <div className="p-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        const newHistory = [...(profile?.history || []), { tempat: "", jawatan: "", tahun: "" }];
+                        updateCurrentTeacher({ profile: { ...profile, history: newHistory } });
+                      }}
+                      className="w-full h-10 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-[10px] uppercase"
+                    >
+                      Tambah Sejarah Perkhidmatan
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <PenTool className="w-4 h-4" />
+                  Tandatangan Guru
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 flex flex-col items-center">
+                {signatureUrl ? (
+                  <div className="relative group">
+                    <img src={signatureUrl} alt="Tandatangan" className="max-h-20 bg-slate-50 rounded-lg p-2" />
+                    {isEditMode && (
+                      <Button 
+                        size="icon"
+                        variant="destructive"
+                        onClick={() => setSignatureUrl(null)}
+                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
                     )}
                   </div>
-                ))}
+                ) : (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowSignatureModal(true)}
+                    className="w-full h-12 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-xs uppercase"
+                  >
+                    Tambah Tandatangan
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
-                <div className="space-y-2 info-item">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Pemeriksa SPM</Label>
-                  {isEditMode ? (
-                    <Select
-                      value={(profile as any).sekolah?.pemeriksaSPM || "Tidak"}
-                      onValueChange={(val) => updateCurrentTeacher({ 
-                        profile: {
-                          ...(profile as any), 
-                          sekolah: {
-                            ...((profile as any).sekolah || {}), 
-                            pemeriksaSPM: val
-                          }
-                        } 
-                      })}
-                    >
-                      <SelectTrigger className="h-12 sm:h-10 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
-                        <SelectValue placeholder="Pilih Status" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border-slate-200">
-                        <SelectItem value="Ya">Ya</SelectItem>
-                        <SelectItem value="Tidak">Tidak</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <p className="text-slate-700 info-value">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
-                  )}
+        {/* Floating Save Bar for Mobile Edit Mode */}
+        {isEditMode && (
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] z-[100] no-print animate-in slide-in-from-bottom duration-500">
+             <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+                <div className="flex flex-col">
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mod Edit</p>
+                   <p className="text-xs font-bold text-[#002B5B]">{isSaving ? "Sedang menyimpan..." : "Perubahan belum disimpan"}</p>
                 </div>
-
-                <div className="space-y-2 info-item">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Sekolah</Label>
-                  {isEditMode ? (
-                    <Input 
-                      value={(profile as any).sekolah?.alamat || ""} 
-                      onChange={(e) => updateCurrentTeacher({ 
-                        profile: {
-                          ...(profile as any), 
-                          sekolah: {
-                            ...((profile as any).sekolah || {}), 
-                            alamat: e.target.value
-                          }
-                        } 
-                      })}
-                      className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-                    />
-                  ) : (
-                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.alamat || "-"}</p>
-                  )}
+                <div className="flex gap-2">
+                   <Button 
+                     variant="outline"
+                     onClick={() => setIsEditMode(false)}
+                     className="h-11 px-4 border-slate-200 text-slate-600 font-black text-xs uppercase"
+                   >
+                     Batal
+                   </Button>
+                   <Button 
+                     onClick={handleSave}
+                     disabled={isSaving}
+                     className="h-11 px-8 bg-[#D4AF37] hover:bg-[#B8860B] text-white font-black text-xs uppercase shadow-lg shadow-[#D4AF37]/20"
+                   >
+                     {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Simpan"}
+                   </Button>
                 </div>
+             </div>
+          </div>
+        )}
 
-                <div className="grid grid-cols-2 gap-4 print:grid-cols-1 print:gap-2">
                   <div className="space-y-2 info-item">
                     <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Poskod</Label>
                     {isEditMode ? (
