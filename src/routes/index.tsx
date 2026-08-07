@@ -2104,15 +2104,19 @@ function GuruProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
-      <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
+    <>
+      <div className="min-h-screen bg-[#F0F2F5] p-0 sm:p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
+        <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
+
+        <div className="print-only">
+          <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
+        </div>
+
+        <div id="profile-container" className="w-full max-w-[1180px] mx-auto sm:px-6 lg:px-8 print-container space-y-6 no-print">
+          <div>
 
 
-      <div className="print-only">
-        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
-      </div>
 
-      <div id="profile-container" className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 print-container space-y-6 no-print">
 
 
         
@@ -2178,7 +2182,7 @@ function GuruProfile() {
 
         {/* SCREEN HEADER */}
 
-        <header id="profile-header" className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+        <header id="profile-header" className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-none sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
           <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center p-1 shadow-lg">
                 <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
@@ -2411,7 +2415,7 @@ function GuruProfile() {
           </Card>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 mt-2">
+        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 mt-2 px-4 sm:px-0">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
@@ -2448,12 +2452,15 @@ function GuruProfile() {
 
 
 
+
         {/* STATS CARDS REMOVED PER USER REQUEST */}
 
 
         {/* TWO COLUMNS DATA */}
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 sm:grid hidden">
-          <Card className="lg:col-span-2 border-none shadow-md rounded-2xl overflow-hidden bg-white">
+        <div className="flex flex-col gap-6 no-print px-4 sm:px-0">
+          {/* MAKLUMAT PERIBADI */}
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 p-4 sm:p-6">
               <CardTitle className="text-base sm:text-lg font-black text-[#002B5B] flex items-center gap-2">
                 <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -2530,8 +2537,9 @@ function GuruProfile() {
             </CardContent>
           </Card>
 
-          <div className="space-y-4 no-print sm:block hidden">
-            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white sm:block hidden">
+          {/* SEKOLAH */}
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+
               <CardHeader className="p-4 border-b border-slate-50">
                 <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
                   <Briefcase className="w-4 h-4" />
@@ -2587,6 +2595,8 @@ function GuruProfile() {
                              <p className="text-xs font-bold text-[#002B5B]">{item.institusi || "-"}</p>
                           </div>
                         </div>
+
+
                         {isEditMode && (
                           <Button 
                             variant="ghost" 
@@ -2678,41 +2688,16 @@ function GuruProfile() {
                 )}
               </CardContent>
             </Card>
-
           </div>
         </div>
-      </div>
 
-      {/* Floating Save Bar for Mobile Edit Mode */}
-      {isEditMode && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] z-[100] no-print animate-in slide-in-from-bottom duration-500">
-           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-              <div className="flex flex-col">
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mod Edit</p>
-                 <p className="text-xs font-bold text-[#002B5B]">{isSaving ? "Sedang menyimpan..." : "Perubahan belum disimpan"}</p>
-              </div>
-              <div className="flex gap-2">
-                 <Button 
-                   variant="outline"
-                   onClick={() => setIsEditMode(false)}
-                   className="h-11 px-4 border-slate-200 text-slate-600 font-black text-xs uppercase"
-                 >
-                   Batal
-                 </Button>
-                 <Button 
-                   onClick={handleSave}
-                   disabled={isSaving}
-                   className="h-11 px-8 bg-[#D4AF37] hover:bg-[#B8860B] text-white font-black text-xs uppercase shadow-lg shadow-[#D4AF37]/20"
-                 >
-                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Simpan"}
-                 </Button>
-              </div>
-           </div>
-        </div>
-      )}
-      <div id="profile-details-container" className="space-y-6 sm:block hidden">
+
+
         {/* TABLES SECTION */}
-        <div className="space-y-6 animate-in slide-up duration-500 delay-400 sm:block hidden">
+        <div className="flex flex-col gap-6 no-print px-4 sm:px-0">
+
+
+
           
           {/* KELULUSAN ACADEMIK */}
           <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print no-print">
@@ -2721,6 +2706,7 @@ function GuruProfile() {
                 <div className="bg-white/20 p-1.5 rounded-lg no-print"><GraduationCap className="w-5 h-5" /></div>
                 Kelulusan Akademik & Ikhtisas
               </h2>
+
 
               {isEditMode && (
                 <Button 
@@ -3028,7 +3014,7 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:hidden sm:grid hidden no-print-section">
+        <div className="flex flex-col gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:hidden sm:flex hidden no-print-section max-w-2xl mx-auto">
 
           <div className="space-y-6">
             <div className="space-y-4">
@@ -3086,6 +3072,25 @@ function GuruProfile() {
           </div>
         </div>
       </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         <footer className="no-print text-center py-12 space-y-2">
@@ -3093,11 +3098,11 @@ function GuruProfile() {
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
-
       {/* Hidden print layout component for browser Print (Ctrl+P) */}
       <div className="print-only">
         <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
       </div>
+
 
       {/* PRINT PREVIEW MODAL */}
       {showPrintPreview && (
@@ -3184,11 +3189,18 @@ function GuruProfile() {
       )}
 
       <Toaster position="top-center" richColors />
-    </div>
+    </>
   );
 }
 
+
+
+
 export default GuruProfile;
+
+
+
+
 
 
 
