@@ -1288,7 +1288,7 @@ function GuruProfile() {
       if (typeof obj === 'string') {
         // EXCEPTION: Email must remain exactly as typed
         // Also skip numeric/technical fields that should not be forced to uppercase
-        const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod'];
+        const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod', 'murid'];
         const isUrl = obj.startsWith('http') || obj.startsWith('blob:') || currentKey.toLowerCase().includes('url');
         
         if (excludeKeys.includes(currentKey) || isUrl) {
@@ -1368,7 +1368,7 @@ function GuruProfile() {
 
       // Auto-uppercase all non-excluded profile fields before save for DB consistency
       const finalProfile = JSON.parse(JSON.stringify(currentTeacher.profile));
-      const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod'];
+      const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod', 'murid'];
       
       const deepUpper = (obj: any, key: string = ""): any => {
         if (typeof obj === 'string') {
@@ -1387,7 +1387,11 @@ function GuruProfile() {
 
       const cleanProfile = deepUpper(finalProfile);
       const cleanKelulusan = deepUpper(currentTeacher.kelulusan);
-      const cleanSubjek = deepUpper(currentTeacher.subjek);
+      // Remove unused fields from subjek (TOV, ETR)
+      const cleanSubjek = deepUpper(currentTeacher.subjek).map((s: any) => {
+        const { tov, etr, ...rest } = s;
+        return rest;
+      });
       const cleanSejarah = deepUpper(currentTeacher.sejarah);
 
       // Explicitly update only the record matching the activeTeacherId to prevent multi-profile data leakage
@@ -2884,7 +2888,6 @@ function GuruProfile() {
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
                               className="h-12 sm:h-8 rounded-lg text-base"
-
                             />
                           ) : row.kelas}
                         </TableCell>
@@ -2898,7 +2901,7 @@ function GuruProfile() {
                               }}
                               className="h-12 sm:h-8 rounded-lg w-full sm:w-20 text-base"
                             />
-                          ) : (row.murid || "-")}
+                          ) : row.murid}
                         </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
