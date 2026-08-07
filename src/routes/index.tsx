@@ -1725,8 +1725,8 @@ function GuruProfile() {
           <header className="flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
               <div className="flex items-center gap-6">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0">
-                   <span className="text-lg sm:text-2xl font-black text-[#002B5B] tracking-tighter">KPM</span>
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 overflow-hidden">
+                   <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
                 </div>
                 <div className="text-center md:text-left">
                   <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight">Dashboard Admin</h1>
