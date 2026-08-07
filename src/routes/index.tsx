@@ -76,7 +76,7 @@ const MALAYSIAN_STATES = [
 const PRINT_STYLES = `
   @page {
     size: A4 portrait;
-    margin: 10mm;
+    margin: 8mm 10mm;
   }
 
   @media screen {
@@ -102,6 +102,8 @@ const PRINT_STYLES = `
       color: black !important;
       padding: 0 !important;
       margin: 0 !important;
+      width: 100% !important;
+      height: auto !important;
     }
 
     body {
@@ -110,44 +112,96 @@ const PRINT_STYLES = `
       line-height: 1.2 !important;
     }
 
-
-    /* Hide everything by default during print */
+    /* Hide everything web-related */
     #root > div:not(.print-only),
     .no-print,
     .no-print-section,
-    .dashboard-container,
-    header,
-    footer,
-    nav,
-    aside,
-    button,
-    .badge,
-    [role="button"],
-    .print-preview-modal > div:not(.print-preview-content) {
+    .print-preview-modal > div:not(.print-preview-content),
+    .toaster,
+    [role="status"],
+    header, footer, nav, button, .badge, .lucide {
       display: none !important;
     }
 
-    /* Show only the print layout */
+    /* Authority on layout */
     .print-only {
       display: block !important;
       width: 100% !important;
-      background: #ffffff !important;
-      padding: 0 !important;
-      margin: 0 !important;
+      position: static !important;
+      background: white !important;
     }
 
     .print-layout-container {
+      background: white !important;
+      color: black !important;
+      width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-      background: #ffffff !important;
-      width: 100% !important;
-      min-height: auto !important;
-      box-shadow: none !important;
     }
 
-    .print-header {
+    .section-title {
+      font-size: 10pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      background-color: #f0f0f0 !important;
+      border: 0.5pt solid black !important;
+      padding: 1.5mm 2mm !important;
+      margin: 4mm 0 2mm 0 !important;
+      display: block !important;
+    }
+
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-bottom: 4mm !important;
+      table-layout: fixed !important;
+    }
+
+    th, td {
+      border: 0.5pt solid black !important;
+      padding: 1.5mm 2mm !important;
+      font-size: 9pt !important;
+      text-align: left !important;
+      word-wrap: break-word !important;
+      overflow: hidden !important;
+    }
+
+    th {
+      background-color: #f0f0f0 !important;
+      font-weight: bold !important;
+    }
+
+    .info-grid {
+      display: grid !important;
+      grid-template-cols: repeat(2, 1fr) !important;
+      gap: 0 !important;
+      border-left: 0.5pt solid black !important;
+      border-top: 0.5pt solid black !important;
+      margin-bottom: 4mm !important;
+    }
+
+    .info-item {
       display: flex !important;
+      border-right: 0.5pt solid black !important;
+      border-bottom: 0.5pt solid black !important;
+      padding: 1.5mm 2mm !important;
+      min-height: 8mm !important;
       align-items: center !important;
+    }
+
+    .info-label {
+      font-weight: bold !important;
+      font-size: 8.5pt !important;
+      width: 40% !important;
+      flex-shrink: 0 !important;
+    }
+
+    .info-value {
+      font-size: 9pt !important;
+      padding-left: 2mm !important;
+    }
+  }
+
       justify-content: space-between !important;
       border-bottom: 1.5pt solid black !important;
       padding-bottom: 3mm !important;
