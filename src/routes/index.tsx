@@ -1935,7 +1935,7 @@ function GuruProfile() {
         <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
       </div>
 
-      <div id="profile-container" className="max-w-6xl mx-auto print-container space-y-6 no-print">
+      <div id="profile-container" className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 print-container space-y-6 no-print">
 
 
         
@@ -2246,7 +2246,7 @@ function GuruProfile() {
           </Card>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 px-2 sm:px-0 mt-2">
+        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 mt-2">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
@@ -2287,7 +2287,7 @@ function GuruProfile() {
 
 
         {/* TWO COLUMNS DATA */}
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0 sm:grid hidden">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 sm:grid hidden">
           <Card className="lg:col-span-2 border-none shadow-md rounded-2xl overflow-hidden bg-white">
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 p-4 sm:p-6">
               <CardTitle className="text-base sm:text-lg font-black text-[#002B5B] flex items-center gap-2">
