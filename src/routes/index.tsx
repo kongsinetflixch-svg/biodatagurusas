@@ -1603,11 +1603,7 @@ function GuruProfile() {
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden">
-             {schoolLogo ? (
-               <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
-             ) : (
-               <span className="text-2xl sm:text-3xl font-black text-[#002B5B] tracking-tighter">KPM</span>
-             )}
+             <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
           </div>
           
           <div className="space-y-2">
