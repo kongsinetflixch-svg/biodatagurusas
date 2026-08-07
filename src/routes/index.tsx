@@ -403,15 +403,15 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   return (
     <div className="print-layout-container">
       {/* Header */}
-      <div className="print-header flex items-center justify-between border-b-[1.5pt] border-black pb-3 mb-4">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-white flex items-center justify-center p-0 overflow-hidden">
+      <div className="print-header flex items-center justify-between border-b-2 border-black pb-4 mb-6">
+        <div className="flex items-center gap-6">
+          <div className="w-20 h-20 bg-white flex items-center justify-center p-0 overflow-hidden">
              <img src="/school-logo.png" alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-black uppercase leading-none mb-1">Profile Guru</h1>
-            <p className="text-sm font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
-            <p className="text-xs font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
+            <h1 className="text-xl font-black text-black uppercase leading-tight">Profile Guru</h1>
+            <p className="text-base font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
+            <p className="text-sm font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
           </div>
         </div>
 
@@ -420,15 +420,16 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             <img 
               src={currentTeacher.profileImage} 
               alt="Profil" 
-              className="print-photo w-[30mm] h-[38mm] border-[0.5pt] border-black object-cover"
+              className="print-photo w-[30mm] h-[38mm] border border-black object-cover"
             />
           ) : (
-            <div className="w-[30mm] h-[38mm] border-[0.5pt] border-slate-300 flex items-center justify-center bg-slate-50 text-[8pt] text-slate-400 text-center px-4">
+            <div className="w-[30mm] h-[38mm] border border-black flex items-center justify-center bg-white text-[8pt] text-black text-center px-4">
               GAMBAR PROFIL
             </div>
           )}
         </div>
       </div>
+
 
       {/* Personal Info */}
       <span className="section-title">Maklumat Peribadi</span>
