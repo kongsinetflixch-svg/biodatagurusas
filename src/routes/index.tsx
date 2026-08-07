@@ -78,7 +78,7 @@ const MALAYSIAN_STATES = [
 
 const PRINT_STYLES = `
   @page {
-    size: A4;
+    size: A4 portrait;
     margin: 10mm;
   }
 
@@ -89,16 +89,21 @@ const PRINT_STYLES = `
   }
 
   @media print {
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+
     body {
       background: white !important;
       color: black !important;
-      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
-      font-size: 10pt !important;
+      font-family: 'Arial', sans-serif !important;
+      font-size: 9pt !important;
       line-height: 1.2 !important;
       padding: 0 !important;
       margin: 0 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
     }
 
     /* Hide everything by default during print */
@@ -108,7 +113,10 @@ const PRINT_STYLES = `
     header,
     footer,
     nav,
-    aside {
+    aside,
+    button,
+    .badge,
+    [role="button"] {
       display: none !important;
     }
 
@@ -116,13 +124,14 @@ const PRINT_STYLES = `
     .print-only {
       display: block !important;
       width: 100% !important;
+      background: white !important;
     }
-
 
     .print-layout-container {
       padding: 0 !important;
       margin: 0 !important;
       background: white !important;
+      width: 100% !important;
     }
 
     .print-header {
@@ -141,22 +150,26 @@ const PRINT_STYLES = `
       object-fit: cover !important;
     }
 
-
     .section-title {
       font-size: 10pt !important;
       font-weight: bold !important;
       text-transform: uppercase !important;
-      color: #002B5B !important;
-      border-bottom: 0.5pt solid #002B5B !important;
-      padding-bottom: 1pt !important;
-      margin: 3mm 0 2mm 0 !important;
+      color: black !important;
+      background-color: #f3f4f6 !important;
+      border-top: 0.5pt solid black !important;
+      border-bottom: 0.5pt solid black !important;
+      padding: 1.5mm 2mm !important;
+      margin: 4mm 0 2mm 0 !important;
       display: block !important;
+      width: 100% !important;
+      page-break-after: avoid !important;
     }
 
     .info-grid {
       display: grid !important;
       grid-template-columns: 1fr 1fr !important;
       gap: 1.5mm 6mm !important;
+      margin-bottom: 2mm !important;
     }
 
     .info-item {
@@ -167,8 +180,8 @@ const PRINT_STYLES = `
     }
 
     .info-label {
-      font-size: 8pt !important;
-      color: #333 !important;
+      font-size: 8.5pt !important;
+      color: black !important;
       text-transform: uppercase !important;
       font-weight: bold !important;
       min-width: 35mm !important;
@@ -180,7 +193,7 @@ const PRINT_STYLES = `
     }
 
     .info-value {
-      font-size: 9.5pt !important;
+      font-size: 9pt !important;
       font-weight: normal !important;
       color: black !important;
     }
@@ -188,24 +201,39 @@ const PRINT_STYLES = `
     table {
       width: 100% !important;
       border-collapse: collapse !important;
-      margin-top: 2mm !important;
+      margin-top: 0 !important;
+      margin-bottom: 4mm !important;
+      table-layout: fixed !important;
+      page-break-inside: auto !important;
     }
 
+    thead {
+      display: table-header-group !important;
+    }
+
+    tr {
+      page-break-inside: avoid !important;
+      page-break-after: auto !important;
+    }
 
     th {
-      background: #eee !important;
-      font-size: 8pt !important;
+      background: #f3f4f6 !important;
+      font-size: 8.5pt !important;
       text-transform: uppercase !important;
-      padding: 1mm 2mm !important;
+      padding: 1.5mm 2mm !important;
       border: 0.5pt solid #000 !important;
       text-align: left !important;
+      font-weight: bold !important;
+      color: black !important;
     }
 
     td {
-      padding: 1mm 2mm !important;
+      padding: 1.5mm 2mm !important;
       border: 0.5pt solid #000 !important;
       font-size: 9pt !important;
       vertical-align: top !important;
+      color: black !important;
+      overflow-wrap: break-word !important;
     }
 
     .signature-grid {
@@ -219,23 +247,32 @@ const PRINT_STYLES = `
     .sig-box {
       border-top: 0.5pt solid #000 !important;
       margin-top: 15mm !important;
-      padding-top: 1mm !important;
-      text-align: center !important;
-      font-size: 8pt !important;
+      padding-top: 2mm !important;
+      text-align: left !important;
+      font-size: 8.5pt !important;
     }
 
+    /* Remove rounded corners and backgrounds from components during print */
+    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B] {
+      border-radius: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
   }
 
   /* Print Preview Styles */
   .print-preview-modal {
     position: fixed;
     inset: 0;
-    z-index: 100;
-    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    padding: 2rem 1rem;
     overflow-y: auto;
   }
 
@@ -245,18 +282,43 @@ const PRINT_STYLES = `
     min-height: 297mm;
     padding: 10mm;
     box-shadow: 0 0 50px rgba(0,0,0,0.5);
-    transform-origin: top center;
     margin-bottom: 2rem;
     color: black;
-    font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+    font-family: 'Arial', sans-serif;
   }
 
-  .print-preview-content * {
-    color: black !important;
+  /* Apply print rules to preview */
+  .print-preview-content .section-title {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: black;
+    background-color: #f3f4f6;
+    border-top: 0.5pt solid black;
+    border-bottom: 0.5pt solid black;
+    padding: 1.5mm 2mm;
+    margin: 4mm 0 2mm 0;
+    display: block;
   }
-  
-  .print-preview-content .no-print {
-    display: none !important;
+
+  .print-preview-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 4mm;
+  }
+
+  .print-preview-content th {
+    background: #f3f4f6;
+    font-size: 8.5pt;
+    padding: 1.5mm 2mm;
+    border: 0.5pt solid black;
+    text-align: left;
+  }
+
+  .print-preview-content td {
+    padding: 1.5mm 2mm;
+    border: 0.5pt solid black;
+    font-size: 9pt;
   }
 `;
 
@@ -332,25 +394,31 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
 
 
       {/* Academic */}
-      <span className="section-title">Kelulusan Akademik</span>
+      <span className="section-title">Kelulusan Akademik dan Ikhtisas</span>
       <table>
         <thead>
           <tr>
-            <th>Tahap Kelulusan</th>
-            <th>Bidang / Pengkhususan</th>
-            <th>Institusi / Universiti</th>
-            <th>Tahun</th>
+            <th style={{ width: '25%' }}>Kelulusan</th>
+            <th style={{ width: '35%' }}>Bidang / Pengkhususan</th>
+            <th style={{ width: '30%' }}>Institusi / Universiti</th>
+            <th style={{ width: '10%' }}>Tahun</th>
           </tr>
         </thead>
         <tbody>
-          {((currentTeacher.kelulusan || []) as any[]).map((row: any) => (
-            <tr key={row.id}>
-              <td>{row.kelayakan}</td>
-              <td>{row.bidang}</td>
-              <td>{row.institusi}</td>
-              <td>{row.tahun}</td>
+          {currentTeacher.kelulusan && (currentTeacher.kelulusan as any[]).length > 0 ? (
+            (currentTeacher.kelulusan as any[]).map((row: any) => (
+              <tr key={row.id}>
+                <td>{row.kelayakan}</td>
+                <td>{row.bidang}</td>
+                <td>{row.institusi}</td>
+                <td>{row.tahun}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={4} className="text-center italic text-slate-400">Tiada rekod kelulusan akademik</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
@@ -359,23 +427,31 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <table>
         <thead>
           <tr>
-            <th>Subjek</th>
-            <th>Tingkatan / Tahun</th>
-            <th>Bil. Murid</th>
-            <th>TOV</th>
-            <th>ETR</th>
+            <th style={{ width: '5%' }}>No.</th>
+            <th style={{ width: '35%' }}>Subjek</th>
+            <th style={{ width: '20%' }}>Tahun / Tingkatan</th>
+            <th style={{ width: '15%' }}>Bil. Murid</th>
+            <th style={{ width: '12.5%' }}>TOV</th>
+            <th style={{ width: '12.5%' }}>ETR</th>
           </tr>
         </thead>
         <tbody>
-          {((currentTeacher.subjek || []) as any[]).map((row: any) => (
-            <tr key={row.id}>
-              <td>{row.nama}</td>
-              <td>{row.kelas}</td>
-              <td>{row.murid}</td>
-              <td>{row.tov}</td>
-              <td>{row.etr}</td>
+          {currentTeacher.subjek && (currentTeacher.subjek as any[]).length > 0 ? (
+            (currentTeacher.subjek as any[]).map((row: any, idx: number) => (
+              <tr key={row.id}>
+                <td className="text-center">{idx + 1}</td>
+                <td>{row.nama}</td>
+                <td>{row.kelas}</td>
+                <td>{row.murid}</td>
+                <td>{row.tov}</td>
+                <td>{row.etr}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
@@ -384,19 +460,25 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <table>
         <thead>
           <tr>
-            <th>Nama dan Alamat Sekolah</th>
-            <th>Tahun</th>
-            <th>Subjek yang Diajar</th>
+            <th style={{ width: '60%' }}>Nama dan Alamat Sekolah</th>
+            <th style={{ width: '15%' }}>Tahun</th>
+            <th style={{ width: '25%' }}>Subjek yang Diajar</th>
           </tr>
         </thead>
         <tbody>
-          {((currentTeacher.sejarah || []) as any[]).map((row: any) => (
-            <tr key={row.id}>
-              <td>{row.sekolah}</td>
-              <td>{row.tahun}</td>
-              <td>{row.subjek}</td>
+          {currentTeacher.sejarah && (currentTeacher.sejarah as any[]).length > 0 ? (
+            (currentTeacher.sejarah as any[]).map((row: any) => (
+              <tr key={row.id}>
+                <td>{row.sekolah}</td>
+                <td>{row.tahun}</td>
+                <td>{row.subjek}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod sejarah perkhidmatan</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
@@ -2402,9 +2484,9 @@ function GuruProfile() {
         <div className="space-y-6 animate-in slide-up duration-500 delay-400 sm:block hidden">
           
           {/* KELULUSAN ACADEMIK */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print no-print">
             <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
-              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title-app">
                 <div className="bg-white/20 p-1.5 rounded-lg no-print"><GraduationCap className="w-5 h-5" /></div>
                 Kelulusan Akademik & Ikhtisas
               </h2>
@@ -2515,9 +2597,9 @@ function GuruProfile() {
           </Card>
 
           {/* SUBJEK DIAJAR */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print no-print">
             <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
-              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title-app">
                 <div className="bg-white/20 p-1.5 rounded-lg no-print"><BookOpen className="w-5 h-5" /></div>
                 Subjek Semasa Diajar
               </h2>
@@ -2646,9 +2728,9 @@ function GuruProfile() {
 
 
           {/* SEJARAH PERKHIDMATAN */}
-          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
+          <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print no-print">
             <div className="bg-[#002B5B] px-8 py-5 flex justify-between items-center print:bg-transparent print:px-0 print:py-0">
-              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title">
+              <h2 className="text-white text-lg font-black flex items-center gap-3 section-title-app">
                 <div className="bg-white/20 p-1.5 rounded-lg no-print"><Clock className="w-5 h-5" /></div>
                 Sejarah Perkhidmatan
               </h2>
