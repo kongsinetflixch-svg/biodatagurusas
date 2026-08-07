@@ -427,29 +427,23 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <table>
         <thead>
           <tr>
-            <th style={{ width: '5%' }}>No.</th>
-            <th style={{ width: '35%' }}>Subjek</th>
-            <th style={{ width: '20%' }}>Tahun / Tingkatan</th>
-            <th style={{ width: '15%' }}>Bil. Murid</th>
-            <th style={{ width: '12.5%' }}>TOV</th>
-            <th style={{ width: '12.5%' }}>ETR</th>
+            <th style={{ width: '40%' }}>Subjek</th>
+            <th style={{ width: '30%' }}>Tahun / Tingkatan</th>
+            <th style={{ width: '30%' }}>Bil. Murid</th>
           </tr>
         </thead>
         <tbody>
           {currentTeacher.subjek && (currentTeacher.subjek as any[]).length > 0 ? (
-            (currentTeacher.subjek as any[]).map((row: any, idx: number) => (
+            (currentTeacher.subjek as any[]).map((row: any) => (
               <tr key={row.id}>
-                <td className="text-center">{idx + 1}</td>
                 <td>{row.nama}</td>
                 <td>{row.kelas}</td>
                 <td>{row.murid}</td>
-                <td>{row.tov}</td>
-                <td>{row.etr}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={6} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
+              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
             </tr>
           )}
         </tbody>
@@ -864,40 +858,40 @@ function GuruProfile() {
     console.log("Auto-creating profile for IC:", ic);
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "",
+        nama: (sasTeacher?.nama || "").toUpperCase(),
         kp: ic || "",
         tel: "01X-XXXXXXX",
         email: `${(sasTeacher?.nama || 'guru').toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 Tahun",
-        tempohSemasa: "5 Tahun",
+        pengalaman: "10 TAHUN",
+        tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
-        opsyen: "Sejarah",
+        opsyen: "SEJARAH",
         gred: "DG44",
-        mengajarOpsyen: "Ya",
-        alamat: "Kuwaters Guru, Tanah Rata",
+        mengajarOpsyen: "YA",
+        alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
-          nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah",
+          nama: "SMK SULTAN AHMAD SHAH",
+          alamat: "PERSIARAN DAYANG ENDAH",
           poskod: "39000",
-          daerah: "Tanah Rata",
-          negeri: "Pahang",
+          daerah: "TANAH RATA",
+          negeri: "PAHANG",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
-          jawatan: sasTeacher?.jabatan || "Guru",
-          guruKhas: "Tiada",
-          pemeriksaSPM: "Tidak",
+          jawatan: (sasTeacher?.jabatan || "GURU").toUpperCase(),
+          guruKhas: "TIADA",
+          pemeriksaSPM: "TIDAK",
           lain: "-"
         }
       },
       kelulusan: [
-        { id: 1, kelayakan: "Sarjana Muda Pendidikan", institusi: "UPSI", bidang: "Sejarah", tahun: "2014" }
+        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
       ],
       subjek: [
-        { id: 1, nama: "Sejarah", kelas: "5 Delta", murid: "30", tov: "45", etr: "75" }
+        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
       ],
       sejarah: [
-        { id: 1, sekolah: "SMK Sultan Ahmad Shah", tahun: "2015-2026", subjek: "Sejarah" }
+        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
       ],
       ic_number: ic,
       profile_image: null
@@ -941,40 +935,40 @@ function GuruProfile() {
     setIsLoading(true);
     const newTeacherData = {
       profile: {
-        nama: name,
+        nama: name.toUpperCase(),
         kp: ic,
         tel: "01X-XXXXXXX",
         email: `${name.toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 Tahun",
-        tempohSemasa: "5 Tahun",
+        pengalaman: "10 TAHUN",
+        tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
-        opsyen: "Sejarah",
+        opsyen: "SEJARAH",
         gred: "DG44",
-        mengajarOpsyen: "Ya",
-        alamat: "Kuwaters Guru, Tanah Rata",
+        mengajarOpsyen: "YA",
+        alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
-          nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah",
+          nama: "SMK SULTAN AHMAD SHAH",
+          alamat: "PERSIARAN DAYANG ENDAH",
           poskod: "39000",
-          daerah: "Tanah Rata",
-          negeri: "Pahang",
+          daerah: "TANAH RATA",
+          negeri: "PAHANG",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
-          jawatan: jabatan,
-          guruKhas: "Tiada",
-          pemeriksaSPM: "Tidak",
+          jawatan: jabatan.toUpperCase(),
+          guruKhas: "TIADA",
+          pemeriksaSPM: "TIDAK",
           lain: "-"
         }
       },
       kelulusan: [
-        { id: 1, kelayakan: "Sarjana Muda Pendidikan", institusi: "UPSI", bidang: "Sejarah", tahun: "2014" }
+        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
       ],
       subjek: [
-        { id: 1, nama: "Sejarah", kelas: "5 Delta", murid: "30", tov: "45", etr: "75" }
+        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
       ],
       sejarah: [
-        { id: 1, sekolah: "SMK Sultan Ahmad Shah", tahun: "2015-2026", subjek: "Sejarah" }
+        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
       ],
       ic_number: ic,
       profile_image: null
@@ -1082,40 +1076,40 @@ function GuruProfile() {
 
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "",
+        nama: (sasTeacher?.nama || "").toUpperCase(),
         kp: ic || "",
         tel: "01X-XXXXXXX",
         email: `${(sasTeacher?.nama || 'guru').toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 Tahun",
-        tempohSemasa: "5 Tahun",
+        pengalaman: "10 TAHUN",
+        tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
-        opsyen: "Sejarah",
+        opsyen: "SEJARAH",
         gred: "DG44",
-        mengajarOpsyen: "Ya",
-        alamat: "Kuwaters Guru, Tanah Rata",
+        mengajarOpsyen: "YA",
+        alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
-          nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah",
+          nama: "SMK SULTAN AHMAD SHAH",
+          alamat: "PERSIARAN DAYANG ENDAH",
           poskod: "39000",
-          daerah: "Tanah Rata",
-          negeri: "Pahang",
+          daerah: "TANAH RATA",
+          negeri: "PAHANG",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
-          jawatan: sasTeacher?.jabatan || "Guru",
-          guruKhas: "Tiada",
-          pemeriksaSPM: "Tidak",
+          jawatan: (sasTeacher?.jabatan || "GURU").toUpperCase(),
+          guruKhas: "TIADA",
+          pemeriksaSPM: "TIDAK",
           lain: "-"
         }
       },
       kelulusan: [
-        { id: 1, kelayakan: "Sarjana Muda Pendidikan", institusi: "UPSI", bidang: "Sejarah", tahun: "2014" }
+        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
       ],
       subjek: [
-        { id: 1, nama: "Sejarah", kelas: "5 Delta", murid: "30", tov: "45", etr: "75" }
+        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
       ],
       sejarah: [
-        { id: 1, sekolah: "SMK Sultan Ahmad Shah", tahun: "2015-2026", subjek: "Sejarah" }
+        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
       ],
       ic_number: ic,
       profile_image: null
@@ -1171,6 +1165,58 @@ function GuruProfile() {
   // Helper to update current teacher's data
   const updateCurrentTeacher = (updates: any) => {
     if (!activeTeacherId) return;
+    
+    // Auto-uppercase string values in profile
+    if (updates.profile) {
+      const p = updates.profile;
+      const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
+      Object.keys(p).forEach(k => {
+        if (typeof p[k] === 'string' && !exclude.includes(k)) {
+          p[k] = p[k].toUpperCase();
+        }
+        if (k === 'sekolah' && typeof p[k] === 'object') {
+          const s = p[k];
+          const sExclude = ['tel', 'faks', 'poskod', 'kod'];
+          Object.keys(s).forEach(sk => {
+            if (typeof s[sk] === 'string' && !sExclude.includes(sk)) {
+              s[sk] = s[sk].toUpperCase();
+            }
+          });
+        }
+      });
+    }
+
+    // Auto-uppercase arrays
+    if (updates.kelulusan) {
+      updates.kelulusan = updates.kelulusan.map((k: any) => {
+        const nk = { ...k };
+        ['kelayakan', 'institusi', 'bidang'].forEach(field => {
+          if (nk[field]) nk[field] = nk[field].toUpperCase();
+        });
+        return nk;
+      });
+    }
+
+    if (updates.subjek) {
+      updates.subjek = updates.subjek.map((s: any) => {
+        const ns = { ...s };
+        ['nama', 'kelas'].forEach(field => {
+          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        });
+        return ns;
+      });
+    }
+
+    if (updates.sejarah) {
+      updates.sejarah = updates.sejarah.map((s: any) => {
+        const ns = { ...s };
+        ['sekolah', 'subjek'].forEach(field => {
+          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        });
+        return ns;
+      });
+    }
+
     setTeachers(teachers.map(t => 
       t.id === activeTeacherId ? { ...t, ...updates } : t
     ));
@@ -2041,11 +2087,17 @@ function GuruProfile() {
                     ) : (
                       <Input 
                         value={(profile as any)[item.key]} 
-                        onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), [item.key]: e.target.value}})}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
+                          const finalVal = exclude.includes(item.key) ? val : val.toUpperCase();
+                          updateCurrentTeacher({ profile: {...(profile as any), [item.key]: finalVal}});
+                        }}
                         className="h-10 rounded-xl border-slate-100 text-sm font-bold"
                       />
                     )
                   ) : (
+
                     <p className="text-[#002B5B] font-bold text-sm">{(profile as any)[item.key] || "-"}</p>
                   )}
                 </div>
@@ -2234,10 +2286,13 @@ function GuruProfile() {
                           value={(profile as any)[item.key as keyof typeof profile] as string} 
                           onChange={(e) => {
                             const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
-                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
+                            const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
+                            const finalVal = exclude.includes(item.key) ? val : val.toUpperCase();
+                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: finalVal}});
                           }}
                           className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-sm font-bold"
                         />
+
                       )
                     ) : (
                       <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent">
@@ -2610,7 +2665,7 @@ function GuruProfile() {
                   variant="secondary" 
                   onClick={() => {
                     const newId = Math.random();
-                    updateCurrentTeacher({ subjek: [...subjek, {id: newId, nama: "", kelas: "", murid: "", tov: "", etr: ""}] });
+                    updateCurrentTeacher({ subjek: [...subjek, {id: newId, nama: "", kelas: "", murid: ""}] });
                   }}
                   className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"
                 >
@@ -2623,24 +2678,20 @@ function GuruProfile() {
                 <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow className="border-none">
-                      <TableHead className="w-16 text-center font-black text-slate-400 uppercase text-[10px] tracking-widest px-8">Bil.</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Subjek</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest px-8">Subjek</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Tahun / Tingkatan</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Bil. Murid</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">TOV</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">ETR</TableHead>
                       {isEditMode && <TableHead className="w-20 no-print"></TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {subjek.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={isEditMode ? 7 : 6} className="h-24 text-center text-slate-400 italic">Tiada rekod subjek</TableCell>
+                        <TableCell colSpan={isEditMode ? 4 : 3} className="h-24 text-center text-slate-400 italic">Tiada rekod subjek</TableCell>
                       </TableRow>
-                    ) : (subjek as any[]).map((row, idx) => (
+                    ) : (subjek as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
-                        <TableCell className="font-medium text-slate-700">
+                        <TableCell className="px-8 font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.nama} 
@@ -2676,35 +2727,6 @@ function GuruProfile() {
                               className="h-12 sm:h-8 rounded-lg w-full sm:w-20 text-base"
                             />
                           ) : (row.murid || "-")}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {isEditMode ? (
-                            <Input 
-                              value={row.tov} 
-                              onChange={(e) => {
-                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, tov: e.target.value} : s);
-                                updateCurrentTeacher({ subjek: newSubjek });
-                              }}
-                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
-
-                            />
-                          ) : (
-                            <span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {isEditMode ? (
-                            <Input 
-                              value={row.etr} 
-                              onChange={(e) => {
-                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, etr: e.target.value} : s);
-                                updateCurrentTeacher({ subjek: newSubjek });
-                              }}
-                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
-                            />
-                          ) : (
-                            <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span>
-                          )}
                         </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
