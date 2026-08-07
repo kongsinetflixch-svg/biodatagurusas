@@ -2884,7 +2884,6 @@ function GuruProfile() {
                                 updateCurrentTeacher({ subjek: newSubjek });
                               }}
                               className="h-12 sm:h-8 rounded-lg text-base"
-
                             />
                           ) : row.kelas}
                         </TableCell>
@@ -2898,7 +2897,7 @@ function GuruProfile() {
                               }}
                               className="h-12 sm:h-8 rounded-lg w-full sm:w-20 text-base"
                             />
-                          ) : (row.murid || "-")}
+                          ) : row.murid}
                         </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
