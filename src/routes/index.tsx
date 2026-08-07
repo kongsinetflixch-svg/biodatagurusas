@@ -713,9 +713,28 @@ function GuruProfile() {
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const fetchLogo = async () => {
+      // First try localStorage for speed
       const savedLogo = localStorage.getItem('school_logo');
       if (savedLogo) setSchoolLogo(savedLogo);
+
+      // Then try fetching from the database (latest one uploaded by anyone)
+      const { data, error } = await supabase
+        .from('teachers')
+        .select('school_logo_url')
+        .not('school_logo_url', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (!error && data && data.length > 0) {
+        const dbLogo = data[0].school_logo_url;
+        setSchoolLogo(dbLogo);
+        localStorage.setItem('school_logo', dbLogo);
+      }
+    };
+    
+    if (typeof window !== 'undefined') {
+      fetchLogo();
     }
   }, []);
   const schoolLogoInputRef = useRef<HTMLInputElement>(null);
@@ -931,15 +950,15 @@ function GuruProfile() {
       profile: {
         nama: (sasTeacher?.nama || "").toUpperCase(),
         kp: ic || "",
-        tel: "01X-XXXXXXX",
+        tel: "",
         email: `${(sasTeacher?.nama || 'guru').toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 TAHUN",
-        tempohSemasa: "5 TAHUN",
-        tarikhMula: "01/01/2015",
-        opsyen: "SEJARAH",
-        gred: "DG44",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        gred: "",
         mengajarOpsyen: "YA",
-        alamat: "KUWATERS GURU, TANAH RATA",
+        alamat: "",
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
@@ -955,15 +974,9 @@ function GuruProfile() {
           lain: "-"
         }
       },
-      kelulusan: [
-        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
-      ],
-      subjek: [
-        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
-      ],
-      sejarah: [
-        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
-      ],
+      kelulusan: [],
+      subjek: [],
+      sejarah: [],
       ic_number: ic,
       profile_image: null
     } as any;
