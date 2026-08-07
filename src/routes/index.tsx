@@ -850,7 +850,8 @@ function GuruProfile() {
       return;
     }
 
-    if (cleanIc.length !== 12) {
+    // Basic Malaysian IC format validation (12 digits)
+    if (!/^\d{12}$/.test(cleanIc)) {
       toast.error("No. kad pengenalan mestilah 12 digit tanpa tanda sempang.");
       return;
     }
@@ -858,23 +859,8 @@ function GuruProfile() {
     setIsLoggingIn(true);
     console.log("Memulakan proses log masuk untuk IC:", cleanIc);
 
-    // Validate if the IC exists in SAS_TEACHERS softcoded list
-    const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
-    
-    if (!sasTeacher && cleanIc !== SUPERADMIN_IC) {
-      toast.error("Profil guru tidak ditemui.");
-      setIsLoggingIn(false);
-      return;
-    }
-
     try {
-      if (cleanIc === SUPERADMIN_IC) {
-        setIsAdminMode(true);
-        setShowAdminDashboard(true);
-        toast.success("Selamat datang, Superadmin!");
-      }
-      
-      // Check if teacher profile already exists in DB
+      // Check if teacher profile exists in DB first
       const { data, error } = await supabase
         .from('teachers')
         .select('*')
@@ -884,29 +870,46 @@ function GuruProfile() {
       if (error) {
         console.error("Ralat Supabase:", error);
         toast.error(`Ralat semasa log masuk: ${error.message}`);
-      } else {
-        localStorage.setItem('guru_ic_session', cleanIc);
-        setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
+        return;
+      }
+
+      // Successful lookup
+      localStorage.setItem('guru_ic_session', cleanIc);
+      setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
+
+      if (data && data.length > 0) {
+        // Enforce strict single-profile mapping: use the first record
+        setTeachers([data[0]]);
+        setActiveTeacherId(data[0].id);
+        setIsEditMode(false);
         
-        if (data && data.length > 0) {
-          await fetchTeachersByIc(cleanIc);
-          const firstTeacher = data[0];
-          const teacherName = (firstTeacher?.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
-          toast.success(`Selamat kembali, ${teacherName}`);
-          
-          if (cleanIc !== SUPERADMIN_IC && firstTeacher) {
-             setActiveTeacherId(firstTeacher.id);
-             setIsEditMode(false);
-          }
+        if (cleanIc === SUPERADMIN_IC) {
+          setIsAdminMode(true);
+          setShowAdminDashboard(true);
+          toast.success("Selamat datang, Superadmin!");
         } else {
-          if (cleanIc !== SUPERADMIN_IC) {
-            toast.info("Menjana profil baru anda...", { duration: 2000 });
-            await handleAutoCreateTeacher(cleanIc, sasTeacher);
-          } else {
-            toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
-            setTeachers([]);
-            setIsLoading(false);
-          }
+          setIsAdminMode(false);
+          setShowAdminDashboard(false);
+          const teacherName = (data[0].profile as any)?.nama || 'Cikgu';
+          toast.success(`Selamat kembali, ${teacherName}`);
+        }
+      } else {
+        // No profile found in database
+        // Check if it's a known teacher from SAS_TEACHERS to auto-create
+        const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
+        
+        if (cleanIc === SUPERADMIN_IC) {
+          setIsAdminMode(true);
+          setShowAdminDashboard(true);
+          toast.success("Selamat datang, Superadmin!");
+          setTeachers([]);
+        } else if (sasTeacher) {
+          toast.info("Menjana profil digital anda...", { duration: 2000 });
+          await handleAutoCreateTeacher(cleanIc, sasTeacher);
+        } else {
+          toast.error("No. Kad Pengenalan tidak berdaftar dalam sistem Panitia.");
+          localStorage.removeItem('guru_ic_session');
+          setSession(null);
         }
       }
     } catch (err) {
