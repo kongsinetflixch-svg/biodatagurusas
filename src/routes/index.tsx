@@ -1557,11 +1557,7 @@ function GuruProfile() {
             className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
             onClick={() => schoolLogoInputRef.current?.click()}
           >
-             {schoolLogo ? (
-               <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
-             ) : (
-               <span className="text-xl font-black text-[#002B5B]">KPM</span>
-             )}
+             <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
           <input 
             type="file" 
