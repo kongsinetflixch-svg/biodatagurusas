@@ -1687,11 +1687,7 @@ function GuruProfile() {
             </Button>
           </div>
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 overflow-hidden">
-             {schoolLogo ? (
-               <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
-             ) : (
-               <span className="text-2xl sm:text-3xl font-black text-[#002B5B] tracking-tighter">KPM</span>
-             )}
+             <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
           </div>
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight">Profile Guru</h1>
