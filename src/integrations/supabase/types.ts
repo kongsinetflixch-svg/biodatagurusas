@@ -23,7 +23,10 @@ export type Database = {
           owner_id: string | null
           profile: Json
           profile_image: string | null
+          profile_image_url: string | null
+          school_logo_url: string | null
           sejarah: Json
+          signature_url: string | null
           subjek: Json
         }
         Insert: {
@@ -34,7 +37,10 @@ export type Database = {
           owner_id?: string | null
           profile?: Json
           profile_image?: string | null
+          profile_image_url?: string | null
+          school_logo_url?: string | null
           sejarah?: Json
+          signature_url?: string | null
           subjek?: Json
         }
         Update: {
@@ -45,7 +51,10 @@ export type Database = {
           owner_id?: string | null
           profile?: Json
           profile_image?: string | null
+          profile_image_url?: string | null
+          school_logo_url?: string | null
           sejarah?: Json
+          signature_url?: string | null
           subjek?: Json
         }
         Relationships: []

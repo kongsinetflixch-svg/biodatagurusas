@@ -49,6 +49,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { importEOperasiData } from "@/lib/eoperasi.functions";
 import { useServerFn } from "@tanstack/react-start";
 
+// Constants for Storage
+const STORAGE_BUCKET = 'teacher-assets';
+
+
 
 // SSPA Grade Constants
 const SSPA_GRADES = [
@@ -391,20 +395,31 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       {/* Signatures */}
       <div className="signature-grid">
         <div>
-          <span className="info-label block mb-10">Tandatangan Guru</span>
-          <div className="sig-box">
-            Nama: {(profile as any)?.nama}
+          <span className="info-label block mb-2">Tandatangan Guru</span>
+          <div className="sig-box min-h-[15mm] flex flex-col items-center justify-end">
+            {currentTeacher.signatureUrl ? (
+              <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="max-h-[12mm] object-contain mb-1" />
+            ) : (
+              <div className="mb-4 text-[7pt] text-slate-300 italic">(Belum ditandatangani)</div>
+            )}
+            <div className="w-full border-t border-black pt-1">
+              Nama: {(profile as any)?.nama}
+            </div>
           </div>
         </div>
         {isAdminMode && (
           <div>
-            <span className="info-label block mb-10">Disahkan Oleh</span>
-            <div className="sig-box">
-              Cap dan Tandatangan Pengetua
+            <span className="info-label block mb-2">Disahkan Oleh</span>
+            <div className="sig-box min-h-[15mm] flex flex-col items-center justify-end">
+              <div className="mb-4 text-[7pt] text-slate-300 italic">(Cap dan Tandatangan)</div>
+              <div className="w-full border-t border-black pt-1">
+                Cap dan Tandatangan Pengetua
+              </div>
             </div>
           </div>
         )}
       </div>
+
     </div>
   );
 };
@@ -559,23 +574,53 @@ function GuruProfile() {
   const [teachers, setTeachers] = useState<any[]>([]);
 
   useEffect(() => {
-    // We check for a "pseudo-session" in localStorage for IC login
-    const savedIc = localStorage.getItem('guru_ic_session');
-    if (savedIc) {
-      setSession({ user: { ic: savedIc, id: 'pseudo-user' } });
-      fetchTeachersByIc(savedIc);
-      // Auto-enable admin mode for superadmin
-      if (savedIc === SUPERADMIN_IC) {
-        setIsAdminMode(true);
-        setShowAdminDashboard(true);
+    const initSession = async () => {
+      // Check real Supabase Auth session first
+      const { data: { session: supabaseSession } } = await supabase.auth.getSession();
+      
+      if (supabaseSession) {
+        setSession(supabaseSession);
+        // If we have a real session, we might want to fetch by owner_id or IC
+        // For now, prioritize IC as requested in previous turns
+        const userIc = supabaseSession.user.user_metadata?.ic || localStorage.getItem('guru_ic_session');
+        if (userIc) {
+          fetchTeachersByIc(userIc);
+          if (userIc === SUPERADMIN_IC) {
+            setIsAdminMode(true);
+            setShowAdminDashboard(true);
+          }
+        } else {
+          setIsLoading(false);
+        }
       } else {
-        setIsAdminMode(false);
-        setShowAdminDashboard(false);
+        // Fallback to pseudo-session for IC login
+        const savedIc = localStorage.getItem('guru_ic_session');
+        if (savedIc) {
+          setSession({ user: { ic: savedIc, id: 'pseudo-user' } });
+          fetchTeachersByIc(savedIc);
+          if (savedIc === SUPERADMIN_IC) {
+            setIsAdminMode(true);
+            setShowAdminDashboard(true);
+          } else {
+            setIsAdminMode(false);
+            setShowAdminDashboard(false);
+          }
+        } else {
+          setIsLoading(false);
+        }
       }
-    } else {
-      setIsLoading(false);
-    }
+    };
+
+    initSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
+
 
   const fetchTeachersByIc = async (ic: string) => {
     const cleanIc = ic.replace(/-/g, "");
@@ -594,9 +639,18 @@ function GuruProfile() {
     } else if (data) {
       const mappedData = data.map((t: any) => ({
         ...t,
-        profileImage: t.profile_image,
+        profileImage: t.profile_image_url || t.profile_image,
+        signatureUrl: t.signature_url,
+        schoolLogoUrl: t.school_logo_url,
       }));
       setTeachers(mappedData);
+      
+      // Auto-set school logo from profile if available
+      const firstWithLogo = mappedData.find(t => (t.profile as any)?.schoolLogo || t.school_logo_url);
+      if (firstWithLogo) {
+        setSchoolLogo(firstWithLogo.school_logo_url || (firstWithLogo.profile as any).schoolLogo);
+      }
+
       
       // Auto-select the first profile if not already set
       if (mappedData.length > 0) {
@@ -1040,6 +1094,33 @@ function GuruProfile() {
     if (!activeTeacherId || !currentTeacher) return;
     
     setIsSaving(true);
+    toast.info("Sedang menyimpan maklumat...");
+
+    // Check if we have unsaved canvas signature
+    let finalSignatureUrl = currentTeacher.signatureUrl;
+    if (hasSignature && canvasRef.current) {
+      try {
+        const signatureBase64 = canvasRef.current.toDataURL('image/png');
+        const blob = await (await fetch(signatureBase64)).blob();
+        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/signature_${Date.now()}.png`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(fileName, blob, { upsert: true });
+
+        if (uploadError) throw uploadError;
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(uploadData.path);
+        
+        finalSignatureUrl = publicUrl;
+      } catch (err) {
+        console.error("Error saving signature:", err);
+        toast.error("Gagal menyimpan tandatangan.");
+      }
+    }
+
     const { error } = await supabase
       .from('teachers')
       .update({
@@ -1047,19 +1128,23 @@ function GuruProfile() {
         kelulusan: currentTeacher.kelulusan,
         subjek: currentTeacher.subjek,
         sejarah: currentTeacher.sejarah,
-        profile_image: currentTeacher.profileImage,
-        ic_number: (currentTeacher.profile as any)?.kp // Ensure IC number is synced
+        profile_image_url: currentTeacher.profileImage, // Now stores URL
+        signature_url: finalSignatureUrl,
+        school_logo_url: schoolLogo,
+        ic_number: (currentTeacher.profile as any)?.kp
       })
       .eq('id', activeTeacherId);
 
     setIsSaving(false);
     if (error) {
-      toast.error("Gagal menyimpan maklumat.");
+      toast.error(`Gagal menyimpan: ${error.message}`);
       console.error(error);
     } else {
       setIsEditMode(false);
       localStorage.removeItem('guru_profile_draft');
-      toast.success("Maklumat telah berjaya disimpan.");
+      toast.success("Maklumat telah berjaya disimpan kekal.");
+      // Refresh current teacher state with new URLs
+      updateCurrentTeacher({ signatureUrl: finalSignatureUrl });
     }
   };
 
@@ -1069,17 +1154,37 @@ function GuruProfile() {
     }
   }, [isEditMode, activeTeacherId]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && activeTeacherId) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        updateCurrentTeacher({ profileImage: reader.result as string });
-        toast.success("Gambar profil berjaya dikemaskini. Sila simpan untuk mengekalkan perubahan.");
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsSaving(true);
+        toast.info("Sedang memuat naik gambar...");
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/profile_${Date.now()}.${fileExt}`;
+        
+        const { data, error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(fileName, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(data.path);
+
+        updateCurrentTeacher({ profileImage: publicUrl });
+        toast.success("Gambar profil berjaya dimuat naik.");
+      } catch (err: any) {
+        console.error("Upload error:", err);
+        toast.error(`Gagal memuat naik gambar: ${err.message}`);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
+
 
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -1094,19 +1199,38 @@ function GuruProfile() {
     }
   };
 
-  const handleSchoolLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSchoolLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setSchoolLogo(base64);
-        localStorage.setItem('school_logo', base64);
+      try {
+        setIsSaving(true);
+        toast.info("Sedang memuat naik logo sekolah...");
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
+        
+        const { data, error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(fileName, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(data.path);
+
+        setSchoolLogo(publicUrl);
+        localStorage.setItem('school_logo', publicUrl);
         toast.success("Logo sekolah telah berjaya dikemaskini.");
-      };
-      reader.readAsDataURL(file);
+      } catch (err: any) {
+        console.error("Logo upload error:", err);
+        toast.error(`Gagal memuat naik logo: ${err.message}`);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
+
 
   const handleLogout = async () => {
     setIsAdminMode(false);
