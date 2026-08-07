@@ -2981,5 +2981,8 @@ function GuruProfile() {
   );
 }
 
+export default GuruProfile;
+
+
 
 
