@@ -328,10 +328,12 @@ const PRINT_STYLES = `
 
 
     /* Force plain white background for the specific signature modal elements if they leak */
-    .signature-pad-container, .bg-slate-50, .border-slate-100 {
+    .signature-pad-container, .bg-slate-50, .border-slate-100, .bg-white\/10, .bg-black\/20 {
       background: #ffffff !important;
+      background-color: #ffffff !important;
       border-color: black !important;
     }
+
   }
 
   /* Print Preview Styles */
