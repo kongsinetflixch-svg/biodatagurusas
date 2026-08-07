@@ -1188,19 +1188,38 @@ function GuruProfile() {
     }
   };
 
-  const handleSchoolLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSchoolLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setSchoolLogo(base64);
-        localStorage.setItem('school_logo', base64);
+      try {
+        setIsSaving(true);
+        toast.info("Sedang memuat naik logo sekolah...");
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
+        
+        const { data, error } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(fileName, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(data.path);
+
+        setSchoolLogo(publicUrl);
+        localStorage.setItem('school_logo', publicUrl);
         toast.success("Logo sekolah telah berjaya dikemaskini.");
-      };
-      reader.readAsDataURL(file);
+      } catch (err: any) {
+        console.error("Logo upload error:", err);
+        toast.error(`Gagal memuat naik logo: ${err.message}`);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
+
 
   const handleLogout = async () => {
     setIsAdminMode(false);
