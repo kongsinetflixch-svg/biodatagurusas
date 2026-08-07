@@ -1793,6 +1793,18 @@ function GuruProfile() {
           </div>
         </header>
 
+        {/* LOGOUT BUTTON - MOBILE & DESKTOP */}
+        <div className="no-print flex justify-end px-2 mb-4 animate-in slide-in-from-right duration-700">
+          <Button 
+            onClick={handleLogout}
+            variant="destructive"
+            className="h-12 px-8 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl shadow-xl shadow-rose-900/20 transition-all active:scale-[0.98] uppercase tracking-wider text-sm flex items-center gap-3"
+          >
+            <LogOut className="w-5 h-5 stroke-[3px]" />
+            Log Keluar
+          </Button>
+        </div>
+
         {/* SEARCH & ACTIONS */}
         <div className="flex flex-col md:flex-row gap-4 no-print sticky top-4 z-50 animate-in slide-in-from-top duration-1000">
           <div className="relative flex-1 group">
