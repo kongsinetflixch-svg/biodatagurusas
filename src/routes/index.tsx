@@ -2684,9 +2684,14 @@ function GuruProfile() {
                 )}
               </CardContent>
             </Card>
-
           </div>
         </div>
+      </div>
+
+      <div id="profile-details-container" className="space-y-6 sm:block hidden">
+        {/* TABLES SECTION */}
+        <div className="space-y-6 animate-in slide-up duration-500 delay-400 sm:block hidden">
+
 
         {/* TABLES SECTION */}
         <div className="flex flex-col gap-6 no-print px-4 sm:px-0">
