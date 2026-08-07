@@ -2051,8 +2051,9 @@ function GuruProfile() {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 bg-white flex items-center justify-center">
-                <img src="/school-logo.png" alt="Logo Sekolah" className="w-full h-full object-contain" />
+                <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
               </div>
+
               <div className="flex flex-col">
                 <h1 className="text-xl font-black text-black uppercase leading-tight">
                   REKOD PERIBADI PENJAWAT AWAM
