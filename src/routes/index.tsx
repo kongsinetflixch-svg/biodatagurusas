@@ -393,7 +393,10 @@ const PRINT_STYLES = `
 
 
 // Reusable Print Layout Component to ensure "pratonton" and "cetak" match perfectly
+import schoolLogoAsset from "@/assets/school-logo.png.asset.json";
+
 const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeacher: any, isAdminMode: boolean, schoolLogo: string | null }) => {
+
   if (!currentTeacher) return null;
   const profile = currentTeacher.profile || {};
   
