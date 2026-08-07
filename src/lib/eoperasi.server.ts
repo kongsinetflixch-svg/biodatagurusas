@@ -1,6 +1,8 @@
 // @ts-nocheck
 import { PDFDocument } from 'pdf-lib';
-import pdf from 'pdf-parse';
+import * as pdf from 'pdf-parse';
+
+const pdfParser = (pdf.default || pdf) as any;
 
 export async function parseEOperasiPDF(base64: string) {
   try {
