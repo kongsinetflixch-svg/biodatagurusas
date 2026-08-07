@@ -1277,11 +1277,6 @@ function GuruProfile() {
     ));
   };
 
-    setTeachers(teachers.map(t => 
-      t.id === activeTeacherId ? { ...t, ...updates } : t
-    ));
-  };
-
   const handlePrint = () => {
     window.print();
   };
