@@ -523,31 +523,32 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
 
       {/* Signatures */}
       <div className="signature-grid">
-        <div>
-          <span className="info-label block mb-2">Tandatangan Guru</span>
-          <div className="sig-box min-h-[15mm] flex flex-col items-center justify-end">
+        <div className="sig-column">
+          <span className="sig-label">TANDATANGAN GURU:</span>
+          <div className="sig-space">
             {currentTeacher.signatureUrl ? (
-              <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="max-h-[12mm] object-contain mb-1" />
+              <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="sig-image" />
             ) : (
-              <div className="mb-4 text-[7pt] text-slate-300 italic">(Belum ditandatangani)</div>
+              <span className="text-[7pt] text-slate-400 italic mb-4">(Belum ditandatangani)</span>
             )}
-            <div className="w-full border-t border-black pt-1">
-              Nama: {(profile as any)?.nama}
+            <div className="sig-line">
+              <span className="sig-name">NAMA: {(profile as any)?.nama}</span>
             </div>
           </div>
         </div>
-        {isAdminMode && (
-          <div>
-            <span className="info-label block mb-2">Disahkan Oleh</span>
-            <div className="sig-box min-h-[15mm] flex flex-col items-center justify-end">
-              <div className="mb-4 text-[7pt] text-slate-300 italic">(Cap dan Tandatangan)</div>
-              <div className="w-full border-t border-black pt-1">
-                Cap dan Tandatangan Pengetua
-              </div>
+        <div className="sig-column">
+          <span className="sig-label">DISAHKAN OLEH:</span>
+          <div className="sig-space">
+            <span className="text-[7pt] text-slate-400 italic mb-4 text-center">
+              (Belum disahkan / Tiada perakuan)
+            </span>
+            <div className="sig-line">
+              <span className="sig-name text-center block">Cap dan Tandatangan Pengetua / Guru Besar</span>
             </div>
           </div>
-        )}
+        </div>
       </div>
+
 
     </div>
   );
