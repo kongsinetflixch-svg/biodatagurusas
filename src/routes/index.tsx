@@ -2042,8 +2042,8 @@ function GuruProfile() {
             </CardContent>
           </Card>
 
-          <div className="space-y-4 no-print">
-            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+          <div className="space-y-4 no-print sm:block hidden">
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white sm:block hidden">
               <CardHeader className="p-4 border-b border-slate-50">
                 <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
                   <Briefcase className="w-4 h-4" />
