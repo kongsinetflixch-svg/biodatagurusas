@@ -1915,17 +1915,17 @@ function GuruProfile() {
 
 
         {/* SEARCH & ACTIONS */}
-        <div className="flex flex-col md:flex-row gap-4 no-print sticky top-4 z-50 animate-in slide-in-from-top duration-1000">
-          <div className="relative flex-1 group">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#002B5B] transition-colors w-6 h-6" />
+        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 px-2 sm:px-0 mt-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
-              placeholder="Cari maklumat profil..." 
-              className="pl-14 h-16 bg-white/95 backdrop-blur-xl border-white shadow-2xl shadow-[#002B5B]/10 rounded-[1.25rem] focus:ring-4 focus:ring-[#002B5B]/5 transition-all text-lg font-medium"
+              placeholder="Cari maklumat..." 
+              className="pl-12 h-12 bg-white/95 backdrop-blur-xl border-white shadow-lg rounded-xl focus:ring-2 focus:ring-[#002B5B]/10 transition-all text-sm font-bold"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex items-center justify-center gap-3 p-3 bg-white/95 backdrop-blur-xl rounded-[1.25rem] shadow-2xl shadow-[#002B5B]/10 border border-white">
+          <div className="flex items-center gap-2">
             <input 
               type="file" 
               ref={eOperasiInputRef} 
@@ -1934,30 +1934,22 @@ function GuruProfile() {
               className="hidden" 
             />
             <Button 
-              onClick={() => eOperasiInputRef.current?.click()} 
+              onClick={() => eOperasiInputRef.current?.click()}
               disabled={isImporting}
-              variant="outline"
-              className="h-12 flex-1 sm:flex-none sm:px-8 rounded-xl sm:rounded-2xl border-2 border-emerald-100 font-black text-xs uppercase tracking-wider hover:bg-emerald-50 transition-all text-emerald-700"
+              className="flex-1 sm:w-auto h-12 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl shadow-md border-none text-xs uppercase tracking-widest min-h-[44px]"
             >
-              {isImporting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <FileSpreadsheet className="w-5 h-5 mr-2" /> 
-                  <span>Import eOperasi</span>
-                </>
-              )}
+              {isImporting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <FileSpreadsheet className="w-4 h-4 mr-2" />}
+              Import
             </Button>
             <Button 
-              onClick={handlePrint} 
-              className="h-12 flex-1 sm:flex-none sm:px-8 bg-[#002B5B] hover:bg-[#003B7B] text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+              onClick={() => setShowPrintPreview(true)}
+              className="flex-1 sm:w-auto h-12 px-6 bg-[#002B5B] hover:bg-[#003B7B] text-white font-black rounded-xl shadow-md border-none text-xs uppercase tracking-widest min-h-[44px]"
             >
-              <Printer className="w-5 h-5 mr-2" /> 
-              <span>Cetak / PDF</span>
+              <Printer className="w-4 h-4 mr-2" /> Cetak
             </Button>
           </div>
-
         </div>
+
 
 
         {/* STATS CARDS REMOVED PER USER REQUEST */}
