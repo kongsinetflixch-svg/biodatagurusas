@@ -918,6 +918,7 @@ function GuruProfile() {
       } finally {
         setIsImporting(false);
       }
+      e.target.value = "";
     };
     reader.readAsDataURL(file);
   };
