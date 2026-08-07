@@ -2097,7 +2097,10 @@ function GuruProfile() {
             <div className="relative group/avatar">
               <div 
                 className="w-24 h-32 sm:w-36 sm:h-48 bg-white/10 rounded-xl sm:rounded-[2rem] border-2 border-white/20 overflow-hidden shadow-2xl transition-all group-hover/avatar:border-white/50 cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => {
+                  console.log("Profile avatar click");
+                  fileInputRef.current?.click();
+                }}
               >
                 {profileImage ? (
                   <img src={profileImage} alt="Profil" className="w-full h-full object-cover" />
@@ -2114,6 +2117,7 @@ function GuruProfile() {
                 onChange={handleImageUpload} 
                 accept="image/*" 
                 className="hidden" 
+                style={{ display: 'none' }}
               />
               {isEditMode && (
                  <div className="absolute -bottom-2 -right-2 bg-[#D4AF37] p-2 rounded-lg shadow-lg border border-white/20 animate-in zoom-in duration-300">
