@@ -464,16 +464,16 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   return (
     <div className="print-layout-container">
       {/* Header */}
-      <div className="print-header flex items-center justify-between border-b-2 border-black pb-4 mb-6">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 bg-white flex items-center justify-center p-0 overflow-hidden">
-             <img src={displayedLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
+      <div className="flex items-center justify-between border-b border-black pb-2 mb-4">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-white flex items-center justify-center p-0 overflow-hidden">
+             <img src={displayedLogo} alt="Logo" className="max-w-full max-h-full object-contain" />
           </div>
 
           <div>
-            <h1 className="text-xl font-black text-black uppercase leading-tight">Biodata Guru</h1>
-            <p className="text-base font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
-            <p className="text-sm font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
+            <h1 className="text-lg font-black text-black uppercase leading-tight">Biodata Guru</h1>
+            <p className="text-sm font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
+            <p className="text-[9pt] font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
           </div>
         </div>
 
@@ -482,16 +482,15 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             <img 
               src={currentTeacher.profileImage} 
               alt="Profil" 
-              className="print-photo w-[30mm] h-[38mm] border border-black object-cover"
+              className="w-[28mm] h-[36mm] border border-black object-cover"
             />
           ) : (
-            <div className="w-[30mm] h-[38mm] border border-black flex items-center justify-center bg-white text-[8pt] text-black text-center px-4">
+            <div className="w-[28mm] h-[36mm] border border-black flex items-center justify-center bg-white text-[8pt] text-black text-center px-4">
               GAMBAR PROFIL
             </div>
           )}
         </div>
       </div>
-
 
       {/* Personal Info */}
       <span className="section-title">Maklumat Peribadi</span>
@@ -512,13 +511,17 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
         ))}
       </div>
-      <div className="info-grid mt-1">
-        <div className="info-item">
-          <span className="info-label">Alamat Kediaman</span>
+
+      <div className="info-grid" style={{ marginTop: '-4mm' }}>
+        <div className="info-item" style={{ width: '100%' }}>
+          <span className="info-label" style={{ width: '20%' }}>Alamat Kediaman</span>
           <span className="info-value">{(profile as any)?.alamat || "-"}</span>
         </div>
-        <div className="info-item">
-          <span className="info-label">Jawatan</span>
+      </div>
+      
+      <div className="info-grid" style={{ marginTop: '-4mm' }}>
+        <div className="info-item" style={{ width: '100%' }}>
+          <span className="info-label" style={{ width: '20%' }}>Jawatan</span>
           <span className="info-value">{(profile as any)?.sekolah?.jawatan || "-"}</span>
         </div>
       </div>
@@ -547,7 +550,7 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             ))
           ) : (
             <tr>
-              <td colSpan={4} className="text-center italic text-slate-400">Tiada rekod kelulusan akademik</td>
+              <td colSpan={4} className="text-center italic text-black">Tiada rekod.</td>
             </tr>
           )}
         </tbody>
@@ -574,7 +577,7 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             ))
           ) : (
             <tr>
-              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
+              <td colSpan={3} className="text-center italic text-black">Tiada rekod.</td>
             </tr>
           )}
         </tbody>
@@ -601,35 +604,30 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
             ))
           ) : (
             <tr>
-              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod sejarah perkhidmatan</td>
+              <td colSpan={3} className="text-center italic text-black">Tiada rekod.</td>
             </tr>
           )}
         </tbody>
       </table>
 
-      {/* Signatures */}
-      <div className="signature-grid">
-        <div className="sig-column">
-          <span className="sig-label">TANDATANGAN GURU:</span>
-          <div className="sig-space">
-            {currentTeacher.signatureUrl ? (
-              <img src={currentTeacher.signatureUrl} alt="Tandatangan" className="sig-image" />
-            ) : (
-              <span className="text-[7pt] text-slate-400 italic mb-4">(Belum ditandatangani)</span>
+      {/* Signature Section */}
+      <div style={{ marginTop: '10mm', display: 'flex', justifyContent: 'flex-start' }}>
+        <div style={{ width: '60mm' }}>
+          <p style={{ fontSize: '9pt', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '15mm' }}>Tandatangan Guru:</p>
+          
+          <div style={{ borderBottom: '0.5pt solid black', marginBottom: '2mm', minHeight: '15mm', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+            {currentTeacher.signatureUrl && (
+              <img src={currentTeacher.signatureUrl} alt="Signature" style={{ maxHeight: '15mm', objectFit: 'contain' }} />
             )}
-            <div className="sig-line">
-              <span className="sig-name">NAMA: {(profile as any)?.nama}</span>
-            </div>
           </div>
-        </div>
-        <div className="sig-column">
+          
+          <p style={{ fontSize: '9pt', fontWeight: 'bold' }}>NAMA: {(profile as any)?.nama || ""}</p>
         </div>
       </div>
-
-
     </div>
   );
 };
+
 
 
 // Hardcoded teachers data from SAS 2026 List
