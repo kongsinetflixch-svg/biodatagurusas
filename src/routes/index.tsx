@@ -3097,11 +3097,11 @@ function GuruProfile() {
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
-
       {/* Hidden print layout component for browser Print (Ctrl+P) */}
       <div className="print-only">
         <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
       </div>
+
 
       {/* PRINT PREVIEW MODAL */}
       {showPrintPreview && (
