@@ -1527,43 +1527,44 @@ function GuruProfile() {
             </div>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 hover:scale-[1.02] transition-transform cursor-pointer border-l-4 border-blue-500" onClick={handleAddTeacher}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center">
-                  <Plus className="w-6 h-6" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-2 sm:px-0">
+            <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 hover:scale-[1.02] transition-transform cursor-pointer border-l-4 border-blue-500" onClick={handleAddTeacher}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+                  <Plus className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800">Tambah Guru</h3>
-                  <p className="text-xs text-slate-500">Cipta profil baru dalam panitia</p>
+                  <h3 className="font-bold text-slate-800 text-sm sm:text-base">Tambah Guru</h3>
+                  <p className="text-[10px] sm:text-xs text-slate-500">Cipta profil baru</p>
                 </div>
               </div>
             </Card>
             
-            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 border-l-4 border-amber-500">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center">
-                  <Users className="w-6 h-6" />
+            <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 border-l-4 border-amber-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center">
+                  <Users className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800">{teachers.length} Ahli Panitia</h3>
-                  <p className="text-xs text-slate-500">Jumlah profil berdaftar</p>
+                  <h3 className="font-bold text-slate-800 text-sm sm:text-base">{teachers.length} Ahli Panitia</h3>
+                  <p className="text-[10px] sm:text-xs text-slate-500">Jumlah profil</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 border-l-4 border-[#D4AF37]">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-50 text-[#002B5B] rounded-2xl flex items-center justify-center font-black">
+            <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 border-l-4 border-[#D4AF37]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 text-[#002B5B] rounded-xl flex items-center justify-center font-black text-xs">
                   KPM
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800">Status Portal</h3>
-                  <p className="text-xs text-slate-500">Online & Aktif</p>
+                  <h3 className="font-bold text-slate-800 text-sm sm:text-base">Status Portal</h3>
+                  <p className="text-[10px] sm:text-xs text-slate-500">Online & Aktif</p>
                 </div>
               </div>
             </Card>
           </div>
+
 
           <Card className="border-none shadow-xl rounded-3xl overflow-hidden bg-white">
             <CardHeader className="border-b border-slate-50 flex flex-row items-center justify-between p-6">
@@ -1747,6 +1748,7 @@ function GuruProfile() {
     <div className="min-h-screen bg-[#F0F2F5] p-4 md:p-8 font-sans text-slate-900 animate-in fade-in duration-700">
       <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
 
+
       <div className="print-only">
         <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
       </div>
@@ -1839,108 +1841,92 @@ function GuruProfile() {
 
         {/* SCREEN HEADER */}
 
-        <header className="no-print flex flex-col items-stretch bg-[#002B5B] p-6 sm:p-10 rounded-[2.5rem] shadow-2xl border-b-8 border-[#D4AF37] relative overflow-hidden group animate-in slide-in-from-top duration-700">
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-110 duration-1000" />
-          
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8 relative z-10">
-            <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8">
-              <div className="relative group/avatar">
-                <div className="absolute inset-0 bg-[#D4AF37] rounded-[2rem] blur-xl opacity-20 group-hover/avatar:opacity-40 transition-opacity"></div>
-                <Avatar className="w-24 h-24 sm:w-36 sm:h-36 border-4 border-white shadow-2xl rounded-[2rem] overflow-hidden transition-all group-hover/avatar:scale-105 group-hover/avatar:rotate-2 duration-500">
-                  <AvatarImage src={profileImage || ""} alt={(profile as any)?.nama} className="object-cover" />
-                  <AvatarFallback className="bg-slate-100 text-[#002B5B] text-2xl font-black">
-                    {(profile as any)?.nama?.charAt(0) || "G"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="absolute -bottom-2 -right-2 no-print">
-                  <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    onChange={handleImageUpload} 
-                    accept="image/*" 
-                    className="hidden" 
-                  />
-                  <Button 
-                    size="icon" 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-10 h-10 sm:w-12 sm:h-12 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl flex items-center justify-center cursor-pointer shadow-xl transition-all hover:scale-110 active:scale-95 border-4 border-white"
-                  >
-                    <Camera className="w-5 h-5" />
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="text-center md:text-left space-y-3">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 hidden sm:flex border border-slate-100 overflow-hidden">
-                     {schoolLogo ? (
-                       <img src={schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
-                     ) : (
-                       <span className="text-xs font-black text-[#002B5B]">KPM</span>
-                     )}
+        <header className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 relative z-10 w-full">
+            <div className="relative group/avatar">
+              <div 
+                className="w-24 h-32 sm:w-36 sm:h-48 bg-white/10 rounded-xl sm:rounded-[2rem] border-2 border-white/20 overflow-hidden shadow-2xl transition-all group-hover/avatar:border-white/50 cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {profileImage ? (
+                  <img src={profileImage} alt="Profil" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-white/40 space-y-2">
+                    <Camera className="w-8 h-8" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter">Muat Naik</span>
                   </div>
-                  <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight drop-shadow-lg">
-                    {(profile as any)?.nama || "SILA ISI NAMA GURU"}
-                  </h1>
-                </div>
-                
-                <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 mt-2">
-                  <div className="text-[#D4AF37] font-black text-[10px] sm:text-xs flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10 uppercase tracking-[0.1em]">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Profile Guru SMK Sultan Ahmad Shah
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full md:w-auto mt-4 md:mt-2">
-              <div className="flex flex-col sm:flex-row items-center gap-3 no-print">
-                <Button 
-                  onClick={() => setIsEditMode(!isEditMode)} 
-                  variant={isEditMode ? "destructive" : "secondary"}
-                  className={`w-full sm:w-auto h-12 px-8 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg ${!isEditMode && 'bg-white text-[#002B5B] hover:bg-blue-50'}`}
-                >
-                  {isEditMode ? <><X className="w-5 h-5 mr-3" /> Batal</> : <><Edit2 className="w-5 h-5 mr-3" /> Edit Maklumat</>}
-                </Button>
-                {isEditMode && (
-                  <Button 
-                    onClick={handleSave} 
-                    disabled={isSaving}
-                    className="w-full sm:w-auto h-12 px-10 bg-[#D4AF37] hover:bg-[#B8860B] text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-[#D4AF37]/20 transition-all animate-in zoom-in"
-                  >
-                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Save className="w-5 h-5 mr-3" /> Simpan Profil</>}
-                  </Button>
                 )}
               </div>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleImageUpload} 
+                accept="image/*" 
+                className="hidden" 
+              />
+              {isEditMode && (
+                 <div className="absolute -bottom-2 -right-2 bg-[#D4AF37] p-2 rounded-lg shadow-lg border border-white/20 animate-in zoom-in duration-300">
+                    <Camera className="w-4 h-4 text-white" />
+                 </div>
+              )}
+            </div>
+            
+            <div className="text-center sm:text-left flex-1 space-y-2">
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-1">
+                <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-400/30 text-blue-200 text-[9px] font-black rounded uppercase tracking-wider">
+                  {(profile as any)?.gred || "SSPA"}
+                </span>
+                <span className="px-2 py-0.5 bg-white/10 border border-white/10 text-blue-100 text-[9px] font-black rounded uppercase tracking-wider flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-[#D4AF37]" /> {(profile as any)?.sekolah?.jawatan || "GURU"}
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-4xl font-black text-white tracking-tight leading-tight drop-shadow-sm uppercase">
+                {(profile as any)?.nama || "NAMA GURU"}
+              </h1>
+              <div className="flex items-center justify-center sm:justify-start gap-2 text-blue-200/60 font-bold text-xs sm:text-sm">
+                <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>SMK SULTAN AHMAD SHAH, CAMERON HIGHLANDS</span>
+              </div>
+              
+              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 rounded-full text-[10px] font-bold text-blue-100/80">
+                 <div className={`w-1.5 h-1.5 rounded-full ${isSaving ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
+                 {isSaving ? "Sedang menyimpan..." : "Semua perubahan disimpan"}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+              <Button 
+                onClick={() => setIsEditMode(!isEditMode)} 
+                className={`h-11 sm:h-12 px-6 ${isEditMode ? 'bg-[#D4AF37] text-white' : 'bg-white text-[#002B5B]'} font-black rounded-xl shadow-lg transition-all text-xs uppercase tracking-widest min-h-[44px]`}
+              >
+                {isEditMode ? <><X className="w-4 h-4 mr-2" /> Batal</> : <><Edit2 className="w-4 h-4 mr-2" /> Edit Profil</>}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="h-11 sm:h-12 bg-rose-600 text-white hover:bg-rose-700 border-none font-black rounded-xl shadow-lg text-xs uppercase tracking-widest min-h-[44px]"
+              >
+                <LogOut className="w-4 h-4 mr-2" /> Log Keluar
+              </Button>
             </div>
           </div>
+          
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32" />
         </header>
 
-        {/* LOGOUT BUTTON - MOBILE & DESKTOP */}
-        <div className="no-print flex justify-end px-2 mb-4 animate-in slide-in-from-right duration-700">
-          <Button 
-            onClick={handleLogout}
-            variant="destructive"
-            className="h-12 px-8 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl shadow-xl shadow-rose-900/20 transition-all active:scale-[0.98] uppercase tracking-wider text-sm flex items-center gap-3"
-          >
-            <LogOut className="w-5 h-5 stroke-[3px]" />
-            Log Keluar
-          </Button>
-        </div>
 
         {/* SEARCH & ACTIONS */}
-        <div className="flex flex-col md:flex-row gap-4 no-print sticky top-4 z-50 animate-in slide-in-from-top duration-1000">
-          <div className="relative flex-1 group">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#002B5B] transition-colors w-6 h-6" />
+        <div className="flex flex-col md:flex-row gap-2 no-print sticky top-2 z-50 px-2 sm:px-0 mt-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input 
-              placeholder="Cari maklumat profil..." 
-              className="pl-14 h-16 bg-white/95 backdrop-blur-xl border-white shadow-2xl shadow-[#002B5B]/10 rounded-[1.25rem] focus:ring-4 focus:ring-[#002B5B]/5 transition-all text-lg font-medium"
+              placeholder="Cari maklumat..." 
+              className="pl-12 h-12 bg-white/95 backdrop-blur-xl border-white shadow-lg rounded-xl focus:ring-2 focus:ring-[#002B5B]/10 transition-all text-sm font-bold"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex items-center justify-center gap-3 p-3 bg-white/95 backdrop-blur-xl rounded-[1.25rem] shadow-2xl shadow-[#002B5B]/10 border border-white">
+          <div className="flex items-center gap-2">
             <input 
               type="file" 
               ref={eOperasiInputRef} 
@@ -1949,71 +1935,38 @@ function GuruProfile() {
               className="hidden" 
             />
             <Button 
-              onClick={() => eOperasiInputRef.current?.click()} 
+              onClick={() => eOperasiInputRef.current?.click()}
               disabled={isImporting}
-              variant="outline"
-              className="h-12 flex-1 sm:flex-none sm:px-8 rounded-xl sm:rounded-2xl border-2 border-emerald-100 font-black text-xs uppercase tracking-wider hover:bg-emerald-50 transition-all text-emerald-700"
+              className="flex-1 sm:w-auto h-12 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl shadow-md border-none text-xs uppercase tracking-widest min-h-[44px]"
             >
-              {isImporting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <FileSpreadsheet className="w-5 h-5 mr-2" /> 
-                  <span>Import eOperasi</span>
-                </>
-              )}
+              {isImporting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <FileSpreadsheet className="w-4 h-4 mr-2" />}
+              Import
             </Button>
             <Button 
-              onClick={handlePrint} 
-              className="h-12 flex-1 sm:flex-none sm:px-8 bg-[#002B5B] hover:bg-[#003B7B] text-white rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+              onClick={() => setShowPrintPreview(true)}
+              className="flex-1 sm:w-auto h-12 px-6 bg-[#002B5B] hover:bg-[#003B7B] text-white font-black rounded-xl shadow-md border-none text-xs uppercase tracking-widest min-h-[44px]"
             >
-              <Printer className="w-5 h-5 mr-2" /> 
-              <span>Cetak / PDF</span>
+              <Printer className="w-4 h-4 mr-2" /> Cetak
             </Button>
           </div>
-
         </div>
+
 
 
         {/* STATS CARDS REMOVED PER USER REQUEST */}
 
 
         {/* TWO COLUMNS DATA */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-3 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white no-print">
-            <div className="h-2 bg-emerald-500"></div>
-            <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-6">
-                <div className="bg-emerald-100 p-4 rounded-[2rem]">
-                  <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-black text-[#002B5B]">Import Data eOperasi</h3>
-                  <p className="text-slate-500 font-medium">Muat naik fail PDF "Paparan Semakan Data" untuk mengisi profil secara automatik.</p>
-                </div>
-              </div>
-              <Button 
-                onClick={() => eOperasiInputRef.current?.click()} 
-                disabled={isImporting}
-                className="w-full md:w-auto h-14 px-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-emerald-200 transition-all active:scale-[0.98]"
-              >
-                {isImporting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Plus className="w-5 h-5 mr-3" />}
-                {isImporting ? "Sedang Memproses..." : "Pilih Fail PDF"}
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white card-print">
-            <div className="h-2 bg-[#002B5B] no-print"></div>
-            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8 print:py-0 print:px-0 print:border-none">
-              <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3 section-title">
-                <div className="bg-[#002B5B] p-2 rounded-lg no-print"><FileText className="w-5 h-5 text-white" /></div>
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
+          <Card className="lg:col-span-2 border-none shadow-md rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg font-black text-[#002B5B] flex items-center gap-2">
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
                 Maklumat Peribadi
               </CardTitle>
-              {!isEditMode && <div className="text-[10px] px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold uppercase tracking-wider">Lengkap</div>}
             </CardHeader>
-            <CardContent className="p-8 print:p-0">
-              <div className="grid md:grid-cols-2 gap-x-10 gap-y-8 info-grid">
+            <CardContent className="p-4 sm:p-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-6">
                 {[
                   { label: "Nama Penuh", key: "nama", icon: "👤" },
                   { label: "No. Kad Pengenalan", key: "kp", icon: "🆔" },
@@ -2024,10 +1977,9 @@ function GuruProfile() {
                   { label: "Tarikh Berkhidmat", key: "tarikhMula", icon: "📅" },
                   { label: "Gred Jawatan", key: "gred", icon: "🎗️" },
                 ].map((item) => (
-                  <div key={item.key} className="space-y-2 group info-item">
-                    <div className="flex items-center gap-2 print:gap-0">
-                      <span className="text-sm opacity-50 no-print">{item.icon}</span>
-                      <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
+                  <div key={item.key} className="space-y-1">
+                    <div className="flex items-center gap-1.5">
+                      <Label className="text-slate-400 text-[10px] sm:text-[11px] font-black uppercase tracking-wider">{item.label}</Label>
                     </div>
 
                     {isEditMode ? (
@@ -2036,7 +1988,7 @@ function GuruProfile() {
                           value={(profile as any)[item.key] || ""}
                           onValueChange={(val) => updateCurrentTeacher({ profile: { ...(profile as any), [item.key]: val } })}
                         >
-                          <SelectTrigger className="h-12 sm:h-11 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
+                          <SelectTrigger className="h-11 rounded-xl border-slate-100 focus:ring-[#002B5B] text-sm font-bold">
                             <SelectValue placeholder="Pilih Gred" />
                           </SelectTrigger>
                           <SelectContent className="bg-white border-slate-200">
@@ -2052,201 +2004,250 @@ function GuruProfile() {
                             const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
                             updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
                           }}
-                          className="h-12 sm:h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-base"
+                          className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-sm font-bold"
                         />
                       )
                     ) : (
-                      <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:min-h-0 print:p-0 print:bg-transparent print:border-none">
-                        <p className="text-slate-700 info-value">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
+                      <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent">
+                        <p className="text-[#002B5B] font-bold text-sm sm:text-base">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
                       </div>
-
                     )}
                   </div>
                 ))}
-                <div className="md:col-span-2 space-y-2 info-item">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm opacity-50 no-print">🏠</span>
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Kediaman</Label>
 
-                  </div>
+                <div className="sm:col-span-2 space-y-1 mt-2">
+                  <Label className="text-slate-400 text-[10px] sm:text-[11px] font-black uppercase tracking-wider">Alamat Kediaman</Label>
                   {isEditMode ? (
                     <Textarea 
                       value={(profile as any).alamat} 
                       onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), alamat: e.target.value}})}
-                      className="min-h-[100px] rounded-xl border-slate-100 text-base"
+                      className="min-h-[80px] rounded-xl border-slate-100 text-sm font-bold"
                     />
                   ) : (
-                    <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:p-0 print:bg-transparent print:border-none">
-                      <p className="text-slate-700 leading-relaxed info-value">{(profile as any).alamat || "-"}</p>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-transparent">
+                      <p className="text-[#002B5B] font-bold text-sm sm:text-base leading-relaxed">{(profile as any).alamat || "-"}</p>
                     </div>
-
                   )}
                 </div>
+
               </div>
             </CardContent>
           </Card>
 
-          <div className="space-y-6 no-print">
-            <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white card-print">
-              <div className="h-2 bg-[#D4AF37] no-print"></div>
-              <CardHeader className="py-6 px-8 border-b border-slate-50 print:py-0 print:px-0 print:border-none">
-                <CardTitle className="text-lg font-black text-[#002B5B] flex items-center gap-3 section-title">
-                  <div className="bg-[#D4AF37] p-2 rounded-lg no-print"><Briefcase className="w-5 h-5 text-white" /></div>
+          <div className="space-y-4 no-print">
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <Briefcase className="w-4 h-4" />
                   Sekolah
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-8 space-y-6 print:p-0 print:space-y-2">
-                {[
-                  { label: "Nama Sekolah", key: "nama" },
-                  { label: "Kod Sekolah", key: "kod" },
-                  { label: "Jawatan", key: "jawatan" },
-                ].map((item) => (
-                  <div key={item.key} className="space-y-2 info-item">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
-                    {isEditMode ? (
-                      <Input 
-                        value={(profile as any).sekolah?.[item.key] || ""} 
-                        onChange={(e) => updateCurrentTeacher({ 
-                          profile: {
-                            ...(profile as any), 
-                            sekolah: {
-                              ...((profile as any).sekolah || {}), 
-                              [item.key]: e.target.value
-                            }
-                          } 
-                        })}
-                        className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-                      />
-                    ) : (
-                      <p className="text-slate-700 info-value">{(profile as any).sekolah?.[item.key] || "-"}</p>
-                    )}
-                  </div>
-                ))}
+              <CardContent className="p-4 space-y-4">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    { label: "Nama Sekolah", val: (profile as any).sekolah?.nama },
+                    { label: "Kod Sekolah", val: (profile as any).sekolah?.kod },
+                    { label: "Jawatan", val: (profile as any).sekolah?.jawatan },
+                    { label: "Pemeriksa SPM", val: (profile as any).sekolah?.pemeriksaSPM },
+                  ].map((item, idx) => (
+                    <div key={idx} className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
+                      <p className="text-sm font-bold text-[#002B5B]">{item.val || "-"}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-[#002B5B]/5 p-3 rounded-xl border border-[#002B5B]/10">
+                   <p className="text-[10px] font-black text-[#002B5B]/40 uppercase tracking-wider mb-1">Alamat Sekolah</p>
+                   <p className="text-sm font-bold text-[#002B5B]">{(profile as any).sekolah?.alamat}, {(profile as any).sekolah?.poskod} {(profile as any).sekolah?.daerah}, {(profile as any).sekolah?.negeri}</p>
+                </div>
+              </CardContent>
+            </Card>
 
-                <div className="space-y-2 info-item">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Pemeriksa SPM</Label>
-                  {isEditMode ? (
-                    <Select
-                      value={(profile as any).sekolah?.pemeriksaSPM || "Tidak"}
-                      onValueChange={(val) => updateCurrentTeacher({ 
-                        profile: {
-                          ...(profile as any), 
-                          sekolah: {
-                            ...((profile as any).sekolah || {}), 
-                            pemeriksaSPM: val
-                          }
-                        } 
-                      })}
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  Kelayakan Akademik ({profile?.academic?.length || 0})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Accordion type="single" collapsible className="w-full">
+                  {profile?.academic?.map((item: any, idx: number) => (
+                    <AccordionItem key={idx} value={`item-${idx}`} className="border-b border-slate-50 last:border-none">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-slate-50/50">
+                        <div className="text-left">
+                          <p className="text-sm font-black text-[#002B5B] leading-tight">{item.tahap || "Peringkat"}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase truncate max-w-[200px]">{item.bidang || "Bidang"}</p>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 space-y-3 bg-slate-50/30">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-white p-2 rounded-lg border border-slate-100">
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Tahun</p>
+                             <p className="text-xs font-bold text-[#002B5B]">{item.tahun || "-"}</p>
+                          </div>
+                          <div className="bg-white p-2 rounded-lg border border-slate-100 col-span-2">
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Institusi</p>
+                             <p className="text-xs font-bold text-[#002B5B]">{item.institusi || "-"}</p>
+                          </div>
+                        </div>
+                        {isEditMode && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              const newAcademic = [...(profile?.academic || [])];
+                              newAcademic.splice(idx, 1);
+                              updateCurrentTeacher({ profile: { ...profile, academic: newAcademic } });
+                            }}
+                            className="w-full h-8 text-rose-500 font-bold text-[10px] uppercase"
+                          >
+                            Padam Rekod
+                          </Button>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+                {isEditMode && (
+                  <div className="p-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        const newAcademic = [...(profile?.academic || []), { tahap: "", bidang: "", institusi: "", tahun: "" }];
+                        updateCurrentTeacher({ profile: { ...profile, academic: newAcademic } });
+                      }}
+                      className="w-full h-10 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-[10px] uppercase"
                     >
-                      <SelectTrigger className="h-12 sm:h-10 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
-                        <SelectValue placeholder="Pilih Status" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border-slate-200">
-                        <SelectItem value="Ya">Ya</SelectItem>
-                        <SelectItem value="Tidak">Tidak</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <p className="text-slate-700 info-value">{(profile as any).sekolah?.pemeriksaSPM || "-"}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2 info-item">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Sekolah</Label>
-                  {isEditMode ? (
-                    <Input 
-                      value={(profile as any).sekolah?.alamat || ""} 
-                      onChange={(e) => updateCurrentTeacher({ 
-                        profile: {
-                          ...(profile as any), 
-                          sekolah: {
-                            ...((profile as any).sekolah || {}), 
-                            alamat: e.target.value
-                          }
-                        } 
-                      })}
-                      className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-                    />
-                  ) : (
-                    <p className="font-bold text-slate-700 info-value">{(profile as any).sekolah?.alamat || "-"}</p>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 print:grid-cols-1 print:gap-2">
-                  <div className="space-y-2 info-item">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Poskod</Label>
-                    {isEditMode ? (
-                      <Input 
-                        value={(profile as any).sekolah?.poskod || ""} 
-                        onChange={(e) => updateCurrentTeacher({ 
-                          profile: {
-                            ...(profile as any), 
-                            sekolah: {
-                              ...((profile as any).sekolah || {}), 
-                              poskod: e.target.value
-                            }
-                          } 
-                        })}
-                        className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-                      />
-                    ) : (
-                      <p className="text-slate-700 info-value">{(profile as any).sekolah?.poskod || "-"}</p>
-                    )}
+                      Tambah Rekod Akademik
+                    </Button>
                   </div>
-                  <div className="space-y-2 info-item">
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Daerah</Label>
-                    {isEditMode ? (
-                      <Input 
-                        value={(profile as any).sekolah?.daerah || ""} 
-                        onChange={(e) => updateCurrentTeacher({ 
-                          profile: {
-                            ...(profile as any), 
-                            sekolah: {
-                              ...((profile as any).sekolah || {}), 
-                              daerah: e.target.value
-                            }
-                          } 
-                        })}
-                        className="h-12 sm:h-10 rounded-xl border-slate-100 text-base"
-                      />
-                    ) : (
-                      <p className="text-slate-700 info-value">{(profile as any).sekolah?.daerah || "-"}</p>
-                    )}
-                  </div>
-                </div>
+                )}
+              </CardContent>
+            </Card>
 
-                <div className="space-y-2 info-item">
-                  <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Negeri</Label>
-                  {isEditMode ? (
-                    <Select
-                      value={(profile as any).sekolah?.negeri || ""}
-                      onValueChange={(val) => updateCurrentTeacher({ 
-                        profile: {
-                          ...(profile as any), 
-                          sekolah: {
-                            ...((profile as any).sekolah || {}), 
-                            negeri: val
-                          }
-                        } 
-                      })}
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <History className="w-4 h-4" />
+                  Sejarah Perkhidmatan ({profile?.history?.length || 0})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Accordion type="single" collapsible className="w-full">
+                  {profile?.history?.map((item: any, idx: number) => (
+                    <AccordionItem key={idx} value={`history-${idx}`} className="border-b border-slate-50 last:border-none">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-slate-50/50">
+                        <div className="text-left">
+                          <p className="text-sm font-black text-[#002B5B] leading-tight">{item.tempat || "Tempat Perkhidmatan"}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase">{item.tahun || "Tahun"}</p>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-4 space-y-3 bg-slate-50/30">
+                        <div className="bg-white p-2 rounded-lg border border-slate-100">
+                           <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Jawatan</p>
+                           <p className="text-xs font-bold text-[#002B5B]">{item.jawatan || "-"}</p>
+                        </div>
+                        {isEditMode && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              const newHistory = [...(profile?.history || [])];
+                              newHistory.splice(idx, 1);
+                              updateCurrentTeacher({ profile: { ...profile, history: newHistory } });
+                            }}
+                            className="w-full h-8 text-rose-500 font-bold text-[10px] uppercase"
+                          >
+                            Padam Rekod
+                          </Button>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+                {isEditMode && (
+                   <div className="p-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        const newHistory = [...(profile?.history || []), { tempat: "", jawatan: "", tahun: "" }];
+                        updateCurrentTeacher({ profile: { ...profile, history: newHistory } });
+                      }}
+                      className="w-full h-10 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-[10px] uppercase"
                     >
-                      <SelectTrigger className="h-12 sm:h-10 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
-                        <SelectValue placeholder="Pilih Negeri" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border-slate-200">
-                        {MALAYSIAN_STATES.map(state => (
-                          <SelectItem key={state} value={state}>{state}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <p className="text-slate-700 info-value">{(profile as any).sekolah?.negeri || "-"}</p>
-                  )}
-                </div>
+                      Tambah Sejarah Perkhidmatan
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <PenTool className="w-4 h-4" />
+                  Tandatangan Guru
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 flex flex-col items-center">
+                {signatureUrl ? (
+                  <div className="relative group">
+                    <img src={signatureUrl} alt="Tandatangan" className="max-h-20 bg-slate-50 rounded-lg p-2" />
+                    {isEditMode && (
+                      <Button 
+                        size="icon"
+                        variant="destructive"
+                        onClick={() => setSignatureUrl(null)}
+                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowSignatureModal(true)}
+                    className="w-full h-12 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-xs uppercase"
+                  >
+                    Tambah Tandatangan
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </div>
         </div>
+      </div>
+
+      {/* Floating Save Bar for Mobile Edit Mode */}
+      {isEditMode && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] z-[100] no-print animate-in slide-in-from-bottom duration-500">
+           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+              <div className="flex flex-col">
+                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mod Edit</p>
+                 <p className="text-xs font-bold text-[#002B5B]">{isSaving ? "Sedang menyimpan..." : "Perubahan belum disimpan"}</p>
+              </div>
+              <div className="flex gap-2">
+                 <Button 
+                   variant="outline"
+                   onClick={() => setIsEditMode(false)}
+                   className="h-11 px-4 border-slate-200 text-slate-600 font-black text-xs uppercase"
+                 >
+                   Batal
+                 </Button>
+                 <Button 
+                   onClick={handleSave}
+                   disabled={isSaving}
+                   className="h-11 px-8 bg-[#D4AF37] hover:bg-[#B8860B] text-white font-black text-xs uppercase shadow-lg shadow-[#D4AF37]/20"
+                 >
+                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Simpan"}
+                 </Button>
+              </div>
+           </div>
+        </div>
+      )}
+      <div id="profile-details-container" className="space-y-6">
 
         {/* TABLES SECTION */}
         <div className="space-y-6 animate-in slide-up duration-500 delay-400">
@@ -2653,29 +2654,28 @@ function GuruProfile() {
                 </div>
               </div>
             </div>
-          </div>
-          {isAdminMode && (
-            <div className="space-y-12 animate-in fade-in duration-700">
-              <div className="space-y-4">
-                <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs info-label">Disahkan Oleh</p>
-                <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center print:border-none print:mt-10">
-                  <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
+
+            {isAdminMode && (
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs info-label">Disahkan Oleh</p>
+                  <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center print:border-none print:mt-10">
+                    <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center sig-box">Cap dan Tandatangan Pengetua / Guru Besar</p>
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center sig-box">Cap dan Tandatangan Pengetua / Guru Besar</p>
               </div>
-            </div>
-          )}
-
+            )}
+          </div>
         </div>
+      </div>
 
 
-        {/* FOOTER */}
         <footer className="no-print text-center py-12 space-y-2">
           <p className="text-[#002B5B] font-black text-sm">Profile Guru SMK Sultan Ahmad Shah © 2026</p>
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
-      </div>
 
       {/* PRINT PREVIEW MODAL */}
       {showPrintPreview && (
@@ -2713,4 +2713,6 @@ function GuruProfile() {
     </div>
   );
 }
+
+
 
