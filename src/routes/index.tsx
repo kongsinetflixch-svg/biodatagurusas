@@ -1280,78 +1280,52 @@ function GuruProfile() {
   const updateCurrentTeacher = (updates: any) => {
     if (!activeTeacherId) return;
     
-    // Auto-uppercase function
-    const toUpper = (val: any) => {
-      if (typeof val === 'string') return val.toLocaleUpperCase("ms-MY");
-      return val;
+    // Deep clone updates to avoid mutations
+    const processedUpdates = JSON.parse(JSON.stringify(updates));
+
+    // Recursive helper to uppercase all strings except for specific fields
+    const transformData = (obj: any, currentKey: string = ""): any => {
+      if (typeof obj === 'string') {
+        // EXCEPTION: Email must remain exactly as typed
+        // Also skip numeric/technical fields that should not be forced to uppercase
+        const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod'];
+        const isUrl = obj.startsWith('http') || obj.startsWith('blob:') || currentKey.toLowerCase().includes('url');
+        
+        if (excludeKeys.includes(currentKey) || isUrl) {
+          return obj;
+        }
+        return obj.toUpperCase();
+      }
+      
+      if (Array.isArray(obj)) {
+        return obj.map(item => transformData(item, currentKey));
+      }
+      
+      if (obj !== null && typeof obj === 'object') {
+        const result: any = {};
+        for (const key in obj) {
+          result[key] = transformData(obj[key], key);
+        }
+        return result;
+      }
+      
+      return obj;
     };
 
-    // Auto-uppercase string values in profile
-    if (updates.profile) {
-      const p = updates.profile;
-      const exclude = ['email', 'kp']; // Only exclude email from uppercase, and IC (technical)
-      Object.keys(p).forEach(k => {
-        if (typeof p[k] === 'string' && !exclude.includes(k)) {
-          p[k] = toUpper(p[k]);
-        }
-        if (k === 'sekolah' && typeof p[k] === 'object') {
-          const s = p[k];
-          Object.keys(s).forEach(sk => {
-            if (typeof s[sk] === 'string') {
-              s[sk] = toUpper(s[sk]);
-            }
-          });
-        }
-        // Handle nested arrays in profile if any
-        if (Array.isArray(p[k])) {
-          p[k] = p[k].map((item: any) => {
-            if (typeof item === 'object') {
-              const newItem = { ...item };
-              Object.keys(newItem).forEach(ik => {
-                if (typeof newItem[ik] === 'string') newItem[ik] = toUpper(newItem[ik]);
-              });
-              return newItem;
-            }
-            return toUpper(item);
-          });
-        }
-      });
-    }
-
-    // Auto-uppercase arrays
-    if (updates.kelulusan) {
-      updates.kelulusan = updates.kelulusan.map((k: any) => {
-        const nk = { ...k };
-        Object.keys(nk).forEach(field => {
-          if (typeof nk[field] === 'string') nk[field] = toUpper(nk[field]);
-        });
-        return nk;
-      });
-    }
-
-    if (updates.subjek) {
-      updates.subjek = updates.subjek.map((s: any) => {
-        const ns = { ...s };
-        Object.keys(ns).forEach(field => {
-          if (typeof ns[field] === 'string') ns[field] = toUpper(ns[field]);
-        });
-        return ns;
-      });
-    }
-
-    if (updates.sejarah) {
-      updates.sejarah = updates.sejarah.map((s: any) => {
-        const ns = { ...s };
-        Object.keys(ns).forEach(field => {
-          if (typeof ns[field] === 'string') ns[field] = toUpper(ns[field]);
-        });
-        return ns;
-      });
-    }
-
+    const finalUpdates = transformData(processedUpdates);
+    
     setTeachers(teachers.map(t => 
-      t.id === activeTeacherId ? { ...t, ...updates } : t
+      t.id === activeTeacherId ? { ...t, ...finalUpdates } : t
     ));
+    
+    // Also update localStorage draft if it exists
+    const currentDraft = localStorage.getItem('guru_profile_draft');
+    if (currentDraft && currentTeacher) {
+      const draftObj = JSON.parse(currentDraft);
+      if (draftObj.id === activeTeacherId) {
+        localStorage.setItem('guru_profile_draft', JSON.stringify({ ...draftObj, ...finalUpdates }));
+      }
+    }
   };
 
   const handlePrint = () => {
