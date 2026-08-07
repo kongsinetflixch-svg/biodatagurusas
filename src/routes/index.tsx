@@ -1203,21 +1203,39 @@ function GuruProfile() {
   const updateCurrentTeacher = (updates: any) => {
     if (!activeTeacherId) return;
     
+    // Auto-uppercase function
+    const toUpper = (val: any) => {
+      if (typeof val === 'string') return val.toLocaleUpperCase("ms-MY");
+      return val;
+    };
+
     // Auto-uppercase string values in profile
     if (updates.profile) {
       const p = updates.profile;
-      const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
+      const exclude = ['email']; // Only exclude email from uppercase
       Object.keys(p).forEach(k => {
         if (typeof p[k] === 'string' && !exclude.includes(k)) {
-          p[k] = p[k].toUpperCase();
+          p[k] = toUpper(p[k]);
         }
         if (k === 'sekolah' && typeof p[k] === 'object') {
           const s = p[k];
-          const sExclude = ['tel', 'faks', 'poskod', 'kod'];
           Object.keys(s).forEach(sk => {
-            if (typeof s[sk] === 'string' && !sExclude.includes(sk)) {
-              s[sk] = s[sk].toUpperCase();
+            if (typeof s[sk] === 'string') {
+              s[sk] = toUpper(s[sk]);
             }
+          });
+        }
+        // Handle nested arrays in profile if any
+        if (Array.isArray(p[k])) {
+          p[k] = p[k].map((item: any) => {
+            if (typeof item === 'object') {
+              const newItem = { ...item };
+              Object.keys(newItem).forEach(ik => {
+                if (typeof newItem[ik] === 'string') newItem[ik] = toUpper(newItem[ik]);
+              });
+              return newItem;
+            }
+            return toUpper(item);
           });
         }
       });
@@ -1227,8 +1245,8 @@ function GuruProfile() {
     if (updates.kelulusan) {
       updates.kelulusan = updates.kelulusan.map((k: any) => {
         const nk = { ...k };
-        ['kelayakan', 'institusi', 'bidang'].forEach(field => {
-          if (nk[field]) nk[field] = nk[field].toUpperCase();
+        Object.keys(nk).forEach(field => {
+          if (typeof nk[field] === 'string') nk[field] = toUpper(nk[field]);
         });
         return nk;
       });
@@ -1237,8 +1255,8 @@ function GuruProfile() {
     if (updates.subjek) {
       updates.subjek = updates.subjek.map((s: any) => {
         const ns = { ...s };
-        ['nama', 'kelas'].forEach(field => {
-          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        Object.keys(ns).forEach(field => {
+          if (typeof ns[field] === 'string') ns[field] = toUpper(ns[field]);
         });
         return ns;
       });
@@ -1247,12 +1265,17 @@ function GuruProfile() {
     if (updates.sejarah) {
       updates.sejarah = updates.sejarah.map((s: any) => {
         const ns = { ...s };
-        ['sekolah', 'subjek'].forEach(field => {
-          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        Object.keys(ns).forEach(field => {
+          if (typeof ns[field] === 'string') ns[field] = toUpper(ns[field]);
         });
         return ns;
       });
     }
+
+    setTeachers(teachers.map(t => 
+      t.id === activeTeacherId ? { ...t, ...updates } : t
+    ));
+  };
 
     setTeachers(teachers.map(t => 
       t.id === activeTeacherId ? { ...t, ...updates } : t
