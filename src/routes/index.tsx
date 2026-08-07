@@ -96,6 +96,7 @@ const PRINT_STYLES = `
       text-shadow: none !important;
       border-radius: 0 !important;
       background-image: none !important;
+      background-color: transparent !important;
     }
 
     html, body, #root, [data-reactroot] {
@@ -108,9 +109,10 @@ const PRINT_STYLES = `
 
     body {
       font-family: 'Arial', sans-serif !important;
-      font-size: 9pt !important;
+      font-size: 10pt !important;
       line-height: 1.2 !important;
     }
+
 
     /* Hide everything by default during print */
     #root > div:not(.print-only),
