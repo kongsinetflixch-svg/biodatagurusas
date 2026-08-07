@@ -537,15 +537,6 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
           </div>
         </div>
         <div className="sig-column">
-          <span className="sig-label">DISAHKAN OLEH:</span>
-          <div className="sig-space">
-            <span className="text-[7pt] text-slate-400 italic mb-4 text-center">
-              (Belum disahkan / Tiada perakuan)
-            </span>
-            <div className="sig-line">
-              <span className="sig-name text-center block">Cap dan Tandatangan Pengetua / Guru Besar</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1212,21 +1203,39 @@ function GuruProfile() {
   const updateCurrentTeacher = (updates: any) => {
     if (!activeTeacherId) return;
     
+    // Auto-uppercase function
+    const toUpper = (val: any) => {
+      if (typeof val === 'string') return val.toLocaleUpperCase("ms-MY");
+      return val;
+    };
+
     // Auto-uppercase string values in profile
     if (updates.profile) {
       const p = updates.profile;
-      const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
+      const exclude = ['email', 'kp']; // Only exclude email from uppercase, and IC (technical)
       Object.keys(p).forEach(k => {
         if (typeof p[k] === 'string' && !exclude.includes(k)) {
-          p[k] = p[k].toUpperCase();
+          p[k] = toUpper(p[k]);
         }
         if (k === 'sekolah' && typeof p[k] === 'object') {
           const s = p[k];
-          const sExclude = ['tel', 'faks', 'poskod', 'kod'];
           Object.keys(s).forEach(sk => {
-            if (typeof s[sk] === 'string' && !sExclude.includes(sk)) {
-              s[sk] = s[sk].toUpperCase();
+            if (typeof s[sk] === 'string') {
+              s[sk] = toUpper(s[sk]);
             }
+          });
+        }
+        // Handle nested arrays in profile if any
+        if (Array.isArray(p[k])) {
+          p[k] = p[k].map((item: any) => {
+            if (typeof item === 'object') {
+              const newItem = { ...item };
+              Object.keys(newItem).forEach(ik => {
+                if (typeof newItem[ik] === 'string') newItem[ik] = toUpper(newItem[ik]);
+              });
+              return newItem;
+            }
+            return toUpper(item);
           });
         }
       });
@@ -1236,8 +1245,8 @@ function GuruProfile() {
     if (updates.kelulusan) {
       updates.kelulusan = updates.kelulusan.map((k: any) => {
         const nk = { ...k };
-        ['kelayakan', 'institusi', 'bidang'].forEach(field => {
-          if (nk[field]) nk[field] = nk[field].toUpperCase();
+        Object.keys(nk).forEach(field => {
+          if (typeof nk[field] === 'string') nk[field] = toUpper(nk[field]);
         });
         return nk;
       });
@@ -1246,8 +1255,8 @@ function GuruProfile() {
     if (updates.subjek) {
       updates.subjek = updates.subjek.map((s: any) => {
         const ns = { ...s };
-        ['nama', 'kelas'].forEach(field => {
-          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        Object.keys(ns).forEach(field => {
+          if (typeof ns[field] === 'string') ns[field] = toUpper(ns[field]);
         });
         return ns;
       });
@@ -1256,8 +1265,8 @@ function GuruProfile() {
     if (updates.sejarah) {
       updates.sejarah = updates.sejarah.map((s: any) => {
         const ns = { ...s };
-        ['sekolah', 'subjek'].forEach(field => {
-          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        Object.keys(ns).forEach(field => {
+          if (typeof ns[field] === 'string') ns[field] = toUpper(ns[field]);
         });
         return ns;
       });
@@ -2332,9 +2341,7 @@ function GuruProfile() {
                           value={(profile as any)[item.key as keyof typeof profile] as string} 
                           onChange={(e) => {
                             const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
-                            const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
-                            const finalVal = exclude.includes(item.key) ? val : val.toUpperCase();
-                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: finalVal}});
+                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
                           }}
                           className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-sm font-bold"
                         />
@@ -2516,39 +2523,6 @@ function GuruProfile() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
-              <CardHeader className="p-4 border-b border-slate-50">
-                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
-                  <PenTool className="w-4 h-4" />
-                  Tandatangan Guru
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 flex flex-col items-center">
-                {(currentTeacher as any)?.signatureUrl ? (
-                  <div className="relative group">
-                    <img src={(currentTeacher as any).signatureUrl} alt="Tandatangan" className="max-h-20 bg-slate-50 rounded-lg p-2" />
-                    {isEditMode && (
-                      <Button 
-                        size="icon"
-                        variant="destructive"
-                        onClick={() => updateCurrentTeacher({ signatureUrl: null })}
-                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full"
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    )}
-                  </div>
-                ) : (
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowSignatureModal(true)}
-                    className="w-full h-12 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-xs uppercase"
-                  >
-                    Tambah Tandatangan
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
@@ -2954,17 +2928,6 @@ function GuruProfile() {
               </div>
             </div>
 
-            {isAdminMode && (
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <p className="font-black text-[#002B5B] uppercase tracking-widest text-xs info-label">Disahkan Oleh</p>
-                  <div className="h-[150px] w-full border-2 border-slate-100 border-dashed rounded-2xl bg-slate-50/30 flex items-center justify-center print:border-none print:mt-10">
-                    <p className="text-slate-300 text-[10px] uppercase font-bold tracking-widest">Ruang Cap Rasmi</p>
-                  </div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center sig-box">Cap dan Tandatangan Pengetua / Guru Besar</p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -3012,6 +2975,10 @@ function GuruProfile() {
     </div>
   );
 }
+
+export default GuruProfile;
+
+
 
 
 
