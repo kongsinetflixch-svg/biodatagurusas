@@ -864,40 +864,40 @@ function GuruProfile() {
     console.log("Auto-creating profile for IC:", ic);
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "",
+        nama: (sasTeacher?.nama || "").toUpperCase(),
         kp: ic || "",
         tel: "01X-XXXXXXX",
         email: `${(sasTeacher?.nama || 'guru').toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 Tahun",
-        tempohSemasa: "5 Tahun",
+        pengalaman: "10 TAHUN",
+        tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
-        opsyen: "Sejarah",
+        opsyen: "SEJARAH",
         gred: "DG44",
-        mengajarOpsyen: "Ya",
-        alamat: "Kuwaters Guru, Tanah Rata",
+        mengajarOpsyen: "YA",
+        alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
-          nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah",
+          nama: "SMK SULTAN AHMAD SHAH",
+          alamat: "PERSIARAN DAYANG ENDAH",
           poskod: "39000",
-          daerah: "Tanah Rata",
-          negeri: "Pahang",
+          daerah: "TANAH RATA",
+          negeri: "PAHANG",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
-          jawatan: sasTeacher?.jabatan || "Guru",
-          guruKhas: "Tiada",
-          pemeriksaSPM: "Tidak",
+          jawatan: (sasTeacher?.jabatan || "GURU").toUpperCase(),
+          guruKhas: "TIADA",
+          pemeriksaSPM: "TIDAK",
           lain: "-"
         }
       },
       kelulusan: [
-        { id: 1, kelayakan: "Sarjana Muda Pendidikan", institusi: "UPSI", bidang: "Sejarah", tahun: "2014" }
+        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
       ],
       subjek: [
-        { id: 1, nama: "Sejarah", kelas: "5 Delta", murid: "30", tov: "45", etr: "75" }
+        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
       ],
       sejarah: [
-        { id: 1, sekolah: "SMK Sultan Ahmad Shah", tahun: "2015-2026", subjek: "Sejarah" }
+        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
       ],
       ic_number: ic,
       profile_image: null
