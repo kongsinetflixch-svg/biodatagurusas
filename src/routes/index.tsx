@@ -1368,7 +1368,7 @@ function GuruProfile() {
 
       // Auto-uppercase all non-excluded profile fields before save for DB consistency
       const finalProfile = JSON.parse(JSON.stringify(currentTeacher.profile));
-      const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod'];
+      const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod', 'murid'];
       
       const deepUpper = (obj: any, key: string = ""): any => {
         if (typeof obj === 'string') {
