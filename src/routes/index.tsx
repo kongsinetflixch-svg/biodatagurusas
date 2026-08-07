@@ -1527,43 +1527,44 @@ function GuruProfile() {
             </div>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 hover:scale-[1.02] transition-transform cursor-pointer border-l-4 border-blue-500" onClick={handleAddTeacher}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center">
-                  <Plus className="w-6 h-6" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-2 sm:px-0">
+            <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 hover:scale-[1.02] transition-transform cursor-pointer border-l-4 border-blue-500" onClick={handleAddTeacher}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+                  <Plus className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800">Tambah Guru</h3>
-                  <p className="text-xs text-slate-500">Cipta profil baru dalam panitia</p>
+                  <h3 className="font-bold text-slate-800 text-sm sm:text-base">Tambah Guru</h3>
+                  <p className="text-[10px] sm:text-xs text-slate-500">Cipta profil baru</p>
                 </div>
               </div>
             </Card>
             
-            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 border-l-4 border-amber-500">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center">
-                  <Users className="w-6 h-6" />
+            <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 border-l-4 border-amber-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center">
+                  <Users className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800">{teachers.length} Ahli Panitia</h3>
-                  <p className="text-xs text-slate-500">Jumlah profil berdaftar</p>
+                  <h3 className="font-bold text-slate-800 text-sm sm:text-base">{teachers.length} Ahli Panitia</h3>
+                  <p className="text-[10px] sm:text-xs text-slate-500">Jumlah profil</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="bg-white border-none shadow-xl rounded-3xl p-6 border-l-4 border-[#D4AF37]">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-50 text-[#002B5B] rounded-2xl flex items-center justify-center font-black">
+            <Card className="bg-white border-none shadow-md rounded-2xl p-4 sm:p-6 border-l-4 border-[#D4AF37]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 text-[#002B5B] rounded-xl flex items-center justify-center font-black text-xs">
                   KPM
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800">Status Portal</h3>
-                  <p className="text-xs text-slate-500">Online & Aktif</p>
+                  <h3 className="font-bold text-slate-800 text-sm sm:text-base">Status Portal</h3>
+                  <p className="text-[10px] sm:text-xs text-slate-500">Online & Aktif</p>
                 </div>
               </div>
             </Card>
           </div>
+
 
           <Card className="border-none shadow-xl rounded-3xl overflow-hidden bg-white">
             <CardHeader className="border-b border-slate-50 flex flex-row items-center justify-between p-6">
