@@ -2687,7 +2687,7 @@ function GuruProfile() {
             </Card>
           </div>
         </div>
-      </div>
+
 
 
         {/* TABLES SECTION */}
