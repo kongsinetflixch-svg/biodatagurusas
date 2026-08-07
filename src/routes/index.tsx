@@ -2530,39 +2530,6 @@ function GuruProfile() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white no-print">
-              <CardHeader className="p-4 border-b border-slate-50">
-                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
-                  <PenTool className="w-4 h-4" />
-                  Tandatangan Guru
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 flex flex-col items-center">
-                {(currentTeacher as any)?.signatureUrl ? (
-                  <div className="relative group">
-                    <img src={(currentTeacher as any).signatureUrl} alt="Tandatangan" className="max-h-20 bg-slate-50 rounded-lg p-2" />
-                    {isEditMode && (
-                      <Button 
-                        size="icon"
-                        variant="destructive"
-                        onClick={() => updateCurrentTeacher({ signatureUrl: null })}
-                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full"
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    )}
-                  </div>
-                ) : (
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowSignatureModal(true)}
-                    className="w-full h-12 border-dashed border-2 border-slate-200 text-[#002B5B] font-black text-xs uppercase"
-                  >
-                    Tambah Tandatangan
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
