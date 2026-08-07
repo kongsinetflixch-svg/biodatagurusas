@@ -1965,7 +1965,7 @@ function GuruProfile() {
 
 
         {/* TWO COLUMNS DATA */}
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0 sm:grid hidden">
           <Card className="lg:col-span-2 border-none shadow-md rounded-2xl overflow-hidden bg-white">
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 p-4 sm:p-6">
               <CardTitle className="text-base sm:text-lg font-black text-[#002B5B] flex items-center gap-2">
