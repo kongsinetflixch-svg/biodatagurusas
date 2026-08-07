@@ -3,19 +3,25 @@ import { PDFDocument } from 'pdf-lib';
 
 // Use dynamic import for pdf-parse to avoid ESM/CJS build issues in TanStack Start
 const getPdfParser = async () => {
-  // pdf-parse is a CJS module that exports the function directly via module.exports
-  // In a Nitro/Vite environment, we often need to dig through multiple .default layers
+  // pdf-parse is a CJS module. In this environment, we use the PDFParse class if needed or the main function
   const pdfModule = await import('pdf-parse');
   
-  // Try to find the actual function
-  if (typeof pdfModule === 'function') return pdfModule;
-  if (typeof pdfModule.default === 'function') return pdfModule.default;
-  if (pdfModule.default && typeof pdfModule.default.default === 'function') return pdfModule.default.default;
+  // The module might be returning a class or a function
+  const parser = pdfModule.default || pdfModule;
   
-  // Last resort: check if it's hidden under an unconventional key
-  const keys = Object.keys(pdfModule);
-  for (const key of keys) {
-    if (typeof pdfModule[key] === 'function') return pdfModule[key];
+  if (typeof parser === 'function') {
+    return (buffer: Buffer) => {
+      try {
+        // Attempt as a function first
+        return parser(buffer);
+      } catch (e) {
+        // If it's a class, try to instantiate it
+        if (e.message.includes('class constructor')) {
+          return new parser(buffer);
+        }
+        throw e;
+      }
+    };
   }
   
   throw new Error('Pustaka pdf-parse tidak dapat dimuatkan dengan betul.');
