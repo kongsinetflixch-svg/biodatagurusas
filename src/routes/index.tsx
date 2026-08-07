@@ -656,10 +656,10 @@ const SUPERADMIN_IC = "801022016573";
 export const Route = createFileRoute("/")({
 
   head: () => ({
-    title: "Profile Guru | SMK Sultan Ahmad Shah",
+    title: "BIODATA GURU SMKSAS",
     meta: [
-      { name: "description", content: "Portal Rasmi Profile Guru - SMK Sultan Ahmad Shah" },
-      { property: "og:title", content: "Profile Guru | SMK Sultan Ahmad Shah" },
+      { name: "description", content: "Portal Rasmi Biodata Guru - SMK Sultan Ahmad Shah" },
+      { property: "og:title", content: "BIODATA GURU SMKSAS" },
     ],
   }),
   component: GuruProfile,
