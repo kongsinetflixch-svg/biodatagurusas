@@ -1028,6 +1028,12 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
+        tel: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        alamat: "",
         mengajarOpsyen: "YA",
         alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
@@ -1125,6 +1131,7 @@ function GuruProfile() {
               ...importedData.profile,
               // Ensure we don't overwrite crucial metadata
               kp: currentTeacher.profile.kp, 
+              nama: (importedData.profile.nama || "").toUpperCase(),
             },
             kelulusan: (importedData.kelulusan && importedData.kelulusan.length > 0) ? [...currentTeacher.kelulusan, ...importedData.kelulusan] : currentTeacher.kelulusan,
             sejarah: (importedData.sejarah && importedData.sejarah.length > 0) ? [...currentTeacher.sejarah, ...importedData.sejarah] : currentTeacher.sejarah,
@@ -1171,8 +1178,13 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
+        tel: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
         mengajarOpsyen: "YA",
-        alamat: "KUWATERS GURU, TANAH RATA",
+        alamat: "",
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
@@ -1188,15 +1200,9 @@ function GuruProfile() {
           lain: "-"
         }
       },
-      kelulusan: [
-        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
-      ],
-      subjek: [
-        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
-      ],
-      sejarah: [
-        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
-      ],
+      kelulusan: [],
+      subjek: [],
+      sejarah: [],
       ic_number: ic,
       profile_image: null
     };
@@ -3056,6 +3062,11 @@ function GuruProfile() {
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
+
+      {/* Hidden print layout component for browser Print (Ctrl+P) */}
+      <div className="print-only">
+        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
+      </div>
 
       {/* PRINT PREVIEW MODAL */}
       {showPrintPreview && (
