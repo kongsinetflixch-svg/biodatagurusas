@@ -402,8 +402,8 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   if (!currentTeacher) return null;
   const profile = currentTeacher.profile || {};
   
-  // School logo import from asset
-  const schoolLogoAssetUrl = schoolLogoAsset.url;
+  // School logo logic: use uploaded logo first, then asset
+  const displayedLogo = schoolLogo || schoolLogoAsset.url;
   
   return (
     <div className="print-layout-container">
@@ -411,7 +411,7 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <div className="print-header flex items-center justify-between border-b-2 border-black pb-4 mb-6">
         <div className="flex items-center gap-6">
           <div className="w-20 h-20 bg-white flex items-center justify-center p-0 overflow-hidden">
-             <img src={schoolLogoAssetUrl} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             <img src={displayedLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
 
           <div>
@@ -1554,7 +1554,7 @@ function GuruProfile() {
             className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
             onClick={() => schoolLogoInputRef.current?.click()}
           >
-             <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
           <input 
             type="file" 
@@ -1723,7 +1723,7 @@ function GuruProfile() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner transform -rotate-3 transition-transform hover:rotate-0 overflow-hidden">
-                   <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+                   <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
                 </div>
                 <div className="text-center md:text-left">
                   <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase leading-tight">Dashboard Admin</h1>
