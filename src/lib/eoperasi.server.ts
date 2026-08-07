@@ -3,10 +3,22 @@ import { PDFDocument } from 'pdf-lib';
 
 // Use dynamic import for pdf-parse to avoid ESM/CJS build issues in TanStack Start
 const getPdfParser = async () => {
+  // pdf-parse is a CJS module that exports the function directly via module.exports
+  // In a Nitro/Vite environment, we often need to dig through multiple .default layers
   const pdfModule = await import('pdf-parse');
-  // pdf-parse is an old CJS module, we need to handle its different export shapes
-  const parser = pdfModule.default || pdfModule;
-  return typeof parser === 'function' ? parser : (parser.default || parser);
+  
+  // Try to find the actual function
+  if (typeof pdfModule === 'function') return pdfModule;
+  if (typeof pdfModule.default === 'function') return pdfModule.default;
+  if (pdfModule.default && typeof pdfModule.default.default === 'function') return pdfModule.default.default;
+  
+  // Last resort: check if it's hidden under an unconventional key
+  const keys = Object.keys(pdfModule);
+  for (const key of keys) {
+    if (typeof pdfModule[key] === 'function') return pdfModule[key];
+  }
+  
+  throw new Error('Pustaka pdf-parse tidak dapat dimuatkan dengan betul.');
 };
 
 export async function parseEOperasiPDF(base64: string) {
