@@ -1574,7 +1574,7 @@ function GuruProfile() {
 
           <input 
             type="file" 
-            ref={schoolLogoInputRef} 
+            ref={loadingSchoolLogoInputRef} 
             onChange={handleSchoolLogoUpload} 
             accept="image/*" 
             className="hidden" 
@@ -1585,7 +1585,7 @@ function GuruProfile() {
             className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
             onClick={() => {
               console.log("Loading logo click");
-              schoolLogoInputRef.current?.click();
+              loadingSchoolLogoInputRef.current?.click();
             }}
           >
              <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
@@ -1600,7 +1600,7 @@ function GuruProfile() {
                 className="w-full justify-start text-xs font-bold rounded-xl h-9 border-slate-200"
                 onClick={() => {
                   console.log("Setting logo input click");
-                  schoolLogoInputRef.current?.click();
+                  loadingSchoolLogoInputRef.current?.click();
                 }}
               >
                 <ImageIcon className="w-3.5 h-3.5 mr-2 text-blue-500" />
