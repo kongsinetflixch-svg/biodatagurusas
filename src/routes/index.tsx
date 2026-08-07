@@ -1695,13 +1695,13 @@ function GuruProfile() {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden">
-             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] border-4 border-white rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden p-4">
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain brightness-0 invert" />
           </div>
           
           <div className="space-y-2">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight uppercase">Profile Guru</h1>
-            <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
+            <p className="text-lg font-bold text-[#D4AF37] uppercase">SMK Sultan Ahmad Shah</p>
             <div className="pt-2">
               <p className="text-slate-500 font-semibold text-sm sm:text-base leading-relaxed">
                 Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.
@@ -1717,8 +1717,8 @@ function GuruProfile() {
                   id="ic-login"
                   type="text"
                   inputMode="numeric"
-                  placeholder="Contoh: 770613035750" 
-                  className="h-14 sm:h-16 rounded-[1.25rem] border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg sm:text-xl font-bold transition-all px-6 bg-slate-50/50 group-hover:bg-white"
+                  placeholder="Contoh: 801022016573" 
+                  className="h-14 sm:h-16 rounded-[1.25rem] border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg sm:text-xl font-bold transition-all px-6 bg-slate-50/50 group-hover:bg-white text-center tracking-widest placeholder:tracking-normal"
                   value={icInput}
                   onChange={(e) => setIcInput(e.target.value.replace(/[^0-9]/g, ""))}
                   onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
@@ -1728,20 +1728,22 @@ function GuruProfile() {
                   <User className="w-6 h-6 text-[#002B5B]" />
                 </div>
               </div>
+              <p className="text-[9px] text-slate-400 font-medium text-center italic">Masukkan 12 digit tanpa tanda sempang (-)</p>
             </div>
 
             <div className="space-y-4">
               <Button 
                 onClick={handleIcLogin} 
                 disabled={isLoggingIn}
-                className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 text-white"
               >
                 {isLoggingIn ? (
-                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    MENYEMAK...
+                  </div>
                 ) : (
-                  <>
-                    Masuk Profil
-                  </>
+                  "Masuk Profil"
                 )}
               </Button>
               
