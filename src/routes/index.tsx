@@ -2255,10 +2255,9 @@ function GuruProfile() {
            </div>
         </div>
       )}
-      <div id="profile-details-container" className="space-y-6">
-
+      <div id="profile-details-container" className="space-y-6 sm:block hidden">
         {/* TABLES SECTION */}
-        <div className="space-y-6 animate-in slide-up duration-500 delay-400">
+        <div className="space-y-6 animate-in slide-up duration-500 delay-400 sm:block hidden">
           
           {/* KELULUSAN ACADEMIK */}
           <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-white card-print">
@@ -2608,7 +2607,7 @@ function GuruProfile() {
         </div>
 
         {/* SIGNATURE SECTION */}
-        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:py-0 print:px-0 print:border-none print:shadow-none print:grid-cols-2">
+        <div className="grid md:grid-cols-2 gap-12 py-16 px-8 bg-white rounded-3xl shadow-lg border-t-4 border-[#002B5B] relative overflow-hidden signature-grid print:py-0 print:px-0 print:border-none print:shadow-none print:grid-cols-2 sm:grid hidden">
 
           <div className="space-y-6">
             <div className="space-y-4">
