@@ -563,23 +563,53 @@ function GuruProfile() {
   const [teachers, setTeachers] = useState<any[]>([]);
 
   useEffect(() => {
-    // We check for a "pseudo-session" in localStorage for IC login
-    const savedIc = localStorage.getItem('guru_ic_session');
-    if (savedIc) {
-      setSession({ user: { ic: savedIc, id: 'pseudo-user' } });
-      fetchTeachersByIc(savedIc);
-      // Auto-enable admin mode for superadmin
-      if (savedIc === SUPERADMIN_IC) {
-        setIsAdminMode(true);
-        setShowAdminDashboard(true);
+    const initSession = async () => {
+      // Check real Supabase Auth session first
+      const { data: { session: supabaseSession } } = await supabase.auth.getSession();
+      
+      if (supabaseSession) {
+        setSession(supabaseSession);
+        // If we have a real session, we might want to fetch by owner_id or IC
+        // For now, prioritize IC as requested in previous turns
+        const userIc = supabaseSession.user.user_metadata?.ic || localStorage.getItem('guru_ic_session');
+        if (userIc) {
+          fetchTeachersByIc(userIc);
+          if (userIc === SUPERADMIN_IC) {
+            setIsAdminMode(true);
+            setShowAdminDashboard(true);
+          }
+        } else {
+          setIsLoading(false);
+        }
       } else {
-        setIsAdminMode(false);
-        setShowAdminDashboard(false);
+        // Fallback to pseudo-session for IC login
+        const savedIc = localStorage.getItem('guru_ic_session');
+        if (savedIc) {
+          setSession({ user: { ic: savedIc, id: 'pseudo-user' } });
+          fetchTeachersByIc(savedIc);
+          if (savedIc === SUPERADMIN_IC) {
+            setIsAdminMode(true);
+            setShowAdminDashboard(true);
+          } else {
+            setIsAdminMode(false);
+            setShowAdminDashboard(false);
+          }
+        } else {
+          setIsLoading(false);
+        }
       }
-    } else {
-      setIsLoading(false);
-    }
+    };
+
+    initSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
+
 
   const fetchTeachersByIc = async (ic: string) => {
     const cleanIc = ic.replace(/-/g, "");
