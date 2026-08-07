@@ -941,40 +941,40 @@ function GuruProfile() {
     setIsLoading(true);
     const newTeacherData = {
       profile: {
-        nama: name,
+        nama: name.toUpperCase(),
         kp: ic,
         tel: "01X-XXXXXXX",
         email: `${name.toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 Tahun",
-        tempohSemasa: "5 Tahun",
+        pengalaman: "10 TAHUN",
+        tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
-        opsyen: "Sejarah",
+        opsyen: "SEJARAH",
         gred: "DG44",
-        mengajarOpsyen: "Ya",
-        alamat: "Kuwaters Guru, Tanah Rata",
+        mengajarOpsyen: "YA",
+        alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
-          nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah",
+          nama: "SMK SULTAN AHMAD SHAH",
+          alamat: "PERSIARAN DAYANG ENDAH",
           poskod: "39000",
-          daerah: "Tanah Rata",
-          negeri: "Pahang",
+          daerah: "TANAH RATA",
+          negeri: "PAHANG",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
-          jawatan: jabatan,
-          guruKhas: "Tiada",
-          pemeriksaSPM: "Tidak",
+          jawatan: jabatan.toUpperCase(),
+          guruKhas: "TIADA",
+          pemeriksaSPM: "TIDAK",
           lain: "-"
         }
       },
       kelulusan: [
-        { id: 1, kelayakan: "Sarjana Muda Pendidikan", institusi: "UPSI", bidang: "Sejarah", tahun: "2014" }
+        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
       ],
       subjek: [
-        { id: 1, nama: "Sejarah", kelas: "5 Delta", murid: "30", tov: "45", etr: "75" }
+        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
       ],
       sejarah: [
-        { id: 1, sekolah: "SMK Sultan Ahmad Shah", tahun: "2015-2026", subjek: "Sejarah" }
+        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
       ],
       ic_number: ic,
       profile_image: null
@@ -1082,40 +1082,40 @@ function GuruProfile() {
 
     const newTeacherData = {
       profile: {
-        nama: sasTeacher?.nama || "",
+        nama: (sasTeacher?.nama || "").toUpperCase(),
         kp: ic || "",
         tel: "01X-XXXXXXX",
         email: `${(sasTeacher?.nama || 'guru').toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 Tahun",
-        tempohSemasa: "5 Tahun",
+        pengalaman: "10 TAHUN",
+        tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
-        opsyen: "Sejarah",
+        opsyen: "SEJARAH",
         gred: "DG44",
-        mengajarOpsyen: "Ya",
-        alamat: "Kuwaters Guru, Tanah Rata",
+        mengajarOpsyen: "YA",
+        alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
-          nama: "SMK Sultan Ahmad Shah",
-          alamat: "Persiaran Dayang Endah",
+          nama: "SMK SULTAN AHMAD SHAH",
+          alamat: "PERSIARAN DAYANG ENDAH",
           poskod: "39000",
-          daerah: "Tanah Rata",
-          negeri: "Pahang",
+          daerah: "TANAH RATA",
+          negeri: "PAHANG",
           kod: "CEB1003",
           tel: "05-4911018",
           faks: "05-4914922",
-          jawatan: sasTeacher?.jabatan || "Guru",
-          guruKhas: "Tiada",
-          pemeriksaSPM: "Tidak",
+          jawatan: (sasTeacher?.jabatan || "GURU").toUpperCase(),
+          guruKhas: "TIADA",
+          pemeriksaSPM: "TIDAK",
           lain: "-"
         }
       },
       kelulusan: [
-        { id: 1, kelayakan: "Sarjana Muda Pendidikan", institusi: "UPSI", bidang: "Sejarah", tahun: "2014" }
+        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
       ],
       subjek: [
-        { id: 1, nama: "Sejarah", kelas: "5 Delta", murid: "30", tov: "45", etr: "75" }
+        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
       ],
       sejarah: [
-        { id: 1, sekolah: "SMK Sultan Ahmad Shah", tahun: "2015-2026", subjek: "Sejarah" }
+        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
       ],
       ic_number: ic,
       profile_image: null
@@ -1171,6 +1171,58 @@ function GuruProfile() {
   // Helper to update current teacher's data
   const updateCurrentTeacher = (updates: any) => {
     if (!activeTeacherId) return;
+    
+    // Auto-uppercase string values in profile
+    if (updates.profile) {
+      const p = updates.profile;
+      const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
+      Object.keys(p).forEach(k => {
+        if (typeof p[k] === 'string' && !exclude.includes(k)) {
+          p[k] = p[k].toUpperCase();
+        }
+        if (k === 'sekolah' && typeof p[k] === 'object') {
+          const s = p[k];
+          const sExclude = ['tel', 'faks', 'poskod', 'kod'];
+          Object.keys(s).forEach(sk => {
+            if (typeof s[sk] === 'string' && !sExclude.includes(sk)) {
+              s[sk] = s[sk].toUpperCase();
+            }
+          });
+        }
+      });
+    }
+
+    // Auto-uppercase arrays
+    if (updates.kelulusan) {
+      updates.kelulusan = updates.kelulusan.map((k: any) => {
+        const nk = { ...k };
+        ['kelayakan', 'institusi', 'bidang'].forEach(field => {
+          if (nk[field]) nk[field] = nk[field].toUpperCase();
+        });
+        return nk;
+      });
+    }
+
+    if (updates.subjek) {
+      updates.subjek = updates.subjek.map((s: any) => {
+        const ns = { ...s };
+        ['nama', 'kelas'].forEach(field => {
+          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        });
+        return ns;
+      });
+    }
+
+    if (updates.sejarah) {
+      updates.sejarah = updates.sejarah.map((s: any) => {
+        const ns = { ...s };
+        ['sekolah', 'subjek'].forEach(field => {
+          if (ns[field]) ns[field] = ns[field].toUpperCase();
+        });
+        return ns;
+      });
+    }
+
     setTeachers(teachers.map(t => 
       t.id === activeTeacherId ? { ...t, ...updates } : t
     ));
