@@ -954,6 +954,20 @@ function GuruProfile() {
   const handleAutoCreateTeacher = async (ic: string, sasTeacher: any) => {
     setIsLoading(true);
     console.log("Auto-creating profile for IC:", ic);
+    // Check if a profile already exists to prevent duplicates
+    const { data: existing, error: checkError } = await supabase
+      .from('teachers')
+      .select('id')
+      .eq('ic_number', ic);
+
+    if (existing && existing.length > 0) {
+      console.log("Profile already exists, redirecting...");
+      setActiveTeacherId(existing[0].id);
+      setIsEditMode(false);
+      setIsLoading(false);
+      return;
+    }
+
     const newTeacherData = {
       profile: {
         nama: (sasTeacher?.nama || "").toUpperCase(),
