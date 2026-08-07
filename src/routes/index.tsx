@@ -49,6 +49,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { importEOperasiData } from "@/lib/eoperasi.functions";
 import { useServerFn } from "@tanstack/react-start";
 
+// Constants for Storage
+const STORAGE_BUCKET = 'teacher-assets';
+
+
 
 // SSPA Grade Constants
 const SSPA_GRADES = [
