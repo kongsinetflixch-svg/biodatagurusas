@@ -1361,6 +1361,14 @@ function GuruProfile() {
   const handleSave = async () => {
     if (!activeTeacherId || !currentTeacher) return;
     
+    // Auto-uppercase all text fields except email for professional consistency
+    const cleanProfile = { ...currentTeacher.profile };
+    Object.keys(cleanProfile).forEach(key => {
+      if (typeof cleanProfile[key] === 'string' && key !== 'email') {
+        cleanProfile[key] = (cleanProfile[key] as string).toUpperCase();
+      }
+    });
+
     setIsSaving(true);
     const saveToast = toast.loading("Menyimpan maklumat...");
 
@@ -1392,17 +1400,18 @@ function GuruProfile() {
         }
       }
 
+      // Explicitly update only the record matching the activeTeacherId to prevent multi-profile data leakage
       const { error } = await supabase
         .from('teachers')
         .update({
-          profile: currentTeacher.profile,
+          profile: cleanProfile,
           kelulusan: currentTeacher.kelulusan,
           subjek: currentTeacher.subjek,
           sejarah: currentTeacher.sejarah,
           profile_image_url: currentTeacher.profileImage, 
           signature_url: finalSignatureUrl,
           school_logo_url: schoolLogo,
-          ic_number: (currentTeacher.profile as any)?.kp
+          ic_number: (cleanProfile as any)?.kp?.replace(/[-\s]/g, "")
         })
         .eq('id', activeTeacherId);
 
@@ -1416,9 +1425,11 @@ function GuruProfile() {
       setTeachers(prev => prev.map(t => 
         t.id === activeTeacherId ? { 
           ...t, 
+          profile: cleanProfile,
           signature_url: finalSignatureUrl, 
           signatureUrl: finalSignatureUrl,
-          school_logo_url: schoolLogo 
+          school_logo_url: schoolLogo,
+          ic_number: (cleanProfile as any)?.kp?.replace(/[-\s]/g, "")
         } : t
       ));
     } catch (error: any) {
