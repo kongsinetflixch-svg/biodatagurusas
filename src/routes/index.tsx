@@ -1288,7 +1288,7 @@ function GuruProfile() {
       if (typeof obj === 'string') {
         // EXCEPTION: Email must remain exactly as typed
         // Also skip numeric/technical fields that should not be forced to uppercase
-        const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod'];
+        const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod', 'murid'];
         const isUrl = obj.startsWith('http') || obj.startsWith('blob:') || currentKey.toLowerCase().includes('url');
         
         if (excludeKeys.includes(currentKey) || isUrl) {
