@@ -796,50 +796,55 @@ function GuruProfile() {
 
 
   const fetchTeachersByIc = async (ic: string) => {
-    const cleanIc = ic.replace(/-/g, "");
+    const cleanIc = ic.replace(/[-\s]/g, "");
     setIsLoading(true);
     console.log("Fetching profile for IC:", cleanIc);
-    // In "IC Mode", we query by ic_number (TEXT) to avoid UUID errors
-    const { data, error } = await supabase
-      .from('teachers')
-      .select('*')
-      .eq('ic_number', cleanIc)
-      .order('created_at', { ascending: true });
+    
+    try {
+      const { data, error } = await supabase
+        .from('teachers')
+        .select('*')
+        .eq('ic_number', cleanIc)
+        .order('created_at', { ascending: true });
 
-    if (error) {
-      toast.error("Gagal memuat profil guru.");
-      console.error(error);
-    } else if (data) {
-      const mappedData = data.map((t: any) => ({
-        ...t,
-        profileImage: t.profile_image_url || t.profile_image,
-        signatureUrl: t.signature_url,
-        schoolLogoUrl: t.school_logo_url,
-      }));
-      setTeachers(mappedData);
-      
-      // Auto-set school logo from profile if available
-      const firstWithLogo = mappedData.find(t => (t.profile as any)?.schoolLogo || t.school_logo_url);
-      if (firstWithLogo) {
-        setSchoolLogo(firstWithLogo.school_logo_url || (firstWithLogo.profile as any).schoolLogo);
-      }
-
-      
-      // Auto-select the first profile if not already set
-      if (mappedData.length > 0) {
-        if (!activeTeacherId) {
-          setActiveTeacherId(mappedData[0].id);
+      if (error) {
+        toast.error("Gagal memuat profil guru.");
+        console.error(error);
+      } else if (data && data.length > 0) {
+        const mappedData = data.map((t: any) => ({
+          ...t,
+          profileImage: t.profile_image_url || t.profile_image,
+          signatureUrl: t.signature_url,
+          schoolLogoUrl: t.school_logo_url,
+        }));
+        setTeachers(mappedData);
+        
+        // Auto-set school logo if available
+        const profileWithLogo = mappedData.find(t => t.school_logo_url);
+        if (profileWithLogo) {
+          setSchoolLogo(profileWithLogo.school_logo_url);
         }
         
-        // If not admin, ensure we land on the profile view directly
+        if (!activeTeacherId || !mappedData.find(t => t.id === activeTeacherId)) {
+          setActiveTeacherId(mappedData[0].id);
+        }
+
         if (cleanIc !== SUPERADMIN_IC) {
           setShowAdminDashboard(false);
           setIsAdminMode(false);
         }
+      } else {
+        if (ic !== SUPERADMIN_IC) {
+          console.warn("No profile found for active session IC:", ic);
+          handleLogout();
+        }
       }
+    } catch (err) {
+      console.error("Unexpected error in fetchTeachersByIc:", err);
+    } finally {
+      setIsLoading(false);
+      console.log("Fetch complete for IC:", cleanIc);
     }
-    setIsLoading(false);
-    console.log("Fetch complete for IC:", cleanIc);
   };
 
   const handleIcLogin = async () => {
@@ -850,7 +855,8 @@ function GuruProfile() {
       return;
     }
 
-    if (cleanIc.length !== 12) {
+    // Basic Malaysian IC format validation (12 digits)
+    if (!/^\d{12}$/.test(cleanIc)) {
       toast.error("No. kad pengenalan mestilah 12 digit tanpa tanda sempang.");
       return;
     }
@@ -858,23 +864,8 @@ function GuruProfile() {
     setIsLoggingIn(true);
     console.log("Memulakan proses log masuk untuk IC:", cleanIc);
 
-    // Validate if the IC exists in SAS_TEACHERS softcoded list
-    const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
-    
-    if (!sasTeacher && cleanIc !== SUPERADMIN_IC) {
-      toast.error("Profil guru tidak ditemui.");
-      setIsLoggingIn(false);
-      return;
-    }
-
     try {
-      if (cleanIc === SUPERADMIN_IC) {
-        setIsAdminMode(true);
-        setShowAdminDashboard(true);
-        toast.success("Selamat datang, Superadmin!");
-      }
-      
-      // Check if teacher profile already exists in DB
+      // Check if teacher profile exists in DB first
       const { data, error } = await supabase
         .from('teachers')
         .select('*')
@@ -884,29 +875,46 @@ function GuruProfile() {
       if (error) {
         console.error("Ralat Supabase:", error);
         toast.error(`Ralat semasa log masuk: ${error.message}`);
-      } else {
-        localStorage.setItem('guru_ic_session', cleanIc);
-        setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
+        return;
+      }
+
+      // Successful lookup
+      localStorage.setItem('guru_ic_session', cleanIc);
+      setSession({ user: { ic: cleanIc, id: 'pseudo-user' } });
+
+      if (data && data.length > 0) {
+        // Enforce strict single-profile mapping: use the first record
+        setTeachers([data[0]]);
+        setActiveTeacherId(data[0].id);
+        setIsEditMode(false);
         
-        if (data && data.length > 0) {
-          await fetchTeachersByIc(cleanIc);
-          const firstTeacher = data[0];
-          const teacherName = (firstTeacher?.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
-          toast.success(`Selamat kembali, ${teacherName}`);
-          
-          if (cleanIc !== SUPERADMIN_IC && firstTeacher) {
-             setActiveTeacherId(firstTeacher.id);
-             setIsEditMode(false);
-          }
+        if (cleanIc === SUPERADMIN_IC) {
+          setIsAdminMode(true);
+          setShowAdminDashboard(true);
+          toast.success("Selamat datang, Superadmin!");
         } else {
-          if (cleanIc !== SUPERADMIN_IC) {
-            toast.info("Menjana profil baru anda...", { duration: 2000 });
-            await handleAutoCreateTeacher(cleanIc, sasTeacher);
-          } else {
-            toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
-            setTeachers([]);
-            setIsLoading(false);
-          }
+          setIsAdminMode(false);
+          setShowAdminDashboard(false);
+          const teacherName = (data[0].profile as any)?.nama || 'Cikgu';
+          toast.success(`Selamat kembali, ${teacherName}`);
+        }
+      } else {
+        // No profile found in database
+        // Check if it's a known teacher from SAS_TEACHERS to auto-create
+        const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
+        
+        if (cleanIc === SUPERADMIN_IC) {
+          setIsAdminMode(true);
+          setShowAdminDashboard(true);
+          toast.success("Selamat datang, Superadmin!");
+          setTeachers([]);
+        } else if (sasTeacher) {
+          toast.info("Menjana profil digital anda...", { duration: 2000 });
+          await handleAutoCreateTeacher(cleanIc, sasTeacher);
+        } else {
+          toast.error("No. Kad Pengenalan tidak berdaftar dalam sistem Panitia.");
+          localStorage.removeItem('guru_ic_session');
+          setSession(null);
         }
       }
     } catch (err) {
@@ -946,6 +954,20 @@ function GuruProfile() {
   const handleAutoCreateTeacher = async (ic: string, sasTeacher: any) => {
     setIsLoading(true);
     console.log("Auto-creating profile for IC:", ic);
+    // Check if a profile already exists to prevent duplicates
+    const { data: existing, error: checkError } = await supabase
+      .from('teachers')
+      .select('id')
+      .eq('ic_number', ic);
+
+    if (existing && existing.length > 0) {
+      console.log("Profile already exists, redirecting...");
+      setActiveTeacherId(existing[0].id);
+      setIsEditMode(false);
+      setIsLoading(false);
+      return;
+    }
+
     const newTeacherData = {
       profile: {
         nama: (sasTeacher?.nama || "").toUpperCase(),
@@ -1339,6 +1361,14 @@ function GuruProfile() {
   const handleSave = async () => {
     if (!activeTeacherId || !currentTeacher) return;
     
+    // Auto-uppercase all text fields except email for professional consistency
+    const cleanProfile = { ...currentTeacher.profile };
+    Object.keys(cleanProfile).forEach(key => {
+      if (typeof cleanProfile[key] === 'string' && key !== 'email') {
+        cleanProfile[key] = (cleanProfile[key] as string).toUpperCase();
+      }
+    });
+
     setIsSaving(true);
     const saveToast = toast.loading("Menyimpan maklumat...");
 
@@ -1370,17 +1400,18 @@ function GuruProfile() {
         }
       }
 
+      // Explicitly update only the record matching the activeTeacherId to prevent multi-profile data leakage
       const { error } = await supabase
         .from('teachers')
         .update({
-          profile: currentTeacher.profile,
+          profile: cleanProfile,
           kelulusan: currentTeacher.kelulusan,
           subjek: currentTeacher.subjek,
           sejarah: currentTeacher.sejarah,
           profile_image_url: currentTeacher.profileImage, 
           signature_url: finalSignatureUrl,
           school_logo_url: schoolLogo,
-          ic_number: (currentTeacher.profile as any)?.kp
+          ic_number: (cleanProfile as any)?.kp?.replace(/[-\s]/g, "")
         })
         .eq('id', activeTeacherId);
 
@@ -1394,9 +1425,11 @@ function GuruProfile() {
       setTeachers(prev => prev.map(t => 
         t.id === activeTeacherId ? { 
           ...t, 
+          profile: cleanProfile,
           signature_url: finalSignatureUrl, 
           signatureUrl: finalSignatureUrl,
-          school_logo_url: schoolLogo 
+          school_logo_url: schoolLogo,
+          ic_number: (cleanProfile as any)?.kp?.replace(/[-\s]/g, "")
         } : t
       ));
     } catch (error: any) {
@@ -1687,13 +1720,13 @@ function GuruProfile() {
     return (
       <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans">
         <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden p-6 sm:p-10 text-center space-y-6 sm:space-y-8 bg-white animate-in zoom-in duration-500">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white border-4 border-[#002B5B]/5 rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden">
-             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain p-2" />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#002B5B] border-4 border-white rounded-[2rem] flex items-center justify-center mx-auto shadow-xl transform rotate-3 transition-transform hover:rotate-0 overflow-hidden p-4">
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain brightness-0 invert" />
           </div>
           
           <div className="space-y-2">
             <h1 className="text-3xl sm:text-4xl font-black text-[#002B5B] tracking-tight uppercase">Profile Guru</h1>
-            <p className="text-lg font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
+            <p className="text-lg font-bold text-[#D4AF37] uppercase">SMK Sultan Ahmad Shah</p>
             <div className="pt-2">
               <p className="text-slate-500 font-semibold text-sm sm:text-base leading-relaxed">
                 Sila masukkan No. Kad Pengenalan anda untuk mengakses profil.
@@ -1709,8 +1742,8 @@ function GuruProfile() {
                   id="ic-login"
                   type="text"
                   inputMode="numeric"
-                  placeholder="Contoh: 770613035750" 
-                  className="h-14 sm:h-16 rounded-[1.25rem] border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg sm:text-xl font-bold transition-all px-6 bg-slate-50/50 group-hover:bg-white"
+                  placeholder="Contoh: 801022016573" 
+                  className="h-14 sm:h-16 rounded-[1.25rem] border-2 border-slate-100 focus:border-[#002B5B] focus:ring-0 text-lg sm:text-xl font-bold transition-all px-6 bg-slate-50/50 group-hover:bg-white text-center tracking-widest placeholder:tracking-normal"
                   value={icInput}
                   onChange={(e) => setIcInput(e.target.value.replace(/[^0-9]/g, ""))}
                   onKeyDown={(e) => e.key === 'Enter' && handleIcLogin()}
@@ -1720,20 +1753,22 @@ function GuruProfile() {
                   <User className="w-6 h-6 text-[#002B5B]" />
                 </div>
               </div>
+              <p className="text-[9px] text-slate-400 font-medium text-center italic">Masukkan 12 digit tanpa tanda sempang (-)</p>
             </div>
 
             <div className="space-y-4">
               <Button 
                 onClick={handleIcLogin} 
                 disabled={isLoggingIn}
-                className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                className="w-full h-14 sm:h-16 bg-[#002B5B] hover:bg-[#003B7B] rounded-[1.25rem] text-lg sm:text-xl font-black shadow-xl shadow-blue-900/10 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 text-white"
               >
                 {isLoggingIn ? (
-                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    MENYEMAK...
+                  </div>
                 ) : (
-                  <>
-                    Masuk Profil
-                  </>
+                  "Masuk Profil"
                 )}
               </Button>
               
