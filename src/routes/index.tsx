@@ -628,9 +628,18 @@ function GuruProfile() {
     } else if (data) {
       const mappedData = data.map((t: any) => ({
         ...t,
-        profileImage: t.profile_image,
+        profileImage: t.profile_image_url || t.profile_image,
+        signatureUrl: t.signature_url,
+        schoolLogoUrl: t.school_logo_url,
       }));
       setTeachers(mappedData);
+      
+      // Auto-set school logo from profile if available
+      const firstWithLogo = mappedData.find(t => (t.profile as any)?.schoolLogo || t.school_logo_url);
+      if (firstWithLogo) {
+        setSchoolLogo(firstWithLogo.school_logo_url || (firstWithLogo.profile as any).schoolLogo);
+      }
+
       
       // Auto-select the first profile if not already set
       if (mappedData.length > 0) {
