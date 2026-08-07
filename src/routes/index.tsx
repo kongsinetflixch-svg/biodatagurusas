@@ -2453,8 +2453,10 @@ function GuruProfile() {
 
 
         {/* TWO COLUMNS DATA */}
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 sm:grid hidden">
-          <Card className="lg:col-span-2 border-none shadow-md rounded-2xl overflow-hidden bg-white">
+        <div className="flex flex-col gap-6 no-print px-4 sm:px-0">
+          {/* MAKLUMAT PERIBADI */}
+          <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+
             <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 p-4 sm:p-6">
               <CardTitle className="text-base sm:text-lg font-black text-[#002B5B] flex items-center gap-2">
                 <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
