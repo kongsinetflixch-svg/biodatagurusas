@@ -3184,9 +3184,11 @@ function GuruProfile() {
       )}
 
       <Toaster position="top-center" richColors />
-    </div>
+      </div>
+    </>
   );
 }
+
 
 
 export default GuruProfile;
