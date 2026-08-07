@@ -1335,53 +1335,38 @@ function GuruProfile() {
   const handleSave = async () => {
     if (!activeTeacherId || !currentTeacher) return;
     
-    // Auto-uppercase all text fields except email for professional consistency
-    const cleanProfile = { ...currentTeacher.profile };
-    Object.keys(cleanProfile).forEach(key => {
-      if (typeof cleanProfile[key] === 'string' && key !== 'email') {
-        cleanProfile[key] = (cleanProfile[key] as string).toUpperCase();
-      }
-    });
-
-    setIsSaving(true);
-    const saveToast = toast.loading("Menyimpan maklumat...");
-
-    try {
-      // Check if we have unsaved canvas signature
-      let finalSignatureUrl = currentTeacher.signature_url || currentTeacher.signatureUrl;
+      // Auto-uppercase all non-excluded profile fields before save for DB consistency
+      const finalProfile = JSON.parse(JSON.stringify(currentTeacher.profile));
+      const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod'];
       
-      if (hasSignature && canvasRef.current) {
-        try {
-          const signatureBase64 = canvasRef.current.toDataURL('image/png');
-          const res = await fetch(signatureBase64);
-          const blob = await res.blob();
-          const fileName = `signatures/${activeTeacherId}_${Date.now()}.png`;
-          
-          const { data: uploadData, error: uploadError } = await supabase.storage
-            .from(STORAGE_BUCKET)
-            .upload(fileName, blob, { upsert: true });
-
-          if (uploadError) throw uploadError;
-          
-          const { data: { publicUrl } } = supabase.storage
-            .from(STORAGE_BUCKET)
-            .getPublicUrl(uploadData.path);
-          
-          finalSignatureUrl = publicUrl;
-        } catch (err) {
-          console.error("Error saving signature:", err);
-          toast.error("Gagal menyimpan tandatangan.");
+      const deepUpper = (obj: any, key: string = ""): any => {
+        if (typeof obj === 'string') {
+          const isUrl = obj.startsWith('http') || obj.startsWith('blob:') || key.toLowerCase().includes('url');
+          if (excludeKeys.includes(key) || isUrl) return obj;
+          return obj.toUpperCase();
         }
-      }
+        if (Array.isArray(obj)) return obj.map(item => deepUpper(item, key));
+        if (obj !== null && typeof obj === 'object') {
+          const res: any = {};
+          for (const k in obj) res[k] = deepUpper(obj[k], k);
+          return res;
+        }
+        return obj;
+      };
+
+      const cleanProfile = deepUpper(finalProfile);
+      const cleanKelulusan = deepUpper(currentTeacher.kelulusan);
+      const cleanSubjek = deepUpper(currentTeacher.subjek);
+      const cleanSejarah = deepUpper(currentTeacher.sejarah);
 
       // Explicitly update only the record matching the activeTeacherId to prevent multi-profile data leakage
       const { error } = await supabase
         .from('teachers')
         .update({
           profile: cleanProfile,
-          kelulusan: currentTeacher.kelulusan,
-          subjek: currentTeacher.subjek,
-          sejarah: currentTeacher.sejarah,
+          kelulusan: cleanKelulusan,
+          subjek: cleanSubjek,
+          sejarah: cleanSejarah,
           profile_image_url: currentTeacher.profileImage, 
           signature_url: finalSignatureUrl,
           school_logo_url: schoolLogo,
@@ -1400,6 +1385,9 @@ function GuruProfile() {
         t.id === activeTeacherId ? { 
           ...t, 
           profile: cleanProfile,
+          kelulusan: cleanKelulusan,
+          subjek: cleanSubjek,
+          sejarah: cleanSejarah,
           signature_url: finalSignatureUrl, 
           signatureUrl: finalSignatureUrl,
           school_logo_url: schoolLogo,
