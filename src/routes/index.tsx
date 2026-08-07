@@ -1212,7 +1212,7 @@ function GuruProfile() {
     // Auto-uppercase string values in profile
     if (updates.profile) {
       const p = updates.profile;
-      const exclude = ['email']; // Only exclude email from uppercase
+      const exclude = ['email', 'kp']; // Only exclude email from uppercase, and IC (technical)
       Object.keys(p).forEach(k => {
         if (typeof p[k] === 'string' && !exclude.includes(k)) {
           p[k] = toUpper(p[k]);
