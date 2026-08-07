@@ -2656,7 +2656,7 @@ function GuruProfile() {
                   variant="secondary" 
                   onClick={() => {
                     const newId = Math.random();
-                    updateCurrentTeacher({ subjek: [...subjek, {id: newId, nama: "", kelas: "", murid: "", tov: "", etr: ""}] });
+                    updateCurrentTeacher({ subjek: [...subjek, {id: newId, nama: "", kelas: "", murid: ""}] });
                   }}
                   className="h-9 bg-[#D4AF37] hover:bg-[#B8962E] text-white border-none font-bold rounded-xl shadow-md"
                 >
@@ -2669,24 +2669,20 @@ function GuruProfile() {
                 <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow className="border-none">
-                      <TableHead className="w-16 text-center font-black text-slate-400 uppercase text-[10px] tracking-widest px-8">Bil.</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Subjek</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest px-8">Subjek</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Tahun / Tingkatan</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Bil. Murid</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">TOV</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">ETR</TableHead>
                       {isEditMode && <TableHead className="w-20 no-print"></TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {subjek.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={isEditMode ? 7 : 6} className="h-24 text-center text-slate-400 italic">Tiada rekod subjek</TableCell>
+                        <TableCell colSpan={isEditMode ? 4 : 3} className="h-24 text-center text-slate-400 italic">Tiada rekod subjek</TableCell>
                       </TableRow>
-                    ) : (subjek as any[]).map((row, idx) => (
+                    ) : (subjek as any[]).map((row) => (
                       <TableRow key={row.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="text-center font-black text-[#D4AF37] px-8">{idx + 1}</TableCell>
-                        <TableCell className="font-medium text-slate-700">
+                        <TableCell className="px-8 font-medium text-slate-700">
                           {isEditMode ? (
                             <Input 
                               value={row.nama} 
@@ -2722,35 +2718,6 @@ function GuruProfile() {
                               className="h-12 sm:h-8 rounded-lg w-full sm:w-20 text-base"
                             />
                           ) : (row.murid || "-")}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {isEditMode ? (
-                            <Input 
-                              value={row.tov} 
-                              onChange={(e) => {
-                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, tov: e.target.value} : s);
-                                updateCurrentTeacher({ subjek: newSubjek });
-                              }}
-                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
-
-                            />
-                          ) : (
-                            <span className="px-2 py-1 bg-blue-50 text-[#002B5B] rounded-lg text-xs font-black">{row.tov || "-"}</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {isEditMode ? (
-                            <Input 
-                              value={row.etr} 
-                              onChange={(e) => {
-                                const newSubjek = (subjek as any[]).map(s => s.id === row.id ? {...s, etr: e.target.value} : s);
-                                updateCurrentTeacher({ subjek: newSubjek });
-                              }}
-                              className="h-12 sm:h-8 rounded-lg w-full sm:w-16 mx-auto text-center text-base"
-                            />
-                          ) : (
-                            <span className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-black">{row.etr || "-"}</span>
-                          )}
                         </TableCell>
                         {isEditMode && (
                           <TableCell className="no-print pr-8 text-right">
