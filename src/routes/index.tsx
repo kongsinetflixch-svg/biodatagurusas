@@ -117,6 +117,7 @@ const PRINT_STYLES = `
     /* Hide everything by default during print */
     #root > div:not(.print-only),
     .no-print,
+    .no-print-section,
     .dashboard-container,
     header,
     footer,
