@@ -2687,6 +2687,8 @@ function GuruProfile() {
             </Card>
           </div>
         </div>
+      </div>
+
 
 
 
