@@ -3163,10 +3163,12 @@ function GuruProfile() {
 
       <Toaster position="top-center" richColors />
     </div>
+    </>
   );
 }
 
 export default GuruProfile;
+
 
 
 
