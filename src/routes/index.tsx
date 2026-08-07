@@ -2014,6 +2014,7 @@ function GuruProfile() {
                   </div>
                 ))}
 
+                <div className="sm:col-span-2 space-y-1 mt-2">
                   <Label className="text-slate-400 text-[10px] sm:text-[11px] font-black uppercase tracking-wider">Alamat Kediaman</Label>
                   {isEditMode ? (
                     <Textarea 
@@ -2027,6 +2028,7 @@ function GuruProfile() {
                     </div>
                   )}
                 </div>
+
               </div>
             </CardContent>
           </Card>
