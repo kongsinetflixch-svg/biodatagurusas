@@ -3069,6 +3069,8 @@ function GuruProfile() {
           </div>
         </div>
       </div>
+    </div>
+
 
 
 
