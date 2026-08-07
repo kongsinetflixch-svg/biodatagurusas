@@ -1956,41 +1956,16 @@ function GuruProfile() {
 
 
         {/* TWO COLUMNS DATA */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-3 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white no-print">
-            <div className="h-2 bg-emerald-500"></div>
-            <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-6">
-                <div className="bg-emerald-100 p-4 rounded-[2rem]">
-                  <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-black text-[#002B5B]">Import Data eOperasi</h3>
-                  <p className="text-slate-500 font-medium">Muat naik fail PDF "Paparan Semakan Data" untuk mengisi profil secara automatik.</p>
-                </div>
-              </div>
-              <Button 
-                onClick={() => eOperasiInputRef.current?.click()} 
-                disabled={isImporting}
-                className="w-full md:w-auto h-14 px-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl shadow-emerald-200 transition-all active:scale-[0.98]"
-              >
-                {isImporting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : <Plus className="w-5 h-5 mr-3" />}
-                {isImporting ? "Sedang Memproses..." : "Pilih Fail PDF"}
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="lg:col-span-2 border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-200 bg-white card-print">
-            <div className="h-2 bg-[#002B5B] no-print"></div>
-            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-8 print:py-0 print:px-0 print:border-none">
-              <CardTitle className="text-xl font-black text-[#002B5B] flex items-center gap-3 section-title">
-                <div className="bg-[#002B5B] p-2 rounded-lg no-print"><FileText className="w-5 h-5 text-white" /></div>
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 px-2 sm:px-0">
+          <Card className="lg:col-span-2 border-none shadow-md rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg font-black text-[#002B5B] flex items-center gap-2">
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
                 Maklumat Peribadi
               </CardTitle>
-              {!isEditMode && <div className="text-[10px] px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-bold uppercase tracking-wider">Lengkap</div>}
             </CardHeader>
-            <CardContent className="p-8 print:p-0">
-              <div className="grid md:grid-cols-2 gap-x-10 gap-y-8 info-grid">
+            <CardContent className="p-4 sm:p-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-6">
                 {[
                   { label: "Nama Penuh", key: "nama", icon: "👤" },
                   { label: "No. Kad Pengenalan", key: "kp", icon: "🆔" },
@@ -2001,10 +1976,9 @@ function GuruProfile() {
                   { label: "Tarikh Berkhidmat", key: "tarikhMula", icon: "📅" },
                   { label: "Gred Jawatan", key: "gred", icon: "🎗️" },
                 ].map((item) => (
-                  <div key={item.key} className="space-y-2 group info-item">
-                    <div className="flex items-center gap-2 print:gap-0">
-                      <span className="text-sm opacity-50 no-print">{item.icon}</span>
-                      <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">{item.label}</Label>
+                  <div key={item.key} className="space-y-1">
+                    <div className="flex items-center gap-1.5">
+                      <Label className="text-slate-400 text-[10px] sm:text-[11px] font-black uppercase tracking-wider">{item.label}</Label>
                     </div>
 
                     {isEditMode ? (
@@ -2013,7 +1987,7 @@ function GuruProfile() {
                           value={(profile as any)[item.key] || ""}
                           onValueChange={(val) => updateCurrentTeacher({ profile: { ...(profile as any), [item.key]: val } })}
                         >
-                          <SelectTrigger className="h-12 sm:h-11 rounded-xl border-slate-100 focus:ring-[#002B5B] text-base">
+                          <SelectTrigger className="h-11 rounded-xl border-slate-100 focus:ring-[#002B5B] text-sm font-bold">
                             <SelectValue placeholder="Pilih Gred" />
                           </SelectTrigger>
                           <SelectContent className="bg-white border-slate-200">
@@ -2029,17 +2003,17 @@ function GuruProfile() {
                             const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
                             updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
                           }}
-                          className="h-12 sm:h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-base"
+                          className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-sm font-bold"
                         />
                       )
                     ) : (
-                      <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:min-h-0 print:p-0 print:bg-transparent print:border-none">
-                        <p className="text-slate-700 info-value">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
+                      <div className="min-h-[44px] flex items-center px-4 rounded-xl bg-slate-50 border border-transparent">
+                        <p className="text-[#002B5B] font-bold text-sm sm:text-base">{(profile as any)[item.key as keyof typeof profile] as string || "-"}</p>
                       </div>
-
                     )}
                   </div>
                 ))}
+
                 <div className="md:col-span-2 space-y-2 info-item">
                   <div className="flex items-center gap-2">
                     <span className="text-sm opacity-50 no-print">🏠</span>
