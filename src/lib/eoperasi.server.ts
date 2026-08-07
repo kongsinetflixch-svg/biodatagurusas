@@ -49,11 +49,12 @@ export async function parseEOperasiPDF(base64: string) {
       if (pdfDoc.isEncrypted) {
         throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
       }
-    } catch (pdfLibError) {
-      const errMsg = pdfLibError.message.toLowerCase();
+    } catch (pdfLibError: any) {
+      const errMsg = (pdfLibError?.message || "").toLowerCase();
       if (errMsg.includes('password') || errMsg.includes('encrypted') || errMsg.includes('decrypt')) {
         throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
       }
+
       // If it's another error, we let extractPdfText handle it or fail later
     }
 
