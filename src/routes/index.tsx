@@ -94,16 +94,22 @@ const PRINT_STYLES = `
       print-color-adjust: exact !important;
       box-shadow: none !important;
       text-shadow: none !important;
+      border-radius: 0 !important;
+      background-image: none !important;
+    }
+
+    html, body, #root, [data-reactroot] {
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      color: black !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
 
     body {
-      background: white !important;
-      color: black !important;
       font-family: 'Arial', sans-serif !important;
       font-size: 9pt !important;
       line-height: 1.2 !important;
-      padding: 0 !important;
-      margin: 0 !important;
     }
 
     /* Hide everything by default during print */
@@ -116,7 +122,8 @@ const PRINT_STYLES = `
     aside,
     button,
     .badge,
-    [role="button"] {
+    [role="button"],
+    .print-preview-modal > div:not(.print-preview-content) {
       display: none !important;
     }
 
@@ -124,23 +131,28 @@ const PRINT_STYLES = `
     .print-only {
       display: block !important;
       width: 100% !important;
-      background: white !important;
+      background: #ffffff !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
 
     .print-layout-container {
       padding: 0 !important;
       margin: 0 !important;
-      background: white !important;
+      background: #ffffff !important;
       width: 100% !important;
+      min-height: auto !important;
+      box-shadow: none !important;
     }
 
     .print-header {
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      border-bottom: 1.5pt solid #002B5B !important;
+      border-bottom: 1.5pt solid black !important;
       padding-bottom: 3mm !important;
       margin-bottom: 4mm !important;
+      background: #ffffff !important;
     }
 
     .print-photo {
@@ -148,6 +160,7 @@ const PRINT_STYLES = `
       height: 38mm !important;
       border: 0.5pt solid #000 !important;
       object-fit: cover !important;
+      background: #ffffff !important;
     }
 
     .section-title {
@@ -170,6 +183,7 @@ const PRINT_STYLES = `
       grid-template-columns: 1fr 1fr !important;
       gap: 1.5mm 6mm !important;
       margin-bottom: 2mm !important;
+      background: #ffffff !important;
     }
 
     .info-item {
@@ -177,6 +191,7 @@ const PRINT_STYLES = `
       flex-direction: row !important;
       align-items: baseline !important;
       gap: 2mm !important;
+      background: #ffffff !important;
     }
 
     .info-label {
@@ -205,6 +220,7 @@ const PRINT_STYLES = `
       margin-bottom: 4mm !important;
       table-layout: fixed !important;
       page-break-inside: auto !important;
+      background: #ffffff !important;
     }
 
     thead {
@@ -214,6 +230,7 @@ const PRINT_STYLES = `
     tr {
       page-break-inside: avoid !important;
       page-break-after: auto !important;
+      background: #ffffff !important;
     }
 
     th {
@@ -234,6 +251,7 @@ const PRINT_STYLES = `
       vertical-align: top !important;
       color: black !important;
       overflow-wrap: break-word !important;
+      background: #ffffff !important;
     }
 
     .signature-grid {
@@ -243,12 +261,14 @@ const PRINT_STYLES = `
       margin-top: 8mm !important;
       page-break-inside: avoid !important;
       width: 100% !important;
+      background: #ffffff !important;
     }
 
     .sig-column {
       display: flex !important;
       flex-direction: column !important;
       width: 100% !important;
+      background: #ffffff !important;
     }
 
     .sig-label {
@@ -266,12 +286,14 @@ const PRINT_STYLES = `
       justify-content: flex-end !important;
       align-items: center !important;
       width: 100% !important;
+      background: #ffffff !important;
     }
 
     .sig-image {
       max-height: 12mm !important;
-      object-contain: contain !important;
+      object-fit: contain !important;
       margin-bottom: 1mm !important;
+      background: transparent !important;
     }
 
     .sig-line {
@@ -288,24 +310,22 @@ const PRINT_STYLES = `
       width: 100% !important;
     }
 
-    /* Remove rounded corners and backgrounds from components during print */
-    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md {
+    /* Remove UI elements and backgrounds from all components during print */
+    .card, .rounded-3xl, .rounded-xl, .bg-[#002B5B], .shadow-lg, .shadow-md, .shadow-xl {
       border-radius: 0 !important;
-      background: transparent !important;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
       border: none !important;
       box-shadow: none !important;
       padding: 0 !important;
       margin: 0 !important;
     }
 
-    /* Ensure specific sections don't duplicate or show UI during print */
-    .dashboard-container canvas, 
-    .dashboard-container .signature-grid.sm\:grid.hidden,
-    .dashboard-container button,
-    .dashboard-container .no-print {
-      display: none !important;
+    /* Force plain white background for the specific signature modal elements if they leak */
+    .signature-pad-container, .bg-slate-50, .border-slate-100 {
+      background: #ffffff !important;
+      border-color: black !important;
     }
-
   }
 
   /* Print Preview Styles */
