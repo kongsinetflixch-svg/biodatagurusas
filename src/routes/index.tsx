@@ -1387,7 +1387,11 @@ function GuruProfile() {
 
       const cleanProfile = deepUpper(finalProfile);
       const cleanKelulusan = deepUpper(currentTeacher.kelulusan);
-      const cleanSubjek = deepUpper(currentTeacher.subjek);
+      // Remove unused fields from subjek (TOV, ETR)
+      const cleanSubjek = deepUpper(currentTeacher.subjek).map((s: any) => {
+        const { tov, etr, ...rest } = s;
+        return rest;
+      });
       const cleanSejarah = deepUpper(currentTeacher.sejarah);
 
       // Explicitly update only the record matching the activeTeacherId to prevent multi-profile data leakage
