@@ -791,11 +791,18 @@ function GuruProfile() {
   };
 
   const handleIcLogin = async () => {
-    if (!icInput.trim()) {
-      toast.error("Sila masukkan No. IC.");
+    const cleanIc = icInput.trim().replace(/[-\s]/g, "");
+    
+    if (!cleanIc) {
+      toast.error("Sila masukkan nombor kad pengenalan.");
       return;
     }
-    const cleanIc = icInput.trim().replace(/-/g, "");
+
+    if (cleanIc.length !== 12) {
+      toast.error("No. kad pengenalan mestilah 12 digit tanpa tanda sempang.");
+      return;
+    }
+
     setIsLoggingIn(true);
     console.log("Memulakan proses log masuk untuk IC:", cleanIc);
 
@@ -803,7 +810,7 @@ function GuruProfile() {
     const sasTeacher = SAS_TEACHERS.find(t => t.kp === cleanIc);
     
     if (!sasTeacher && cleanIc !== SUPERADMIN_IC) {
-      toast.error("Maaf, No. IC anda tiada dalam senarai Guru/Pentadbir SAS 2026.");
+      toast.error("Profil guru tidak ditemui.");
       setIsLoggingIn(false);
       return;
     }
@@ -816,8 +823,6 @@ function GuruProfile() {
       }
       
       // Check if teacher profile already exists in DB
-      // Note: ic_number is TEXT but owner_id is UUID. 
-      // We only compare cleanIc with ic_number to avoid UUID syntax errors.
       const { data, error } = await supabase
         .from('teachers')
         .select('*')
@@ -837,19 +842,15 @@ function GuruProfile() {
           const teacherName = (firstTeacher?.profile as any)?.nama || sasTeacher?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
           
-          // If not superadmin and profile exists, jump straight to the first profile
           if (cleanIc !== SUPERADMIN_IC && firstTeacher) {
              setActiveTeacherId(firstTeacher.id);
              setIsEditMode(false);
           }
         } else {
-          // If profile doesn't exist in DB, start fresh for this user from the list
           if (cleanIc !== SUPERADMIN_IC) {
-            // Automatically trigger creation if not superadmin
             toast.info("Menjana profil baru anda...", { duration: 2000 });
             await handleAutoCreateTeacher(cleanIc, sasTeacher);
           } else {
-
             toast.info("Anda belum mempunyai profil digital. Sila isi maklumat anda.");
             setTeachers([]);
             setIsLoading(false);
