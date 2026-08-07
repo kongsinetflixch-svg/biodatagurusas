@@ -1011,7 +1011,7 @@ function GuruProfile() {
         tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
-        gred: "DG44",
+        gred: "",
         mengajarOpsyen: "YA",
         alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
@@ -1152,7 +1152,7 @@ function GuruProfile() {
         tempohSemasa: "5 TAHUN",
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
-        gred: "DG44",
+        gred: "",
         mengajarOpsyen: "YA",
         alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
