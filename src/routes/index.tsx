@@ -817,8 +817,11 @@ function GuruProfile() {
       
       if (!error && data && data.length > 0) {
         const dbLogo = data[0]?.school_logo_url;
-        setSchoolLogo(dbLogo);
-        localStorage.setItem('school_logo', dbLogo);
+        if (dbLogo) {
+          setSchoolLogo(dbLogo);
+          localStorage.setItem('school_logo', dbLogo);
+        }
+
       }
     };
     
