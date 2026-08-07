@@ -2346,9 +2346,7 @@ function GuruProfile() {
                           value={(profile as any)[item.key as keyof typeof profile] as string} 
                           onChange={(e) => {
                             const val = item.key === 'kp' ? e.target.value.replace(/-/g, "") : e.target.value;
-                            const exclude = ['email', 'kp', 'tel', 'tarikhMula', 'poskod'];
-                            const finalVal = exclude.includes(item.key) ? val : val.toUpperCase();
-                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: finalVal}});
+                            updateCurrentTeacher({ profile: {...(profile as any), [item.key]: val}});
                           }}
                           className="h-11 rounded-xl border-slate-100 focus:border-[#002B5B] focus:ring-[#002B5B] text-sm font-bold"
                         />
