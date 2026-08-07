@@ -3064,6 +3064,8 @@ function GuruProfile() {
           </div>
         </div>
       </div>
+    </div>
+
 
 
         <footer className="no-print text-center py-12 space-y-2">
