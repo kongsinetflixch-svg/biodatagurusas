@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { PDFDocument } from 'pdf-lib';
 
 /**
@@ -49,11 +49,12 @@ export async function parseEOperasiPDF(base64: string) {
       if (pdfDoc.isEncrypted) {
         throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
       }
-    } catch (pdfLibError) {
-      const errMsg = pdfLibError.message.toLowerCase();
+    } catch (pdfLibError: any) {
+      const errMsg = (pdfLibError?.message || "").toLowerCase();
       if (errMsg.includes('password') || errMsg.includes('encrypted') || errMsg.includes('decrypt')) {
         throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
       }
+
       // If it's another error, we let extractPdfText handle it or fail later
     }
 
@@ -86,33 +87,39 @@ export async function parseEOperasiPDF(base64: string) {
     const icMatch = text.match(/No\.?\s*Kp\s*[:\s]\s*([\d\s-]+)/i) || 
                     text.match(/NO\.?\s*KAD\s*PENGENALAN\s*[:\s]\s*([\d\s-]+)/i) ||
                     text.match(/\b(\d{6}[-\s]?\d{2}[-\s]?\d{4})\b/);
-    if (icMatch) profile.kp = icMatch[1].replace(/[\s-]/g, '').trim();
+    if (icMatch && icMatch[1]) profile.kp = icMatch[1].replace(/[\s-]/g, '').trim();
+
 
     // Phone
     const phoneMatch = text.match(/No\s*Telefon\s*[:\s]\s*([\d-]+)/i) ||
                        text.match(/TEL\s*[:\s]\s*([\d-]+)/i);
-    if (phoneMatch) profile.tel = phoneMatch[1].trim();
+    if (phoneMatch && phoneMatch[1]) profile.tel = phoneMatch[1].trim();
+
 
     // Email
     const emailMatch = text.match(/E-mel\s*[:\s]\s*([^\s\n\r*]+)/i) || 
                        text.match(/Email\s*[:\s]\s*([^\s\n\r*]+)/i);
-    if (emailMatch) profile.email = normalize(emailMatch[1], true);
+    if (emailMatch && emailMatch[1]) profile.email = normalize(emailMatch[1], true);
+
 
     // Address - Take multi-line, exclude specific metadata fields
     const addressMatch = text.match(/Alamat\s*Tinggal\s*Semasa\s*[:\s]\s*([\s\S]+?)(?=\s*Poskod|\s*Bandar|\s*Negeri|\s*Mukim|\s*No\s*Telefon|$)/i);
-    if (addressMatch) {
+    if (addressMatch && addressMatch[1]) {
       profile.alamat = normalize(addressMatch[1].replace(/\s+/g, ' '));
     }
+
 
     // Poskod
     const poskodMatch = text.match(/Poskod\s*[:\s]\s*(\d{5})/i) ||
                         text.match(/POSKOD\s*[:\s]\s*(\d{5})/i);
-    if (poskodMatch) profile.poskod = poskodMatch[1].trim();
+    if (poskodMatch && poskodMatch[1]) profile.poskod = poskodMatch[1].trim();
+
 
     // Gred
     const gredMatch = text.match(/Gred\s*Jawatan\s*(?:Semasa)?\s*[:\s]\s*(DG\d+)/i) || 
                       text.match(/\b(DG\d+)\b/i);
-    if (gredMatch) profile.gred = gredMatch[1].toUpperCase().trim();
+    if (gredMatch && gredMatch[1]) profile.gred = gredMatch[1].toUpperCase().trim();
+
 
     // Kelulusan
     const kelulusan = [];
@@ -120,33 +127,37 @@ export async function parseEOperasiPDF(base64: string) {
     if (academicSections.length > 1) {
       for (let i = 1; i < academicSections.length; i++) {
         const section = academicSections[i];
+        if (!section) continue;
         const instMatch = section.match(/Nama\s*Institusi\s*[:\s]\s*([^\n\r*]+)/i);
         const yearMatch = section.match(/Tahun\s*[:\s]\s*(\d{4})/i);
         const degMatch = section.match(/[:\s]\s*([^\n\r*]+)/i);
+
         
         if (instMatch || yearMatch) {
           kelulusan.push({
             id: `imported-a-${i}-${Date.now()}`,
             kelayakan: normalize(degMatch ? degMatch[1] : 'IJAZAH'),
             bidang: 'SILA KEMASKINI',
-            institusi: normalize(instMatch ? instMatch[1] : '-'),
-            tahun: yearMatch ? yearMatch[1].trim() : '-'
+            institusi: normalize(instMatch && instMatch[1] ? instMatch[1] : '-'),
+            tahun: yearMatch && yearMatch[1] ? yearMatch[1].trim() : '-'
           });
+
         }
       }
     }
 
     // Sejarah Perkhidmatan
     const history: any[] = [];
-    const historyMatches = text.matchAll(/Nama\s*Tempat\s*Berkhidmat\s*[:\s]\s*([^\n\r*]+)[\s\S]*?Tarikh\s*Mula\s*[:\s]\s*([\d/]+)/gi);
+    const historyMatches = Array.from(text.matchAll(/Nama\s*Tempat\s*Berkhidmat\s*[:\s]\s*([^\n\r*]+)[\s\S]*?Tarikh\s*Mula\s*[:\s]\s*([\d/]+)/gi));
     let count = 0;
     for (const match of historyMatches) {
       if (count >= 10) break;
       history.push({
         id: `imported-h-${count}-${Date.now()}`,
-        sekolah: normalize(match[1]),
-        tahun: match[2].trim().split('/').pop(),
+        sekolah: normalize(match[1] || ""),
+        tahun: (match[2] || "").trim().split('/').pop() || "",
         subjek: 'PEGAWAI PERKHIDMATAN PENDIDIKAN'
+
       });
       count++;
     }
@@ -156,8 +167,9 @@ export async function parseEOperasiPDF(base64: string) {
       kelulusan: kelulusan.length > 0 ? kelulusan : undefined,
       sejarah: history.length > 0 ? history : undefined
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error parsing PDF:', error);
-    throw new Error(error.message || 'Gagal memproses fail PDF eOperasi.');
+    throw new Error(error?.message || 'Gagal memproses fail PDF eOperasi.');
   }
+
 }

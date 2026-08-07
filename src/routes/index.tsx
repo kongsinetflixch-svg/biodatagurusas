@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -798,6 +798,8 @@ function GuruProfile() {
   const [showPrintPreview, setShowPrintPreview] = useState(false);
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
+
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -814,9 +816,12 @@ function GuruProfile() {
         .limit(1);
       
       if (!error && data && data.length > 0) {
-        const dbLogo = data[0].school_logo_url;
-        setSchoolLogo(dbLogo);
-        localStorage.setItem('school_logo', dbLogo);
+        const dbLogo = data[0]?.school_logo_url;
+        if (dbLogo) {
+          setSchoolLogo(dbLogo);
+          localStorage.setItem('school_logo', dbLogo);
+        }
+
       }
     };
     
@@ -842,7 +847,7 @@ function GuruProfile() {
         setSession(supabaseSession);
         // If we have a real session, we might want to fetch by owner_id or IC
         // For now, prioritize IC as requested in previous turns
-        const userIc = supabaseSession.user.user_metadata?.ic || localStorage.getItem('guru_ic_session');
+        const userIc = supabaseSession.user.user_metadata?.['ic'] || localStorage.getItem('guru_ic_session');
         if (userIc) {
           fetchTeachersByIc(userIc);
           if (userIc === SUPERADMIN_IC) {
@@ -972,7 +977,7 @@ function GuruProfile() {
       if (data && data.length > 0) {
         // Enforce strict single-profile mapping: use the first record
         setTeachers([data[0]]);
-        setActiveTeacherId(data[0].id);
+        setActiveTeacherId(data[0]?.id || null);
         setIsEditMode(false);
         
         if (cleanIc === SUPERADMIN_IC) {
@@ -982,7 +987,7 @@ function GuruProfile() {
         } else {
           setIsAdminMode(false);
           setShowAdminDashboard(false);
-          const teacherName = (data[0].profile as any)?.nama || 'Cikgu';
+          const teacherName = (data[0]?.profile as any)?.nama || 'Cikgu';
           toast.success(`Selamat kembali, ${teacherName}`);
         }
       } else {
@@ -1049,7 +1054,7 @@ function GuruProfile() {
 
     if (existing && existing.length > 0) {
       console.log("Profile already exists, redirecting...");
-      setActiveTeacherId(existing[0].id);
+      setActiveTeacherId(existing[0]?.id || null);
       setIsEditMode(false);
       setIsLoading(false);
       return;
@@ -1137,14 +1142,9 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
-        tel: "",
-        pengalaman: "",
-        tempohSemasa: "",
-        tarikhMula: "",
-        opsyen: "",
-        alamat: "",
         mengajarOpsyen: "YA",
         alamat: "KUWATERS GURU, TANAH RATA",
+
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
@@ -1287,13 +1287,9 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
-        tel: "",
-        pengalaman: "",
-        tempohSemasa: "",
-        tarikhMula: "",
-        opsyen: "",
         mengajarOpsyen: "YA",
         alamat: "",
+
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
@@ -2120,8 +2116,8 @@ function GuruProfile() {
                   </TableHeader>
                   <TableBody>
                     {teachers
-                      .filter(t => (t.profile as any)?.nama?.toLowerCase().includes(searchTerm.toLowerCase()))
-                      .map((t) => (
+                      .filter((t: any) => (t.profile as any)?.nama?.toLowerCase().includes(searchTerm.toLowerCase()))
+                      .map((t: any) => (
                       <TableRow key={t.id} className="hover:bg-slate-50/50 transition-colors">
                         <TableCell>
                           <Avatar className="w-10 h-10 border-2 border-slate-100">
@@ -2132,12 +2128,13 @@ function GuruProfile() {
                         <TableCell className="font-bold text-slate-700">{(t.profile as any)?.nama || "Tanpa Nama"}</TableCell>
                         <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.kp || "-"}</TableCell>
                         <TableCell className="text-slate-500 text-sm">{(t.profile as any)?.sekolah?.jawatan || "-"}</TableCell>
+
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <Button 
                               variant="outline" 
                               size="sm" 
-                              onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(false); }}
+                              onClick={() => { setActiveTeacherId(t.id as string); setShowAdminDashboard(false); setIsEditMode(false); }}
                               className="h-8 rounded-lg border-slate-200 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                             >
                               <FileText className="w-3.5 h-3.5 mr-1" /> Lihat
@@ -2145,7 +2142,7 @@ function GuruProfile() {
                             <Button 
                               variant="outline" 
                               size="sm" 
-                              onClick={() => { setActiveTeacherId(t.id); setShowAdminDashboard(false); setIsEditMode(true); }}
+                              onClick={() => { setActiveTeacherId(t.id as string); setShowAdminDashboard(false); setIsEditMode(true); }}
                               className="h-8 rounded-lg border-slate-200 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
                             >
                               <Edit2 className="w-3.5 h-3.5 mr-1" /> Edit
@@ -2153,7 +2150,8 @@ function GuruProfile() {
                             <Button 
                               variant="outline" 
                               size="sm" 
-                              onClick={(e) => handleDeleteTeacher(t.id, e)}
+                              onClick={(e: React.MouseEvent) => handleDeleteTeacher(t.id as string, e)}
+
                               className="h-8 rounded-lg border-slate-200 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
