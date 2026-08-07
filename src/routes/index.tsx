@@ -393,25 +393,24 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
   if (!currentTeacher) return null;
   const profile = currentTeacher.profile || {};
   
+  // School logo import from asset
+  const schoolLogoAssetUrl = "/school-logo.png"; // Fallback to public if needed, but we'll use the one we just created via lovable-assets
+  
   return (
     <div className="print-layout-container">
       {/* Header */}
-      <div className="print-header flex items-center justify-between border-b-[1.5pt] border-[#002B5B] pb-3 mb-4">
+      <div className="print-header flex items-center justify-between border-b-[1.5pt] border-black pb-3 mb-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-1 border border-slate-100 overflow-hidden">
-             {(schoolLogo || (currentTeacher?.profile as any)?.schoolLogo) ? (
-               <img src={schoolLogo || (currentTeacher?.profile as any)?.schoolLogo} alt="Logo Sekolah" className="w-full h-full object-contain" />
-             ) : (
-               <span className="text-[10px] font-black text-[#002B5B]">KPM</span>
-             )}
+          <div className="w-16 h-16 bg-white flex items-center justify-center p-0 overflow-hidden">
+             <img src="/school-logo.png" alt="Logo Sekolah" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-[#002B5B] uppercase leading-none mb-1">Profile Guru</h1>
-            <p className="text-sm font-bold text-[#002B5B] uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
-            <p className="text-xs font-bold text-[#002B5B] uppercase leading-tight">CAMERON HIGHLANDS</p>
-            
+            <h1 className="text-lg font-black text-black uppercase leading-none mb-1">Profile Guru</h1>
+            <p className="text-sm font-bold text-black uppercase leading-tight">SMK SULTAN AHMAD SHAH</p>
+            <p className="text-xs font-bold text-black uppercase leading-tight">CAMERON HIGHLANDS</p>
           </div>
         </div>
+
         <div className="print-photo-container">
           {currentTeacher.profileImage ? (
             <img 
