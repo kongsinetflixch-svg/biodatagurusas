@@ -1075,6 +1075,8 @@ function GuruProfile() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
+  const [pendingLogo, setPendingLogo] = useState<string | null>(null);
+  const [showLogoConfirmation, setShowLogoConfirmation] = useState(false);
 
   const handleEOperasiImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
