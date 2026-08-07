@@ -3,28 +3,17 @@ import { PDFDocument } from 'pdf-lib';
 
 // Use dynamic import for pdf-parse to avoid ESM/CJS build issues in TanStack Start
 const getPdfParser = async () => {
-  // pdf-parse is a CJS module. In this environment, we use the PDFParse class if needed or the main function
+  // pdf-parse is a CJS module. In this environment, we dig through its exports
   const pdfModule = await import('pdf-parse');
   
-  // The module might be returning a class or a function
-  const parser = pdfModule.default || pdfModule;
-  
-  if (typeof parser === 'function') {
-    return (buffer: Buffer) => {
-      try {
-        // Attempt as a function first
-        return parser(buffer);
-      } catch (e) {
-        // If it's a class, try to instantiate it
-        if (e.message.includes('class constructor')) {
-          return new parser(buffer);
-        }
-        throw e;
-      }
-    };
-  }
-  
-  throw new Error('Pustaka pdf-parse tidak dapat dimuatkan dengan betul.');
+  // Try common ESM-wrapped CJS paths
+  if (typeof pdfModule === 'function') return pdfModule;
+  if (typeof pdfModule.default === 'function') return pdfModule.default;
+  if (pdfModule.default && typeof pdfModule.default.default === 'function') return pdfModule.default.default;
+
+  // Last resort fallback using the internal path
+  const pdfInternal = await import('pdf-parse/lib/pdf-parse.js');
+  return pdfInternal.default || pdfInternal;
 };
 
 export async function parseEOperasiPDF(base64: string) {
@@ -32,7 +21,6 @@ export async function parseEOperasiPDF(base64: string) {
     const buffer = Buffer.from(base64, 'base64');
     
     // Check if it's password protected using pdf-lib FIRST
-    // pdf-parse can hang or crash on encrypted files without clear errors
     try {
       const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: false });
       if (pdfDoc.isEncrypted) {
@@ -43,19 +31,17 @@ export async function parseEOperasiPDF(base64: string) {
       if (errMsg.includes('password') || errMsg.includes('encrypted') || errMsg.includes('decrypt')) {
         throw new Error('Fail PDF ini dilindungi kata laluan. Sila muat naik fail yang tidak dikunci.');
       }
-      console.warn('pdf-lib pre-check failed:', pdfLibError);
-      // If it's not a password error, we let pdf-parse try anyway
     }
 
     let text = "";
     try {
-      const pdfParser = await getPdfParser();
-      const data = await pdfParser(buffer);
+      const parser = await getPdfParser();
+      const data = await parser(buffer);
       text = data.text;
       console.log('PDF text extracted length:', text?.length);
     } catch (e) {
       console.error('pdf-parse failed:', e);
-      throw new Error(`Ralat memproses PDF: ${e.message}. Sila pastikan fail PDF tidak dilindungi kata laluan.`);
+      throw new Error(`Ralat memproses PDF: ${e.message}`);
     }
 
     if (!text || text.trim().length < 10) {
