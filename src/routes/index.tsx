@@ -1335,6 +1335,37 @@ function GuruProfile() {
   const handleSave = async () => {
     if (!activeTeacherId || !currentTeacher) return;
     
+    setIsSaving(true);
+    const saveToast = toast.loading("Menyimpan maklumat...");
+
+    try {
+      // Check if we have unsaved canvas signature
+      let finalSignatureUrl = currentTeacher.signature_url || currentTeacher.signatureUrl;
+      
+      if (hasSignature && canvasRef.current) {
+        try {
+          const signatureBase64 = canvasRef.current.toDataURL('image/png');
+          const res = await fetch(signatureBase64);
+          const blob = await res.blob();
+          const fileName = `signatures/${activeTeacherId}_${Date.now()}.png`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(STORAGE_BUCKET)
+            .upload(fileName, blob, { upsert: true });
+
+          if (uploadError) throw uploadError;
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from(STORAGE_BUCKET)
+            .getPublicUrl(uploadData.path);
+          
+          finalSignatureUrl = publicUrl;
+        } catch (err) {
+          console.error("Error saving signature:", err);
+          toast.error("Gagal menyimpan tandatangan.");
+        }
+      }
+
       // Auto-uppercase all non-excluded profile fields before save for DB consistency
       const finalProfile = JSON.parse(JSON.stringify(currentTeacher.profile));
       const excludeKeys = ['email', 'kp', 'ic_number', 'tel', 'tarikhMula', 'poskod'];
