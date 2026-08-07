@@ -2687,6 +2687,8 @@ function GuruProfile() {
             </Card>
           </div>
         </div>
+      </div>
+
 
         {/* TABLES SECTION */}
         <div className="flex flex-col gap-6 no-print px-4 sm:px-0">
