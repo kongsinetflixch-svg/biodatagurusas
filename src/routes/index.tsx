@@ -1770,10 +1770,18 @@ function GuruProfile() {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 w-full md:w-auto">
+                <input 
+                  type="file" 
+                  ref={adminSchoolLogoInputRef} 
+                  onChange={handleSchoolLogoUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                  style={{ display: 'none' }}
+                />
                 <Button 
                   onClick={() => {
                     console.log("Admin logo button click");
-                    schoolLogoInputRef.current?.click();
+                    adminSchoolLogoInputRef.current?.click();
                   }}
                   className="h-12 sm:h-14 px-6 bg-white/10 text-white border-white/20 hover:bg-white/20 font-black rounded-2xl shadow-lg border transition-all text-sm uppercase tracking-wider"
                 >
