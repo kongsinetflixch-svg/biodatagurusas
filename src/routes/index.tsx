@@ -2669,7 +2669,7 @@ function GuruProfile() {
 
         </div>
       </div>
-    </div>
+
 
 
 
