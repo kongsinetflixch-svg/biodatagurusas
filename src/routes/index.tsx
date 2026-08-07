@@ -2012,32 +2012,53 @@ function GuruProfile() {
                       </div>
                     )}
                   </div>
-                ))}
-
-                <div className="md:col-span-2 space-y-2 info-item">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm opacity-50 no-print">🏠</span>
-                    <Label className="text-slate-400 text-[10px] font-black uppercase tracking-widest info-label">Alamat Kediaman</Label>
-
-                  </div>
+                <div className="sm:col-span-2 space-y-1 mt-2">
+                  <Label className="text-slate-400 text-[10px] sm:text-[11px] font-black uppercase tracking-wider">Alamat Kediaman</Label>
                   {isEditMode ? (
                     <Textarea 
                       value={(profile as any).alamat} 
                       onChange={(e) => updateCurrentTeacher({ profile: {...(profile as any), alamat: e.target.value}})}
-                      className="min-h-[100px] rounded-xl border-slate-100 text-base"
+                      className="min-h-[80px] rounded-xl border-slate-100 text-sm font-bold"
                     />
                   ) : (
-                    <div className="p-4 rounded-xl bg-slate-50 border border-transparent group-hover:border-slate-100 group-hover:bg-white transition-all print:p-0 print:bg-transparent print:border-none">
-                      <p className="text-slate-700 leading-relaxed info-value">{(profile as any).alamat || "-"}</p>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-transparent">
+                      <p className="text-[#002B5B] font-bold text-sm sm:text-base leading-relaxed">{(profile as any).alamat || "-"}</p>
                     </div>
-
                   )}
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <div className="space-y-6 no-print">
+          <div className="space-y-4 no-print">
+            <Card className="border-none shadow-md rounded-2xl overflow-hidden bg-white">
+              <CardHeader className="p-4 border-b border-slate-50">
+                <CardTitle className="text-sm font-black text-[#002B5B] flex items-center gap-2">
+                  <Briefcase className="w-4 h-4" />
+                  Sekolah
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    { label: "Nama Sekolah", val: (profile as any).sekolah?.nama },
+                    { label: "Kod Sekolah", val: (profile as any).sekolah?.kod },
+                    { label: "Jawatan", val: (profile as any).sekolah?.jawatan },
+                    { label: "Pemeriksa SPM", val: (profile as any).sekolah?.pemeriksaSPM },
+                  ].map((item, idx) => (
+                    <div key={idx} className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
+                      <p className="text-sm font-bold text-[#002B5B]">{item.val || "-"}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-[#002B5B]/5 p-3 rounded-xl border border-[#002B5B]/10">
+                   <p className="text-[10px] font-black text-[#002B5B]/40 uppercase tracking-wider mb-1">Alamat Sekolah</p>
+                   <p className="text-sm font-bold text-[#002B5B]">{(profile as any).sekolah?.alamat}, {(profile as any).sekolah?.poskod} {(profile as any).sekolah?.daerah}, {(profile as any).sekolah?.negeri}</p>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="border-none shadow-lg rounded-3xl overflow-hidden animate-in slide-up duration-500 delay-300 bg-white card-print">
               <div className="h-2 bg-[#D4AF37] no-print"></div>
               <CardHeader className="py-6 px-8 border-b border-slate-50 print:py-0 print:px-0 print:border-none">
