@@ -394,25 +394,31 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
 
 
       {/* Academic */}
-      <span className="section-title">Kelulusan Akademik</span>
+      <span className="section-title">Kelulusan Akademik dan Ikhtisas</span>
       <table>
         <thead>
           <tr>
-            <th>Tahap Kelulusan</th>
-            <th>Bidang / Pengkhususan</th>
-            <th>Institusi / Universiti</th>
-            <th>Tahun</th>
+            <th style={{ width: '25%' }}>Kelulusan</th>
+            <th style={{ width: '35%' }}>Bidang / Pengkhususan</th>
+            <th style={{ width: '30%' }}>Institusi / Universiti</th>
+            <th style={{ width: '10%' }}>Tahun</th>
           </tr>
         </thead>
         <tbody>
-          {((currentTeacher.kelulusan || []) as any[]).map((row: any) => (
-            <tr key={row.id}>
-              <td>{row.kelayakan}</td>
-              <td>{row.bidang}</td>
-              <td>{row.institusi}</td>
-              <td>{row.tahun}</td>
+          {currentTeacher.kelulusan && (currentTeacher.kelulusan as any[]).length > 0 ? (
+            (currentTeacher.kelulusan as any[]).map((row: any) => (
+              <tr key={row.id}>
+                <td>{row.kelayakan}</td>
+                <td>{row.bidang}</td>
+                <td>{row.institusi}</td>
+                <td>{row.tahun}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={4} className="text-center italic text-slate-400">Tiada rekod kelulusan akademik</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
@@ -421,23 +427,31 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <table>
         <thead>
           <tr>
-            <th>Subjek</th>
-            <th>Tingkatan / Tahun</th>
-            <th>Bil. Murid</th>
-            <th>TOV</th>
-            <th>ETR</th>
+            <th style={{ width: '5%' }}>No.</th>
+            <th style={{ width: '35%' }}>Subjek</th>
+            <th style={{ width: '20%' }}>Tahun / Tingkatan</th>
+            <th style={{ width: '15%' }}>Bil. Murid</th>
+            <th style={{ width: '12.5%' }}>TOV</th>
+            <th style={{ width: '12.5%' }}>ETR</th>
           </tr>
         </thead>
         <tbody>
-          {((currentTeacher.subjek || []) as any[]).map((row: any) => (
-            <tr key={row.id}>
-              <td>{row.nama}</td>
-              <td>{row.kelas}</td>
-              <td>{row.murid}</td>
-              <td>{row.tov}</td>
-              <td>{row.etr}</td>
+          {currentTeacher.subjek && (currentTeacher.subjek as any[]).length > 0 ? (
+            (currentTeacher.subjek as any[]).map((row: any, idx: number) => (
+              <tr key={row.id}>
+                <td className="text-center">{idx + 1}</td>
+                <td>{row.nama}</td>
+                <td>{row.kelas}</td>
+                <td>{row.murid}</td>
+                <td>{row.tov}</td>
+                <td>{row.etr}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="text-center italic text-slate-400">Tiada rekod subjek diajar</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
@@ -446,19 +460,25 @@ const PrintLayout = ({ currentTeacher, isAdminMode, schoolLogo }: { currentTeach
       <table>
         <thead>
           <tr>
-            <th>Nama dan Alamat Sekolah</th>
-            <th>Tahun</th>
-            <th>Subjek yang Diajar</th>
+            <th style={{ width: '60%' }}>Nama dan Alamat Sekolah</th>
+            <th style={{ width: '15%' }}>Tahun</th>
+            <th style={{ width: '25%' }}>Subjek yang Diajar</th>
           </tr>
         </thead>
         <tbody>
-          {((currentTeacher.sejarah || []) as any[]).map((row: any) => (
-            <tr key={row.id}>
-              <td>{row.sekolah}</td>
-              <td>{row.tahun}</td>
-              <td>{row.subjek}</td>
+          {currentTeacher.sejarah && (currentTeacher.sejarah as any[]).length > 0 ? (
+            (currentTeacher.sejarah as any[]).map((row: any) => (
+              <tr key={row.id}>
+                <td>{row.sekolah}</td>
+                <td>{row.tahun}</td>
+                <td>{row.subjek}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} className="text-center italic text-slate-400">Tiada rekod sejarah perkhidmatan</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
