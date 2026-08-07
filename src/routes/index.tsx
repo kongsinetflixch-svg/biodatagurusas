@@ -2591,8 +2591,9 @@ function GuruProfile() {
                           <div className="bg-white p-2 rounded-lg border border-slate-100 col-span-2">
                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Institusi</p>
                              <p className="text-xs font-bold text-[#002B5B]">{item.institusi || "-"}</p>
-                          </div>
-                        </div>
+        </div>
+      </div>
+
                         {isEditMode && (
                           <Button 
                             variant="ghost" 
