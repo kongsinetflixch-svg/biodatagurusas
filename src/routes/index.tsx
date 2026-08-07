@@ -2247,8 +2247,7 @@ function GuruProfile() {
            </div>
         </div>
       )}
-
-
+      <div id="profile-details-container" className="space-y-6">
 
         {/* TABLES SECTION */}
         <div className="space-y-6 animate-in slide-up duration-500 delay-400">
