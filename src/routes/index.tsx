@@ -719,6 +719,9 @@ function GuruProfile() {
     }
   }, []);
   const schoolLogoInputRef = useRef<HTMLInputElement>(null);
+  const adminSchoolLogoInputRef = useRef<HTMLInputElement>(null);
+  const loadingSchoolLogoInputRef = useRef<HTMLInputElement>(null);
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
 
   
   // Teachers state for multi-profile support
@@ -1569,19 +1572,24 @@ function GuruProfile() {
             </Button>
           </div>
 
-          <div 
-            className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
-            onClick={() => schoolLogoInputRef.current?.click()}
-          >
-             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
-          </div>
           <input 
             type="file" 
-            ref={schoolLogoInputRef} 
+            ref={loadingSchoolLogoInputRef} 
             onChange={handleSchoolLogoUpload} 
             accept="image/*" 
             className="hidden" 
+            style={{ display: 'none' }}
           />
+
+          <div 
+            className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
+            onClick={() => {
+              console.log("Loading logo click");
+              loadingSchoolLogoInputRef.current?.click();
+            }}
+          >
+             <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
+          </div>
 
           {showSettings && (
             <div className="bg-slate-50 p-4 rounded-2xl text-left animate-in slide-in-from-top-2 duration-300">
@@ -1590,7 +1598,10 @@ function GuruProfile() {
                 variant="outline" 
                 size="sm" 
                 className="w-full justify-start text-xs font-bold rounded-xl h-9 border-slate-200"
-                onClick={() => schoolLogoInputRef.current?.click()}
+                onClick={() => {
+                  console.log("Setting logo input click");
+                  loadingSchoolLogoInputRef.current?.click();
+                }}
               >
                 <ImageIcon className="w-3.5 h-3.5 mr-2 text-blue-500" />
                 Muat Naik Logo Sekolah
@@ -1598,6 +1609,15 @@ function GuruProfile() {
             </div>
           )}
           
+          <input 
+            type="file" 
+            ref={schoolLogoInputRef} 
+            onChange={handleSchoolLogoUpload} 
+            accept="image/*" 
+            className="hidden" 
+            style={{ display: 'none' }}
+          />
+
           <div className="space-y-2">
             <h3 className="text-2xl font-black text-[#002B5B] uppercase tracking-tight">Profile Guru</h3>
             <p className="text-sm font-bold text-[#002B5B] uppercase">SMK Sultan Ahmad Shah</p>
@@ -1750,8 +1770,19 @@ function GuruProfile() {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 w-full md:w-auto">
+                <input 
+                  type="file" 
+                  ref={adminSchoolLogoInputRef} 
+                  onChange={handleSchoolLogoUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                  style={{ display: 'none' }}
+                />
                 <Button 
-                  onClick={() => schoolLogoInputRef.current?.click()}
+                  onClick={() => {
+                    console.log("Admin logo button click");
+                    adminSchoolLogoInputRef.current?.click();
+                  }}
                   className="h-12 sm:h-14 px-6 bg-white/10 text-white border-white/20 hover:bg-white/20 font-black rounded-2xl shadow-lg border transition-all text-sm uppercase tracking-wider"
                 >
                   <ImageIcon className="w-5 h-5 mr-3 text-[#D4AF37]" /> 
@@ -2077,7 +2108,10 @@ function GuruProfile() {
             <div className="relative group/avatar">
               <div 
                 className="w-24 h-32 sm:w-36 sm:h-48 bg-white/10 rounded-xl sm:rounded-[2rem] border-2 border-white/20 overflow-hidden shadow-2xl transition-all group-hover/avatar:border-white/50 cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => {
+                  console.log("Profile avatar click");
+                  profileImageInputRef.current?.click();
+                }}
               >
                 {profileImage ? (
                   <img src={profileImage} alt="Profil" className="w-full h-full object-cover" />
@@ -2090,10 +2124,11 @@ function GuruProfile() {
               </div>
               <input 
                 type="file" 
-                ref={fileInputRef} 
+                ref={profileImageInputRef} 
                 onChange={handleImageUpload} 
                 accept="image/*" 
                 className="hidden" 
+                style={{ display: 'none' }}
               />
               {isEditMode && (
                  <div className="absolute -bottom-2 -right-2 bg-[#D4AF37] p-2 rounded-lg shadow-lg border border-white/20 animate-in zoom-in duration-300">
