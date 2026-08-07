@@ -713,9 +713,28 @@ function GuruProfile() {
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const fetchLogo = async () => {
+      // First try localStorage for speed
       const savedLogo = localStorage.getItem('school_logo');
       if (savedLogo) setSchoolLogo(savedLogo);
+
+      // Then try fetching from the database (latest one uploaded by anyone)
+      const { data, error } = await supabase
+        .from('teachers')
+        .select('school_logo_url')
+        .not('school_logo_url', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (!error && data && data.length > 0) {
+        const dbLogo = data[0].school_logo_url;
+        setSchoolLogo(dbLogo);
+        localStorage.setItem('school_logo', dbLogo);
+      }
+    };
+    
+    if (typeof window !== 'undefined') {
+      fetchLogo();
     }
   }, []);
   const schoolLogoInputRef = useRef<HTMLInputElement>(null);
@@ -931,15 +950,15 @@ function GuruProfile() {
       profile: {
         nama: (sasTeacher?.nama || "").toUpperCase(),
         kp: ic || "",
-        tel: "01X-XXXXXXX",
+        tel: "",
         email: `${(sasTeacher?.nama || 'guru').toLowerCase().replace(/\s+/g, '.')}@moe-dl.edu.my`,
-        pengalaman: "10 TAHUN",
-        tempohSemasa: "5 TAHUN",
-        tarikhMula: "01/01/2015",
-        opsyen: "SEJARAH",
-        gred: "DG44",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        gred: "",
         mengajarOpsyen: "YA",
-        alamat: "KUWATERS GURU, TANAH RATA",
+        alamat: "",
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
@@ -955,15 +974,9 @@ function GuruProfile() {
           lain: "-"
         }
       },
-      kelulusan: [
-        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
-      ],
-      subjek: [
-        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
-      ],
-      sejarah: [
-        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
-      ],
+      kelulusan: [],
+      subjek: [],
+      sejarah: [],
       ic_number: ic,
       profile_image: null
     } as any;
@@ -1015,6 +1028,12 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
+        tel: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
+        alamat: "",
         mengajarOpsyen: "YA",
         alamat: "KUWATERS GURU, TANAH RATA",
         sekolah: {
@@ -1112,6 +1131,7 @@ function GuruProfile() {
               ...importedData.profile,
               // Ensure we don't overwrite crucial metadata
               kp: currentTeacher.profile.kp, 
+              nama: (importedData.profile.nama || "").toUpperCase(),
             },
             kelulusan: (importedData.kelulusan && importedData.kelulusan.length > 0) ? [...currentTeacher.kelulusan, ...importedData.kelulusan] : currentTeacher.kelulusan,
             sejarah: (importedData.sejarah && importedData.sejarah.length > 0) ? [...currentTeacher.sejarah, ...importedData.sejarah] : currentTeacher.sejarah,
@@ -1158,8 +1178,13 @@ function GuruProfile() {
         tarikhMula: "01/01/2015",
         opsyen: "SEJARAH",
         gred: "",
+        tel: "",
+        pengalaman: "",
+        tempohSemasa: "",
+        tarikhMula: "",
+        opsyen: "",
         mengajarOpsyen: "YA",
-        alamat: "KUWATERS GURU, TANAH RATA",
+        alamat: "",
         sekolah: {
           nama: "SMK SULTAN AHMAD SHAH",
           alamat: "PERSIARAN DAYANG ENDAH",
@@ -1175,15 +1200,9 @@ function GuruProfile() {
           lain: "-"
         }
       },
-      kelulusan: [
-        { id: 1, kelayakan: "SARJANA MUDA PENDIDIKAN", institusi: "UPSI", bidang: "SEJARAH", tahun: "2014" }
-      ],
-      subjek: [
-        { id: 1, nama: "SEJARAH", kelas: "5 DELTA", murid: "30" }
-      ],
-      sejarah: [
-        { id: 1, sekolah: "SMK SULTAN AHMAD SHAH", tahun: "2015-2026", subjek: "SEJARAH" }
-      ],
+      kelulusan: [],
+      subjek: [],
+      sejarah: [],
       ic_number: ic,
       profile_image: null
     };
@@ -1321,57 +1340,70 @@ function GuruProfile() {
     if (!activeTeacherId || !currentTeacher) return;
     
     setIsSaving(true);
-    toast.info("Sedang menyimpan maklumat...");
+    const saveToast = toast.loading("Menyimpan maklumat...");
 
-    // Check if we have unsaved canvas signature
-    let finalSignatureUrl = currentTeacher.signatureUrl;
-    if (hasSignature && canvasRef.current) {
-      try {
-        const signatureBase64 = canvasRef.current.toDataURL('image/png');
-        const blob = await (await fetch(signatureBase64)).blob();
-        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/signature_${Date.now()}.png`;
-        
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from(STORAGE_BUCKET)
-          .upload(fileName, blob, { upsert: true });
+    try {
+      // Check if we have unsaved canvas signature
+      let finalSignatureUrl = currentTeacher.signature_url || currentTeacher.signatureUrl;
+      
+      if (hasSignature && canvasRef.current) {
+        try {
+          const signatureBase64 = canvasRef.current.toDataURL('image/png');
+          const res = await fetch(signatureBase64);
+          const blob = await res.blob();
+          const fileName = `signatures/${activeTeacherId}_${Date.now()}.png`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(STORAGE_BUCKET)
+            .upload(fileName, blob, { upsert: true });
 
-        if (uploadError) throw uploadError;
-        
-        const { data: { publicUrl } } = supabase.storage
-          .from(STORAGE_BUCKET)
-          .getPublicUrl(uploadData.path);
-        
-        finalSignatureUrl = publicUrl;
-      } catch (err) {
-        console.error("Error saving signature:", err);
-        toast.error("Gagal menyimpan tandatangan.");
+          if (uploadError) throw uploadError;
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from(STORAGE_BUCKET)
+            .getPublicUrl(uploadData.path);
+          
+          finalSignatureUrl = publicUrl;
+        } catch (err) {
+          console.error("Error saving signature:", err);
+          toast.error("Gagal menyimpan tandatangan.");
+        }
       }
-    }
 
-    const { error } = await supabase
-      .from('teachers')
-      .update({
-        profile: currentTeacher.profile,
-        kelulusan: currentTeacher.kelulusan,
-        subjek: currentTeacher.subjek,
-        sejarah: currentTeacher.sejarah,
-        profile_image_url: currentTeacher.profileImage, // Now stores URL
-        signature_url: finalSignatureUrl,
-        school_logo_url: schoolLogo,
-        ic_number: (currentTeacher.profile as any)?.kp
-      })
-      .eq('id', activeTeacherId);
+      const { error } = await supabase
+        .from('teachers')
+        .update({
+          profile: currentTeacher.profile,
+          kelulusan: currentTeacher.kelulusan,
+          subjek: currentTeacher.subjek,
+          sejarah: currentTeacher.sejarah,
+          profile_image_url: currentTeacher.profileImage, 
+          signature_url: finalSignatureUrl,
+          school_logo_url: schoolLogo,
+          ic_number: (currentTeacher.profile as any)?.kp
+        })
+        .eq('id', activeTeacherId);
 
-    setIsSaving(false);
-    if (error) {
-      toast.error(`Gagal menyimpan: ${error.message}`);
-      console.error(error);
-    } else {
+      if (error) throw error;
+
       setIsEditMode(false);
       localStorage.removeItem('guru_profile_draft');
-      toast.success("Maklumat telah berjaya disimpan kekal.");
-      // Refresh current teacher state with new URLs
-      updateCurrentTeacher({ signatureUrl: finalSignatureUrl });
+      toast.success("Berjaya disimpan", { id: saveToast });
+      
+      // Update local state to ensure it matches DB state exactly
+      setTeachers(prev => prev.map(t => 
+        t.id === activeTeacherId ? { 
+          ...t, 
+          signature_url: finalSignatureUrl, 
+          signatureUrl: finalSignatureUrl,
+          school_logo_url: schoolLogo 
+        } : t
+      ));
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`Gagal menyimpan: ${error.message || "Ralat tidak dijangka"}`, { id: saveToast });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -1384,12 +1416,12 @@ function GuruProfile() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && activeTeacherId) {
+      const uploadToast = toast.loading("Menyimpan...");
       try {
         setIsSaving(true);
-        toast.info("Sedang memuat naik gambar...");
         
         const fileExt = file.name.split('.').pop();
-        const fileName = `${session?.user?.id || 'anonymous'}/${activeTeacherId}/profile_${Date.now()}.${fileExt}`;
+        const fileName = `profiles/${activeTeacherId}/profile_${Date.now()}.${fileExt}`;
         
         const { data, error } = await supabase.storage
           .from(STORAGE_BUCKET)
@@ -1401,11 +1433,19 @@ function GuruProfile() {
           .from(STORAGE_BUCKET)
           .getPublicUrl(data.path);
 
+        // Update the teacher record immediately in DB too to ensure persistence
+        const { error: updateError } = await supabase
+          .from('teachers')
+          .update({ profile_image_url: publicUrl })
+          .eq('id', activeTeacherId);
+          
+        if (updateError) throw updateError;
+
         updateCurrentTeacher({ profileImage: publicUrl });
-        toast.success("Gambar profil berjaya dimuat naik.");
+        toast.success("Berjaya disimpan", { id: uploadToast });
       } catch (err: any) {
         console.error("Upload error:", err);
-        toast.error(`Gagal memuat naik gambar: ${err.message}`);
+        toast.error(`Gagal memuat naik gambar: ${err.message}`, { id: uploadToast });
       } finally {
         setIsSaving(false);
       }
@@ -1441,16 +1481,15 @@ function GuruProfile() {
   const confirmLogoUpload = async () => {
     if (!pendingLogo) return;
     
+    const uploadToast = toast.loading("Menyimpan...");
     try {
       setIsSaving(true);
-      toast.info("Sedang memuat naik logo sekolah...");
       
       // Convert base64 to blob for storage upload
       const response = await fetch(pendingLogo);
       const blob = await response.blob();
       
-      const fileExt = "png"; // Standardize or extract from original if needed
-      const fileName = `${session?.user?.id || 'anonymous'}/school_logo_${Date.now()}.${fileExt}`;
+      const fileName = `school/logo_${Date.now()}.png`;
       
       const { data, error } = await supabase.storage
         .from(STORAGE_BUCKET)
@@ -1464,12 +1503,21 @@ function GuruProfile() {
 
       setSchoolLogo(publicUrl);
       localStorage.setItem('school_logo', publicUrl);
-      toast.success("Logo sekolah telah berjaya dikemaskini di seluruh aplikasi.");
+      
+      // Also update current active teacher if exists
+      if (activeTeacherId) {
+        await supabase
+          .from('teachers')
+          .update({ school_logo_url: publicUrl })
+          .eq('id', activeTeacherId);
+      }
+
+      toast.success("Berjaya disimpan", { id: uploadToast });
       setShowLogoConfirmation(false);
       setPendingLogo(null);
     } catch (err: any) {
       console.error("Logo upload error:", err);
-      toast.error(`Gagal memuat naik logo: ${err.message}`);
+      toast.error(`Gagal memuat naik logo: ${err.message}`, { id: uploadToast });
     } finally {
       setIsSaving(false);
     }
@@ -1582,6 +1630,7 @@ function GuruProfile() {
           />
 
           <div 
+            id="loading-logo-trigger"
             className="w-20 h-20 bg-white border-2 border-[#002B5B]/10 rounded-2xl mx-auto flex items-center justify-center p-2 shadow-xl transform rotate-3 overflow-hidden cursor-pointer hover:rotate-0 transition-transform"
             onClick={() => {
               console.log("Loading logo click");
@@ -2097,7 +2146,7 @@ function GuruProfile() {
 
         {/* SCREEN HEADER */}
 
-        <header className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
+        <header id="profile-header" className="no-print flex flex-col items-center bg-[#002B5B] p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-xl border-b-8 border-[#D4AF37] relative overflow-hidden group">
           <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-xl flex items-center justify-center p-1 shadow-lg">
                 <img src={schoolLogo || schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
@@ -3013,6 +3062,11 @@ function GuruProfile() {
           <p className="text-slate-400 text-xs font-medium">Maklumat ini adalah untuk kegunaan rasmi sekolah sahaja.</p>
         </footer>
 
+
+      {/* Hidden print layout component for browser Print (Ctrl+P) */}
+      <div className="print-only">
+        <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
+      </div>
 
       {/* PRINT PREVIEW MODAL */}
       {showPrintPreview && (
