@@ -1935,7 +1935,7 @@ function GuruProfile() {
         <PrintLayout currentTeacher={currentTeacher} isAdminMode={isAdminMode} schoolLogo={schoolLogo} />
       </div>
 
-      <div id="profile-container" className="max-w-6xl mx-auto print-container space-y-6 no-print">
+      <div id="profile-container" className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 print-container space-y-6 no-print">
 
 
         
