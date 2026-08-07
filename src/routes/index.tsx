@@ -2051,28 +2051,6 @@ function GuruProfile() {
 
 
 
-        {/* PRINT ONLY HEADER */}
-        <div className="hidden print:block print-header border-b-2 border-black pb-4 mb-6">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-6">
-              <div className="w-20 h-20 bg-white flex items-center justify-center">
-                <img src={schoolLogoAsset.url} alt="Logo Sekolah" className="w-full h-full object-contain" />
-              </div>
-
-              <div className="flex flex-col">
-                <h1 className="text-xl font-black text-black uppercase leading-tight">
-                  REKOD PERIBADI PENJAWAT AWAM
-                </h1>
-                <div className="text-black font-bold text-base mt-1">
-                  SMK SULTAN AHMAD SHAH, CAMERON HIGHLANDS
-                </div>
-              </div>
-            </div>
-            {profileImage && (
-              <img src={profileImage} alt="Profil" className="w-[30mm] h-[38mm] border border-black object-cover" />
-            )}
-          </div>
-        </div>
 
 
         {/* SCREEN HEADER */}
